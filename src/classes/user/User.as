@@ -119,7 +119,7 @@ package classes.user
 		
 		public function get isLoaded():Boolean
 		{
-			return _isLoaded && (this.permissions.isActiveUser && _isLoadedRanks);
+			return this.permissions.isActiveUser ? (_isLoaded && _isLoadedRanks) : _isLoaded;
 		}
 		
 		//- Events
