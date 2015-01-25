@@ -1,5 +1,7 @@
 package 
 {
+	import classes.user.User;
+	import com.adobe.serialization.json.JSONManager;
 	import flash.display.Sprite;
 	import flash.events.Event;
 
@@ -15,7 +17,12 @@ package
 		private function init(e:Event = null):void 
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
-			// entry point
+			
+			// Init Classes
+			JSONManager.init();
+			
+			// Test Stuff
+			var user:User = new User(true, true);
 		}
 		
 	}
