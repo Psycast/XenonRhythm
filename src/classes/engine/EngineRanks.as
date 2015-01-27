@@ -11,19 +11,19 @@ package classes.engine
 			this.id = id;
 		}
 		
-		public function getRank(level:String):EngineRanksSong
+		public function getRank(level:String):EngineRanksLevel
 		{
 			if (!ranks[level])
 			{
-				ranks[level] = new EngineRanksSong(level);
+				ranks[level] = new EngineRanksLevel(level);
 			}
 			
 			return ranks[level];
 		}
 		
-		public function setRank(level:String, data:EngineRanksSong):void
+		public function setRank(data:EngineRanksLevel):void
 		{
-			ranks[level] = data;
+			ranks[data.level] = data;
 		}
 	}
 

@@ -1,25 +1,25 @@
 package classes.engine 
 {
 
-	public class EngineRanksSong 
+	public class EngineRanksLevel 
 	{
-		public var songid:String;
-		public var genre:int;
+		public var level:String = "";
+		public var genre:int = 0;
 		
-		public var rank:int;
-		public var score:int;
+		public var rank:int = 0;
+		public var score:int = 0;
 		
-		public var amazing:int;
-		public var perfect:int;
-		public var good:int;
-		public var average:int;
-		public var miss:int;
-		public var boo:int;
-		public var combo:int;
+		public var amazing:int = 0;
+		public var perfect:int = 0;
+		public var good:int = 0;
+		public var average:int = 0;
+		public var miss:int = 0;
+		public var boo:int = 0;
+		public var combo:int = 0;
 		
-		public function EngineRanksSong(songid:String) 
+		public function EngineRanksLevel(level:String) 
 		{
-			this.songid = songid;
+			this.level = level;
 		}
 		
 		// Results - Format [0]'perfect' - [1]'good' - [2]'average' - [3]'miss' - [4]'boo' - [5]'maxcombo'

@@ -23,18 +23,21 @@ package com.flashfla.net
 			this._funOnError = funOnError;
 		}
 		
-		public function load(params:Object, type:String = "POST"):void
+		public function load(params:Object = null, type:String = "POST"):void
 		{
 			_loader = new URLLoader();
 			_addListeners();
 			
 			var req:URLRequest = new URLRequest(_url);
-			var variables:URLVariables = new URLVariables();
-			for (var key:String in params)
+			if (params)
 			{
-				variables[key] = String(params[key]);
+				var variables:URLVariables = new URLVariables();
+				for (var key:String in params)
+				{
+					variables[key] = String(params[key]);
+				}
+				req.data = variables;
 			}
-			req.data = variables;
 			req.method = type;
 			_loader.load(req);
 		}

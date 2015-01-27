@@ -77,6 +77,13 @@ package com.flashfla.utils {
 			return KEY_ARRAY[input] || ("[" + input.toString() + "]");
 		}
 		
+		public static function htmlencode(s:String):String {
+			s = s.replace(/=/g, "%3D");
+			s = s.replace(/\//g, "%2F");
+			s = s.replace(/\+/g, "%2B");
+			return s;
+		}
+		
 		public static function getURLPieces(urlStr:String):Array {
 			return splitMultiple(urlStr.replace(/http(s|):\/\//, "").toLowerCase(), ["/", ".", "?", "&", "="]);
 		}

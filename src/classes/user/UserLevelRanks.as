@@ -15,7 +15,7 @@ package classes.user
 		
 		public function getEngineRanks(engine:String, createNew:Boolean = false):EngineRanks
 		{
-			if (createNew)
+			if (!this.engines[engine] || createNew)
 			{
 				this.engines[engine] = new EngineRanks(engine);
 			}

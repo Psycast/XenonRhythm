@@ -1,7 +1,7 @@
 package classes.user
 {
 	import classes.engine.EngineRanks;
-	import classes.engine.EngineRanksSong;
+	import classes.engine.EngineRanksLevel;
 	import classes.engine.EngineSettings;
 	import classes.user.UserInfo;
 	import classes.user.UserPermissions;
@@ -81,7 +81,7 @@ package classes.user
 			
 			// Load Avatar
 			this.avatar = new Loader();
-			this.avatar.load(new URLRequest("http://www.flashflashrevolution.com/avatar_imgembedded.php?uid=" + this.id + "&cHeight=99&cWidth=99"));
+			this.avatar.load(new URLRequest(Constant.USER_AVATAR_URL + "?uid=" + this.id + "&cHeight=99&cWidth=99"));
 			
 			// Setup Class Data
 			this.info.setup(_data);
@@ -97,7 +97,7 @@ package classes.user
 		public function setupRanks(_data:Object):void
 		{
 			var er:EngineRanks = levelranks.getEngineRanks(Constant.GAME_ENGINE);
-			var songRank:EngineRanksSong;
+			var songRank:EngineRanksLevel;
 			
 			// Parse Data
 			var rankTemp:Array = _data.split(",");
@@ -107,13 +107,13 @@ package classes.user
 				// [0] = Level ID : [1] = Rank : [2] = Score : [3] = Genre : [4] = Results
 				var rankSplit:Array = rankTemp[x].split(":");
 				
-				songRank = new EngineRanksSong(rankSplit[0]);
+				songRank = new EngineRanksLevel(rankSplit[0]);
 				songRank.rank = int(rankSplit[1]);
 				songRank.score = int(rankSplit[2]);
 				songRank.genre = int(rankSplit[3]);
 				songRank.results = rankSplit[4];
 				
-				er.setRank(rankSplit[0], songRank);
+				er.setRank(songRank);
 			}
 		}
 		
@@ -126,7 +126,7 @@ package classes.user
 		// Profile Data
 		private function e_profileOnComplete(e:Event):void
 		{
-			trace("2:[User] Profile Load Complete");
+			trace("0:[User] Profile Load Complete");
 			// JSON Decode Data
 			var _data:Object = JSONManager.decode(e.target.data);
 			
@@ -148,13 +148,13 @@ package classes.user
 		
 		private function e_profileOnError(e:Event):void
 		{
-			trace("2:[User] Profile Load Error");
+			trace("0:[User] Profile Load Error");
 		}
 		
 		// Ranks
 		private function e_ranksOnComplete(e:Event):void
 		{
-			trace("2:[User] Ranks Load Complete");
+			trace("0:[User] Ranks Load Complete");
 			var _data:Object = e.target.data;
 			
 			setupRanks(_data);
@@ -168,7 +168,7 @@ package classes.user
 		
 		private function e_ranksOnError(e:Event):void
 		{
-			trace("2:[User] Ranks Load Error");
+			trace("0:[User] Ranks Load Error");
 		}
 		
 		//- Event Dispatching
