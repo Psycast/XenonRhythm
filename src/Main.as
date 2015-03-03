@@ -40,7 +40,7 @@ package
 				
 				// Login User
 				var session:Session = new Session(_loginUserComplete, _loginUserError);
-				session.login("---", "---");
+				session.login(DebugStrings.USERNAME, DebugStrings.PASSWORD);
 			}
 			else if(core.user.isLoaded) {
 				var el:EngineLoader = core.getCurrentLoader();
