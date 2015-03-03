@@ -52,7 +52,7 @@ package classes.user
 			// Request Params
 			var o:Object = new Object();
 			o["ver"] = Constant.VERSION;
-			o["session"] = Constant.GAME_SESSION;
+			o["session"] = Session.SESSION_ID;
 			o["userid"] = userid;
 			
 			// Load
@@ -61,13 +61,23 @@ package classes.user
 		
 		public function loadLevelRanks():void
 		{
+			// Guest don't need ranks.
+			if (this.permissions.isGuest) {
+				// Set isLoadedRanks
+				_isLoadedRanks = true;
+				
+				// Trigger Loaded Event
+				_eventIsLoaded();
+				return;
+			}
+			
 			// Create Request
 			var wr:WebRequest = new WebRequest(Constant.USER_RANKS_URL, e_ranksOnComplete, e_ranksOnError);
 			
 			// Request Params
 			var o:Object = new Object();
 			o["ver"] = Constant.VERSION;
-			o["session"] = Constant.GAME_SESSION;
+			o["session"] = Session.SESSION_ID;
 			
 			// Load
 			wr.load(o);

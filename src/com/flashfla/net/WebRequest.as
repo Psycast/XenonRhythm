@@ -16,6 +16,9 @@ package com.flashfla.net
 		private var _funOnComplete:Function;
 		private var _funOnError:Function;
 		
+		public var active:Boolean = false;
+		public var loaded:Boolean = false;
+		
 		public function WebRequest(url:String, funOnComplete:Function = null, funOnError:Function = null):void
 		{
 			this._url = url;
@@ -63,6 +66,8 @@ package com.flashfla.net
 		//- Listeners
 		private function _addListeners():void
 		{
+			active = true;
+			loaded = false;
 			_loader.addEventListener(Event.COMPLETE, e_loadComplete);
 			_loader.addEventListener(IOErrorEvent.IO_ERROR, e_loadError);
 			_loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, e_loadError);
@@ -70,6 +75,8 @@ package com.flashfla.net
 		
 		private function _removeListeners():void
 		{
+			active = false;
+			loaded = true;
 			_loader.removeEventListener(Event.COMPLETE, e_loadComplete);
 			_loader.removeEventListener(IOErrorEvent.IO_ERROR, e_loadError);
 			_loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, e_loadError);

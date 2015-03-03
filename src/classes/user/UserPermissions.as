@@ -17,6 +17,7 @@ package classes.user
 		public static const VETERAN_ID:Number = 49;
 		
 		//- Variables
+		public var didLogin:Boolean = false;
 		public var isActiveUser:Boolean;
 		public var isGuest:Boolean;
 		public var isVeteran:Boolean;

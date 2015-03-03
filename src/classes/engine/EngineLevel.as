@@ -1,8 +1,9 @@
-package classes.engine 
+package classes.engine
 {
 	import com.flashfla.utils.StringUtil;
 	import com.flashfla.utils.StringUtil;
-	public class EngineLevel 
+	
+	public class EngineLevel
 	{
 		public var id:String;
 		public var index:int;
@@ -50,22 +51,37 @@ package classes.engine
 			
 			//- Create URL
 			// Multiple Step Authors
-			if (auth.indexOf(" & ") !== false) {
+			if (auth.indexOf(" & ") !== false)
+			{
 				var stepAuthors:Array = auth.split(" & ");
 				_stepauthor_with_url = "<a href=\"http://www.flashflashrevolution.com/profile/" + StringUtil.htmlencode(stepAuthors[0]) + "\">" + stepAuthors[0] + "</a>";
-				for (var i:int = 1; i < stepAuthors.length; i++) {
+				for (var i:int = 1; i < stepAuthors.length; i++)
+				{
 					_stepauthor_with_url += " & <a href=\"http://www.flashflashrevolution.com/profile/" + StringUtil.htmlencode(stepAuthors[i]) + "\">" + stepAuthors[i] + "</a>";
 				}
-			} else {
+			}
+			else
+			{
 				_stepauthor_with_url = "<a href=\"http://www.flashflashrevolution.com/profile/" + StringUtil.htmlencode(auth) + "\">" + auth + "</a>";
 			}
 		}
 		
-		public function get stepauthor():String { return _stepauthor; }
-		public function get stepauthor_with_url():String { return _stepauthor_with_url; }
+		public function get stepauthor():String
+		{
+			return _stepauthor;
+		}
+		
+		public function get stepauthor_with_url():String
+		{
+			return _stepauthor_with_url;
+		}
 		
 		// Time
-		public function get time():String { return _time; }
+		public function get time():String
+		{
+			return _time;
+		}
+		
 		public function set time(time:String):void
 		{
 			var pieces:Array = time.split(":");
@@ -73,10 +89,17 @@ package classes.engine
 			_time_secs = (int(pieces[0]) * 60) + int(pieces[1]);
 		}
 		
-		public function get time_secs():int { return _time_secs; }
+		public function get time_secs():int
+		{
+			return _time_secs;
+		}
 		
 		// Notes
-		public function get notes():int { return _notes; }
+		public function get notes():int
+		{
+			return _notes;
+		}
+		
 		public function set notes(total:int):void
 		{
 			_notes = total;
@@ -85,10 +108,16 @@ package classes.engine
 		}
 		
 		// Scores
-		public function get score_raw():int { return _score_raw; }
-		public function get score_combo():int { return _score_combo; }
+		public function get score_raw():int
+		{
+			return _score_raw;
+		}
 		
-		
+		public function get score_combo():int
+		{
+			return _score_combo;
+		}
+	
 	}
 
 }

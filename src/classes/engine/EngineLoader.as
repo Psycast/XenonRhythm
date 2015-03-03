@@ -1,5 +1,6 @@
 package classes.engine
 {
+	import com.adobe.serialization.json.JSONManager;
 	import com.flashfla.net.WebRequest;
 	import flash.events.Event;
 	
@@ -11,6 +12,9 @@ package classes.engine
 		private var _info:EngineSiteInfo;
 		private var _language:EngineLanguage;
 		
+		private var domain:String = "";
+		private var song_url:String;
+		
 		private var _plURL:String = "";
 		private var _inURL:String = "";
 		private var _laURL:String = "";
@@ -19,7 +23,11 @@ package classes.engine
 		private var _inIsLoaded:Boolean = false;
 		private var _laIsLoaded:Boolean = false;
 		
+		private var _requestParams:Object;
+		
 		public var isCanon:Boolean = false;
+		public var isLegacy:Boolean = false;
+		
 		public var id:String = "";
 		public var name:String = "";
 		
@@ -56,65 +64,100 @@ package classes.engine
 		}
 		
 		///- Loader
-		public function loadFromXML(url:String):void
+		public function loadFromConfig(url:String, params:Object = null):void
 		{
 			if (url != "")
 			{
+				_requestParams = params;
 				url = prepareURL(url);
-				var wr:WebRequest = new WebRequest(url, e_xmlLoad);
-				wr.load();
-				trace("0:[EngineLoader] Loading XML Playlist:", url);
+				var wr:WebRequest = new WebRequest(url, e_configLoad);
+				wr.load(_requestParams);
+				trace("0:[EngineLoader] Loading Engine Config:", url);
 			}
 		
 		}
 		
-		private function e_xmlLoad(e:Event):void
+		private function e_configLoad(e:Event):void
 		{
-			var xml:XML = new XML(e.target.data);
+			var data:String = e.target.data;
 			
-			// Check if FFR Engine XML
-			if (xml.localName() != "ffr_engines" && xml.localName() != "arc_engines")
-				return;
-				
-			for each (var node:XML in xml.children())
+			// Data is XML - Legacy Type
+			if (data.charAt(0) == "<")
 			{
-				if (node.id == null)
-					continue;
+				var xml:XML = new XML(data);
 				
-				if (node.playlistURL == null)
+				// Check if FFR Engine XML
+				if (xml.localName() != "ffr_engines" && xml.localName() != "arc_engines")
 					return;
 				
-				this.id = node.id.toString();
-				this.name = node.name.toString();
+				for each (var node:XML in xml.children())
+				{
+					if (node.id == null)
+						continue;
+					
+					if (node.playlistURL == null)
+						return;
+					
+					if(this.id == "")
+						this.id = node.id.toString() + "-external";
+					this.name = node.name.toString();
+					this.domain = node.domain.toString();
+					this.song_url = node.songURL.toString();
+					
+					// Load Playlist
+					loadPlaylist(node.playlistURL.toString(), _requestParams);
+					
+					// Load Site Info is existing.
+					if (node.siteinfoURL != null)
+						loadInfo(node.siteinfoURL.toString(), _requestParams);
+					
+					// Load Language is existing.
+					if (node.languageURL != null)
+						loadLanguage(node.languageURL.toString(), _requestParams);
+					
+					/*
+					   engine.ignoreCache = Boolean(node.@ignoreCache.toString());
+					   engine.legacySync = Boolean(node.@legacySync.toString());
+					   if (engine.legacySync) {
+					   engine.legacySyncLevel = int(node.@legacySyncLevel.toString());
+					   engine.legacySyncLow = int(node.@legacySyncLow.toString());
+					   engine.legacySyncHigh = int(node.@legacySyncHigh.toString());
+					   setEngineSync(engine);
+					   }
+					   if (CONFIG::debug || node.@nocrossdomain != "true")
+					   handler(engine);
+					 */
+					
+					trace("0:[EngineLoader] Loaded XML \"" + id + "\" Name:", this.name);
+					_core.registerLoader(this);
+					
+					break;
+				}
+			}
+			
+			// Data is JSON - R^3 Type
+			if (data.charAt(0) == "{" || data.charAt(0) == "[")
+			{
+				var json:Object = JSONManager.decode(data);
 				
+				if(this.id == "")
+					this.id = json.id + "-external";
+				this.name = json.name;
+				this.domain = json.domain;
+				this.song_url = json.songURL;
+
 				// Load Playlist
-				loadPlaylist(node.playlistURL.toString());
-				
+				loadPlaylist(json.playlistURL, _requestParams);
+
 				// Load Site Info is existing.
-				if (node.siteinfoURL != null)
-					loadInfo(node.siteinfoURL.toString());
-					
-					
+				if (json.siteinfoURL != null)
+					loadInfo(json.siteinfoURL, _requestParams);
+
 				// Load Language is existing.
-				if (node.languageURL != null)
-					loadLanguage(node.languageURL.toString());
+				if (json.languageURL != null)
+					loadLanguage(json.languageURL, _requestParams);
 				
-				//this.domain = node.domain.toString();
-				//engine.songURL = node.songURL.toString();
-				/*
-				   engine.ignoreCache = Boolean(node.@ignoreCache.toString());
-				   engine.legacySync = Boolean(node.@legacySync.toString());
-				   if (engine.legacySync) {
-				   engine.legacySyncLevel = int(node.@legacySyncLevel.toString());
-				   engine.legacySyncLow = int(node.@legacySyncLow.toString());
-				   engine.legacySyncHigh = int(node.@legacySyncHigh.toString());
-				   setEngineSync(engine);
-				   }
-				   if (CONFIG::debug || node.@nocrossdomain != "true")
-				   handler(engine);
-				 */
-				
-				trace("0:[EngineLoader] Loaded XML \"" + id + "\" Name:", this.name);
+				trace("0:[EngineLoader] Loaded JSON \"" + id + "\" Name:", this.name);
 				_core.registerLoader(this);
 			}
 		}
@@ -136,6 +179,7 @@ package classes.engine
 			trace("0:[EngineLoader] \"" + id + "\" Playlist Loaded!");
 			_playlist = new EnginePlaylist(id);
 			_playlist.parseData(e.target.data);
+			_playlist.setLoadPath(this.song_url);
 			
 			// Register Playlist if Valid
 			if (_playlist.valid)

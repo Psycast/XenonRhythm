@@ -6,11 +6,9 @@ package
 	
 	public class Constant
 	{
-		//- Game Sessions
-		public static var GAME_SESSION:String = "0";
-		
 		//- URLs
-		public static const SITE_DATA_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-siteData.php";
+		public static const SITE_CONFIG_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-gameConfig.php";
+		//public static const SITE_DATA_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-siteData.php";
 		public static const SITE_LOGIN_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-siteLogin.php";
 		public static const SITE_REPLAY_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-siteReplay.php";
 		public static const USER_INFO_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-userInfo.php";
@@ -21,8 +19,8 @@ package
 		public static const USER_RANKS_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-userRanks.php";
 		public static const USER_AVATAR_URL:String = "http://www.flashflashrevolution.com/avatar_imgembedded.php";
 		public static const HISCORES_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-hiscores.php";
-		public static const PLAYLIST_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-playlist.php";
-		public static const LANGUAGE_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-language.php";
+		//public static const PLAYLIST_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-playlist.php";
+		//public static const LANGUAGE_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-language.php";
 		public static const LANGUAGE_FONT_URL:String = "http://www.flashflashrevolution.com/game/r3/R^3Font.swf";
 		public static const NOTESKIN_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-noteSkins.xml";
 		public static const NOTESKIN_SWF_URL:String = "http://www.flashflashrevolution.com/game/r3/noteskins/";

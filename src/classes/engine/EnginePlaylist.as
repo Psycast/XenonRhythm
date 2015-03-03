@@ -6,7 +6,9 @@ package classes.engine
 	public class EnginePlaylist
 	{
 		public var id:String;
-		public var valid:Boolean = true;
+		public var valid:Boolean = false;
+		
+		public var load_path:String;
 		
 		public var song_list:Array;
 		public var index_list:Array;
@@ -92,6 +94,8 @@ package classes.engine
 					total_public_songs++;
 				}
 			}
+			
+			valid = true;
 		}
 		
 		public function parse_xml_playlist(data:String, engine:Object = null):Array {
@@ -128,6 +132,11 @@ package classes.engine
 				songs.push(song);
 			}
 			return songs;
+		}
+		
+		public function setLoadPath(song_url:String):void 
+		{
+			this.load_path = song_url;
 		}
 	}
 

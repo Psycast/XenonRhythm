@@ -9,7 +9,6 @@ package
 
 	public class Main extends Sprite 
 	{
-		
 		public var core:EngineCore;
 		
 		public function Main():void 
@@ -30,30 +29,57 @@ package
 			// Load active User
 			core.user = new User(true, true);
 			
-			// Load FFR Playlist, Site Data, Language Text
-			var requestParams:Object = { "session": Constant.GAME_SESSION, "ver": Constant.VERSION, "debugLimited": true };
-			var canonLoader:EngineLoader = new EngineLoader(core, Constant.GAME_ENGINE, Constant.GAME_NAME);
-			canonLoader.isCanon = true;
-			canonLoader.loadPlaylist(Constant.PLAYLIST_URL, requestParams );
-			canonLoader.loadInfo(Constant.SITE_DATA_URL, requestParams );
-			canonLoader.loadLanguage(Constant.LANGUAGE_URL, requestParams );
-			
-			// Load Legacy Engine Data
-			var legacyLoader:EngineLoader = new EngineLoader(core);
-			legacyLoader.loadFromXML("http://keysmashingisawesome.com/r3.xml");
-			
 			addEventListener(Event.ENTER_FRAME, e_onEnterFrame);
 		}
 		
 		private function e_onEnterFrame(e:Event):void 
 		{
-			var el:EngineLoader = core.getCurrentLoader();
-			
-			if (el.loaded)
-			{
-				trace("4:[Main] FFR Core Engine Loaded.");
+			if (core.user.isLoaded && core.user.permissions.isGuest && !core.user.permissions.didLogin) {
+				trace("0:[Main] User is guest, showing login.");
 				removeEventListener(Event.ENTER_FRAME, e_onEnterFrame);
+				
+				// Login User
+				var session:Session = new Session(_loginUserComplete, _loginUserError);
+				session.login("---", "---");
 			}
+			else if(core.user.isLoaded) {
+				var el:EngineLoader = core.getCurrentLoader();
+				if (el == null) {
+					trace("4:[Main] Loading FFR Core Engine.");
+					_loadEngines();
+				}
+				else if (el.loaded)
+				{
+					trace("4:[Main] FFR Core Engine Loaded.");
+					removeEventListener(Event.ENTER_FRAME, e_onEnterFrame);
+				}
+			}
+		}
+		
+		private function _loadEngines():void 
+		{
+			// Load FFR Playlist, Site Data, Language Text
+			var requestParams:Object = { "session": Session.SESSION_ID, "ver": Constant.VERSION, "debugLimited": true };
+			var canonLoader:EngineLoader = new EngineLoader(core, Constant.GAME_ENGINE, Constant.GAME_NAME);
+			canonLoader.isCanon = true;
+			canonLoader.loadFromConfig(Constant.SITE_CONFIG_URL, requestParams );
+		}
+		
+		private function _loginUserComplete(e:Event):void
+		{
+			trace("0:[Main] User Login Success");
+			
+			// Load User using Session
+			core.user = new User(true, true);
+			core.user.permissions.didLogin = true;
+			
+			addEventListener(Event.ENTER_FRAME, e_onEnterFrame);
+		}
+		
+		
+		private function _loginUserError(e:Event):void
+		{
+			trace("0:[Main] User Login Error, FULL STOP~");
 		}
 		
 	}
