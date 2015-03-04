@@ -22,7 +22,7 @@ package
 		
 		private function e_loginFailure(e:Event):void
 		{
-			trace("0:[Session] Login Failure");
+			trace("3:[Session] Login Failure");
 			if (_funOnError != null)
 			{
 				_funOnError(e);
@@ -34,7 +34,7 @@ package
 			var _data:Object = JSONManager.decode(e.target.data);
 			if (_data["result"] == 1)
 			{
-				trace("0:[Session] Login Success");
+				trace("4:[Session] Login Success!");
 				SESSION_ID = _data["session"];
 				if (_funOnComplete != null)
 				{
@@ -51,7 +51,10 @@ package
 		public function login(uname:String, upass:String):void
 		{
 			if (!wr.active)
+			{
+				trace("0:[Session] Attempted Login:", uname);
 				wr.load({"username": uname, "password": upass, "ver": Constant.VERSION});
+			}
 		}
 	}
 }

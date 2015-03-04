@@ -33,16 +33,32 @@ package classes.engine
 			genre_list = new Array();
 			generated_queues = new Array();
 			
-			// Data is XML - Legacy Type
-			if (input.charAt(0) == "<")
+			try
 			{
-				data = parse_xml_playlist(input);
+				// Data is XML - Legacy Type
+				if (input.charAt(0) == "<")
+				{
+					data = parse_xml_playlist(input);
+				}
+				
+				// Data is JSON - R^3 Type
+				if (input.charAt(0) == "{" || input.charAt(0) == "[")
+				{
+					data = JSONManager.decode(input);
+				}
+			}
+			catch (e:Error)
+			{
+				trace("3:[EnginePlaylist] Invalid Playlist Format");
+				return;
 			}
 			
-			// Data is JSON - R^3 Type
-			if (input.charAt(0) == "{" || input.charAt(0) == "[")
+			// Check that playlist was parsed correctly.
+			if (data == null)
 			{
-				data = JSONManager.decode(input);
+				
+				trace("3:[EnginePlaylist] Invalid Playlist Format");
+				return;
 			}
 			
 			// Build song_list
@@ -60,7 +76,7 @@ package classes.engine
 				// Create Song Object
 				song = new EngineLevel();
 				song.id = item.level.toString();
-				song.index = genre_list[_genre].length
+				song.index = genre_list[_genre].length;
 				song.name = item.name;
 				song.author = item.author;
 				song.author_url = item.authorURL;
@@ -82,7 +98,7 @@ package classes.engine
 					song.max_nps = item.max_nps;
 				if (item.sync)
 					song.sync_frames = item.sync;
-					
+				
 				// Push Into Arrays
 				song_list[song.id] = song;
 				index_list.push(song);
@@ -90,7 +106,8 @@ package classes.engine
 				generated_queues[_genre].push(song.id);
 				
 				total_songs++;
-				if (_genre != 10 && _genre != 12 && _genre != 23) {
+				if (_genre != 10 && _genre != 12 && _genre != 23)
+				{
 					total_public_songs++;
 				}
 			}
@@ -98,12 +115,14 @@ package classes.engine
 			valid = true;
 		}
 		
-		public function parse_xml_playlist(data:String, engine:Object = null):Array {
+		public function parse_xml_playlist(data:String, engine:Object = null):Array
+		{
 			var xml:XML = new XML(data);
 			var nodes:XMLList = xml.children();
 			var count:int = nodes.length();
 			var songs:Array = new Array();
-			for (var i:int = 0; i < count; i++) {
+			for (var i:int = 0; i < count; i++)
+			{
 				var node:XML = nodes[i];
 				var song:Object = new Object();
 				song.genre = int(node.@genre.toString());
@@ -134,7 +153,7 @@ package classes.engine
 			return songs;
 		}
 		
-		public function setLoadPath(song_url:String):void 
+		public function setLoadPath(song_url:String):void
 		{
 			this.load_path = song_url;
 		}

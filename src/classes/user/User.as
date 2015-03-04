@@ -158,7 +158,7 @@ package classes.user
 		
 		private function e_profileOnError(e:Event):void
 		{
-			trace("0:[User] Profile Load Error");
+			trace("3:[User] Profile Load Error");
 		}
 		
 		// Ranks
@@ -178,7 +178,7 @@ package classes.user
 		
 		private function e_ranksOnError(e:Event):void
 		{
-			trace("0:[User] Ranks Load Error");
+			trace("3:[User] Ranks Load Error");
 		}
 		
 		//- Event Dispatching
