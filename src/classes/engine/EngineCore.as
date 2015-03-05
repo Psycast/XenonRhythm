@@ -48,6 +48,12 @@ package classes.engine
 			trace("0:[EngineCore] Registered EngineLoader:", loader.id);
 		}
 		
+		public function removeLoader(loader:EngineLoader):void
+		{
+			delete _loaders[loader.id];
+			trace("0:[EngineCore] Removed EngineLoader:", loader.id);
+		}
+		
 		///- Engine Playlist
 		// Get Active Engine Playlist.
 		public function getCurrentPlaylist():EnginePlaylist

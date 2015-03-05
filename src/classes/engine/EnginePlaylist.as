@@ -33,6 +33,7 @@ package classes.engine
 			genre_list = new Array();
 			generated_queues = new Array();
 			
+			// Create Data Array
 			try
 			{
 				// Data is XML - Legacy Type
@@ -49,15 +50,14 @@ package classes.engine
 			}
 			catch (e:Error)
 			{
-				trace("3:[EnginePlaylist] Invalid Playlist Format");
+				trace("3:[EnginePlaylist] Malformed Playlist Format");
 				return;
 			}
 			
 			// Check that playlist was parsed correctly.
 			if (data == null)
 			{
-				
-				trace("3:[EnginePlaylist] Invalid Playlist Format");
+				trace("3:[EnginePlaylist] Playlist is null");
 				return;
 			}
 			

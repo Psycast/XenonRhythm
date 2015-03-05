@@ -25,7 +25,7 @@ package classes.engine
 			}
 			catch (e:Error)
 			{
-				trace("3:[EngineLanguage] Invalid XML Language");
+				trace("3:[EngineLanguage] Malformed XML Language");
 				return;
 			}
 			

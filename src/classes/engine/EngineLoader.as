@@ -84,7 +84,16 @@ package classes.engine
 			// Data is XML - Legacy Type
 			if (data.charAt(0) == "<")
 			{
-				var xml:XML = new XML(data);
+				// Create XML Tree
+				try
+				{
+					var xml:XML = new XML(data);
+				}
+				catch (e:Error)
+				{
+					trace("3:[EngineLoader] Malformed XML Config.");
+					return;
+				}
 				
 				// Check if FFR Engine XML
 				if (xml.localName() != "ffr_engines" && xml.localName() != "arc_engines")
@@ -98,7 +107,7 @@ package classes.engine
 					if (node.playlistURL == null)
 						return;
 					
-					if(this.id == "")
+					if (this.id == "")
 						this.id = node.id.toString() + "-external";
 					this.name = node.name.toString();
 					this.domain = node.domain.toString();
@@ -138,21 +147,28 @@ package classes.engine
 			// Data is JSON - R^3 Type
 			if (data.charAt(0) == "{" || data.charAt(0) == "[")
 			{
-				var json:Object = JSONManager.decode(data);
-				
-				if(this.id == "")
+				try
+				{
+					var json:Object = JSONManager.decode(data);
+				}
+				catch (e:Error)
+				{
+					trace("3:[EngineLoader] Malformed JSON Config.");
+					return;
+				}
+				if (this.id == "")
 					this.id = json.id + "-external";
 				this.name = json.name;
 				this.domain = json.domain;
 				this.song_url = json.songURL;
-
+				
 				// Load Playlist
 				loadPlaylist(json.playlistURL, _requestParams);
-
+				
 				// Load Site Info is existing.
 				if (json.siteinfoURL != null)
 					loadInfo(json.siteinfoURL, _requestParams);
-
+				
 				// Load Language is existing.
 				if (json.languageURL != null)
 					loadLanguage(json.languageURL, _requestParams);
