@@ -1,18 +1,27 @@
 package classes.engine
 {
+	import classes.UICore;
 	import classes.user.User;
+	import classes.engine.EnginePlaylist;
 	
 	public class EngineCore
 	{
+		// Engine Source
 		private var _source:String;
 		
-		private var _loaders:Array = [];
+		// Engine Loaders
+		private var _loaders:Object = {};
 		
-		private var _playlists:Array = [];
-		private var _info:Array = [];
-		private var _languages:Array = [];
+		// Indexed List of Components
+		private var _playlists:Object = {};
+		private var _info:Object = {};
+		private var _languages:Object = {};
 		
+		// Active User
 		public var user:User;
+		
+		// Active UI
+		public var ui:UI;
 		
 		public function EngineCore()
 		{
@@ -121,6 +130,39 @@ package classes.engine
 		{
 			_languages[language.id] = language;
 			trace("0:[EngineCore] Registered Language:", language.id);
+		}
+		
+		public function getString(id:String, lang:String = "us"):String
+		{
+			var out:String;
+			var el:EngineLanguage;
+			
+			// Get Text for Source Language, Fall back to FFR incase.
+			for each (var eid:String in[source, Constant.GAME_ENGINE])
+			{
+				el = getLanguage(eid);
+				for each (var s:String in[lang, "us"])
+				{
+					if ((out = el.getString(id, lang)) != "")
+					{
+						return out;
+					}
+				}
+			}
+			
+			// No Text, Return ID
+			return id;
+		}
+		
+		// UI
+		public function get scene():UICore
+		{
+			return ui.scene;
+		}
+		
+		public function set scene(scene:UICore):void
+		{
+			ui.scene = scene;
 		}
 	}
 
