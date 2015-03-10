@@ -1,6 +1,7 @@
 package classes.engine
 {
 	import com.adobe.serialization.json.JSONManager;
+	import com.adobe.utils.StringUtil;
 	import com.flashfla.utils.ObjectUtil;
 	
 	public class EnginePlaylist
@@ -25,6 +26,7 @@ package classes.engine
 		
 		public function parseData(input:String):void
 		{
+			input = StringUtil.trim(input);
 			var data:Object;
 			
 			// Create Arrays
@@ -41,7 +43,6 @@ package classes.engine
 				{
 					data = parse_xml_playlist(input);
 				}
-				
 				// Data is JSON - R^3 Type
 				if (input.charAt(0) == "{" || input.charAt(0) == "[")
 				{
@@ -50,14 +51,14 @@ package classes.engine
 			}
 			catch (e:Error)
 			{
-				trace("3:[EnginePlaylist] Malformed Playlist Format");
+				trace("3:[EnginePlaylist] \"" + id + "\" - Malformed Playlist Format");
 				return;
 			}
 			
 			// Check that playlist was parsed correctly.
 			if (data == null)
 			{
-				trace("3:[EnginePlaylist] Playlist is null");
+				trace("3:[EnginePlaylist] \"" + id + "\" - Playlist is null");
 				return;
 			}
 			

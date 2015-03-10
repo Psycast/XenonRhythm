@@ -1,6 +1,8 @@
 package classes.engine
 {
+	import classes.engine.EnginePlaylist;
 	import com.adobe.serialization.json.JSONManager;
+	import com.adobe.utils.StringUtil;
 	import com.flashfla.net.WebRequest;
 	import flash.events.Event;
 	
@@ -79,7 +81,7 @@ package classes.engine
 		
 		private function e_configLoad(e:Event):void
 		{
-			var data:String = e.target.data;
+			var data:String = StringUtil.trim(e.target.data);
 			
 			// Data is XML - Legacy Type
 			if (data.charAt(0) == "<")

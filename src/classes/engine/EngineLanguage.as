@@ -1,5 +1,6 @@
 package classes.engine
 {
+	import com.adobe.utils.StringUtil;
 	
 	public class EngineLanguage
 	{
@@ -15,17 +16,18 @@ package classes.engine
 			this.id = id;
 		}
 		
-		public function parseData(xml:String):void
+		public function parseData(input:String):void
 		{
+			input = StringUtil.trim(input);
 			// Create XML Tree
 			try
 			{
-				var xmlMain:XML = new XML(xml);
+				var xmlMain:XML = new XML(input);
 				var xmlChildren:XMLList = xmlMain.children();
 			}
 			catch (e:Error)
 			{
-				trace("3:[EngineLanguage] Malformed XML Language");
+				trace("3:[EngineLanguage] \"" + id + "\" - Malformed XML Language");
 				return;
 			}
 			
@@ -60,6 +62,16 @@ package classes.engine
 			}
 			
 			valid = true;
+		}
+		
+		public function getString(id:String, lang:String = "us"):String
+		{
+			if (data[lang] && data[lang][id])
+			{
+				return data[lang][id];
+			}
+			
+			return "";
 		}
 	}
 

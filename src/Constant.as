@@ -33,9 +33,11 @@ package
 		
 		//- Other
 		public static const LOCAL_SO_NAME:String = "90579262-509d-4370-9c2e-564667e511d7";
-		public static const VERSION:int = 2;
+		public static const VERSION:int = 3;
 		public static const GAME_ENGINE:String = "ffr";
 		public static const GAME_NAME:String = "FlashFlashRevolution";
+		public static var GAME_WIDTH:int = 800;
+		public static var GAME_HEIGHT:int = 600;
 		
 		//- Formats
 		public static const TEXT_FORMAT:TextFormat = new TextFormat("Segoe UI", 14, 0xFFFFFF, true);
