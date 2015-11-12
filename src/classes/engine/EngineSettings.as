@@ -1,23 +1,13 @@
 package classes.engine {
+	import com.flashfla.utils.ObjectUtil;
 	import flash.ui.Keyboard;
 	
+	/**
+	 * Engine Settings
+	 * Contains per user settings for the game.
+	 */
 	public class EngineSettings 
 	{
-		// Flags
-		public var display_song_flags:Boolean = true;
-		public var display_judge:Boolean = true;
-		public var display_health:Boolean = true;
-		public var display_combo:Boolean = true;
-		public var display_pacount:Boolean = true;
-		public var display_amazing:Boolean = true;
-		public var display_perfect:Boolean = true;
-		public var display_total:Boolean = true;
-		public var display_screencut:Boolean = false;
-		public var display_songprogress:Boolean = true;
-		
-		public var display_mp_mask:Boolean = false;
-		public var display_mp_timestamp:Boolean = false;
-		
 		///- Variables
 		// Keys
 		public var key_left:int = Keyboard.LEFT;
@@ -41,10 +31,63 @@ package classes.engine {
 		public var judge_colours:Array = [0x78ef29, 0x12e006, 0x01aa0f, 0xf99800, 0xfe0000, 0x804100];
 		public var judge_window:Array = null;
 		
-		// Setup function
+		// Flags
+		public var display_song_flags:Boolean = true;
+		public var display_judge:Boolean = true;
+		public var display_health:Boolean = true;
+		public var display_combo:Boolean = true;
+		public var display_pacount:Boolean = true;
+		public var display_amazing:Boolean = true;
+		public var display_perfect:Boolean = true;
+		public var display_total:Boolean = true;
+		public var display_screencut:Boolean = false;
+		public var display_song_progress:Boolean = true;
+		
+		public var display_mp_mask:Boolean = false;
+		public var display_mp_timestamp:Boolean = false;
+		
+		/**
+		 * Setups Engine Settings for a passed object.
+		 * @param	obj	Object containing new settings.
+		 */
 		public function setup(obj:Object):void
 		{
+			// Keys
+			if (obj["keys"])
+			{
+				key_left 	= obj["keys"][0];
+				key_down 	= obj["keys"][1];
+				key_up 		= obj["keys"][2];
+				key_right 	= obj["keys"][3];
+				key_restart = obj["keys"][4];
+				key_quit 	= obj["keys"][5];
+				key_options = obj["keys"][6];
+			}
 			
+			// Speed
+			if (obj["direction"])			scroll_direction = obj["direction"];
+			if (obj["speed"])				scroll_speed = obj["speed"];
+			if (obj["gap"])					receptor_spacing = obj["gap"];
+			if (obj["screencutPosition"])	screencut_position = obj["screencutPosition"];
+			
+			// Judge
+			if (obj["judgeOffset"])			offset_judge = obj["judgeOffset"];
+			if (obj["viewOffset"])			offset_global = obj["viewOffset"];
+			if (obj["judgeColours"])		judge_colours = obj["judgeColours"];
+			
+			// Flags
+			if(obj["viewSongFlag"])			display_song_flags = obj["viewSongFlag"];
+			if(obj["viewJudge"])			display_judge = obj["viewJudge"];
+			if(obj["viewHealth"])			display_health = obj["viewHealth"];
+			if(obj["viewCombo"])			display_combo = obj["viewCombo"];
+			if(obj["viewPACount"])			display_pacount = obj["viewPACount"];
+			if(obj["viewAmazing"])			display_amazing = obj["viewAmazing"];
+			if(obj["viewPerfect"])			display_perfect = obj["viewPerfect"];
+			if(obj["viewTotal"])			display_total = obj["viewTotal"];
+			if(obj["viewScreencut"])		display_screencut = obj["viewScreencut"];
+			if(obj["viewSongProgress"])		display_song_progress = obj["viewSongProgress"];
+			if(obj["viewMPMask"])			display_mp_mask = obj["viewMPMask"];
+			if(obj["viewMPTimestamp"])		display_mp_timestamp = obj["viewMPTimestamp"];
 		}
 	}
 

@@ -13,10 +13,10 @@ package classes.engine
 		
 		public function getRank(level:String):EngineRanksLevel
 		{
-			if (!ranks[level])
-			{
-				ranks[level] = new EngineRanksLevel(level);
-			}
+			//if (!ranks[level])
+			//{
+			//	ranks[level] = new EngineRanksLevel(level);
+			//}
 			
 			return ranks[level];
 		}

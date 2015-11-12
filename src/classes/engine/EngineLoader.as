@@ -4,6 +4,7 @@ package classes.engine
 	import com.adobe.serialization.json.JSONManager;
 	import com.adobe.utils.StringUtil;
 	import com.flashfla.net.WebRequest;
+	import com.flashfla.utils.ArrayUtil;
 	import flash.events.Event;
 	
 	public class EngineLoader
@@ -21,6 +22,7 @@ package classes.engine
 		private var _inURL:String = "";
 		private var _laURL:String = "";
 		
+		private var _isInit:Boolean = false;
 		private var _plIsLoaded:Boolean = false;
 		private var _inIsLoaded:Boolean = false;
 		private var _laIsLoaded:Boolean = false;
@@ -45,10 +47,10 @@ package classes.engine
 			}
 		}
 		
-		///- Get Loades Status
+		///- Get Loaded Status
 		public function get loaded():Boolean
 		{
-			var load:Boolean = true;
+			var load:Boolean = _isInit;
 			
 			// A Engine source requires a playlist to be valid.
 			if (_plURL == "")
@@ -65,6 +67,21 @@ package classes.engine
 			return load;
 		}
 		
+		public function get loaded_playlist():Boolean
+		{
+			return _plURL != "" ? _plIsLoaded : true;
+		}
+		
+		public function get loaded_info():Boolean
+		{
+			return _inURL != "" ? _inIsLoaded : true;
+		}
+		
+		public function get loaded_language():Boolean
+		{
+			return _laURL != "" ? _laIsLoaded : true;
+		}
+		
 		///- Loader
 		public function loadFromConfig(url:String, params:Object = null):void
 		{
@@ -74,7 +91,7 @@ package classes.engine
 				url = prepareURL(url);
 				var wr:WebRequest = new WebRequest(url, e_configLoad);
 				wr.load(_requestParams);
-				trace("0:[EngineLoader] Loading Engine Config:", url);
+				Logger.log(this, Logger.INFO, "Loading Engine Config: " + url);
 			}
 		
 		}
@@ -93,7 +110,7 @@ package classes.engine
 				}
 				catch (e:Error)
 				{
-					trace("3:[EngineLoader] Malformed XML Config.");
+					Logger.log(this, Logger.ERROR, "Malformed XML Config.");
 					return;
 				}
 				
@@ -139,7 +156,7 @@ package classes.engine
 					   handler(engine);
 					 */
 					
-					trace("0:[EngineLoader] Loaded XML \"" + id + "\" Name:", this.name);
+					Logger.log(this, Logger.INFO, "Loaded XML \"" + id + "\" Name: " + this.name);
 					_core.registerLoader(this);
 					
 					break;
@@ -155,7 +172,7 @@ package classes.engine
 				}
 				catch (e:Error)
 				{
-					trace("3:[EngineLoader] Malformed JSON Config.");
+					Logger.log(this, Logger.ERROR, "Malformed JSON Config.");
 					return;
 				}
 				if (this.id == "")
@@ -175,7 +192,7 @@ package classes.engine
 				if (json.languageURL != null)
 					loadLanguage(json.languageURL, _requestParams);
 				
-				trace("0:[EngineLoader] Loaded JSON \"" + id + "\" Name:", this.name);
+				Logger.log(this, Logger.INFO, "Loaded JSON \"" + id + "\" Name: " + this.name);
 				_core.registerLoader(this);
 			}
 		}
@@ -188,13 +205,13 @@ package classes.engine
 				_plURL = prepareURL(url);
 				var wr:WebRequest = new WebRequest(_plURL, e_playlistLoad);
 				wr.load(params);
-				trace("0:[EngineLoader] Loading \"" + id + "\" Playlist:", _plURL);
+				Logger.log(this, Logger.INFO, "Loading \"" + id + "\" Playlist: " + _plURL);
 			}
 		}
 		
 		private function e_playlistLoad(e:Event):void
 		{
-			trace("0:[EngineLoader] \"" + id + "\" Playlist Loaded!");
+			Logger.log(this, Logger.INFO, "\"" + id + "\" Playlist Loaded!");
 			_playlist = new EnginePlaylist(id);
 			_playlist.parseData(e.target.data);
 			_playlist.setLoadPath(this.song_url);
@@ -210,6 +227,7 @@ package classes.engine
 				_plURL = "";
 				_plIsLoaded = false;
 			}
+			_doLoadCompleteInit();
 		}
 		
 		//- Info
@@ -220,13 +238,13 @@ package classes.engine
 				_inURL = prepareURL(url);
 				var wr:WebRequest = new WebRequest(_inURL, e_dataLoad);
 				wr.load(params);
-				trace("0:[EngineLoader] Loading \"" + id + "\" SiteInfo:", _inURL);
+				Logger.log(this, Logger.INFO, "Loading \"" + id + "\" SiteInfo: " + _inURL);
 			}
 		}
 		
 		private function e_dataLoad(e:Event):void
 		{
-			trace("0:[EngineLoader] \"" + id + "\" SiteInfo Loaded!");
+			Logger.log(this, Logger.INFO, "\"" + id + "\" SiteInfo Loaded!");
 			_info = new EngineSiteInfo(id);
 			_info.parseData(e.target.data);
 			
@@ -241,6 +259,7 @@ package classes.engine
 				_inURL = "";
 				_inIsLoaded = false;
 			}
+			_doLoadCompleteInit();
 		}
 		
 		//- Language
@@ -251,13 +270,13 @@ package classes.engine
 				_laURL = prepareURL(url);
 				var wr:WebRequest = new WebRequest(_laURL, e_languageLoad);
 				wr.load(params);
-				trace("0:[EngineLoader] Loading \"" + id + "\" Language:", _laURL);
+				Logger.log(this, Logger.INFO, "Loading \"" + id + "\" Language: " + _laURL);
 			}
 		}
 		
 		private function e_languageLoad(e:Event):void
 		{
-			trace("0:[EngineLoader] \"" + id + "\" Language Loaded!");
+			Logger.log(this, Logger.INFO, "\"" + id + "\" Language Loaded!");
 			_language = new EngineLanguage(id);
 			_language.parseData(e.target.data);
 			
@@ -272,6 +291,50 @@ package classes.engine
 				_laURL = "";
 				_laIsLoaded = false;
 			}
+			_doLoadCompleteInit();
+		}
+		
+		private function _doLoadCompleteInit():void
+		{
+			// Language Only Load Check
+			if (!loaded_info  && loaded_language && !loaded_playlist)
+			{
+				_isInit = true;
+				return;
+			}
+			
+			// Load Checks, check if things are loaded and playlist exist.
+			if (!loaded_info || !loaded_language || !loaded_playlist || !_playlist)
+				return;
+			
+				
+			// Playlist
+			_playlist.total_songs = _playlist.total_public_songs = _playlist.index_list.length;
+			_playlist.total_genres = ArrayUtil.count(_playlist.genre_list);
+			
+			if(_info != null)
+			{
+				// Excluded Genres from Public count
+				var nonpublic_genres:Array = _info.getData("game_nonpublic_genres");
+				if (nonpublic_genres != null)
+				{
+					_playlist.total_public_songs = _playlist.index_list.filter(function(item:*, index:int, array:Array):Boolean
+						{
+							return !ArrayUtil.in_array([item.genre], nonpublic_genres)
+						}).length;
+				}
+			}
+			
+			// Site
+			
+			// Language
+			
+			// Finished
+			Logger.log(this, Logger.NOTICE, "Load Init: " + name);
+			Logger.log(this, Logger.NOTICE, "Total Songs: " + _playlist.total_songs);
+			Logger.log(this, Logger.NOTICE, "Total Public Songs: " + _playlist.total_public_songs);
+			Logger.log(this, Logger.NOTICE, "Total Genres: " + _playlist.total_genres);
+			_isInit = true;
 		}
 		
 		///- Private

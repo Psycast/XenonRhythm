@@ -1,4 +1,4 @@
-package classes
+package classes.ui
 {
 	import classes.engine.EngineCore;
 	import flash.display.Sprite;
@@ -15,7 +15,7 @@ package classes
 		// Construct
 		public function init():void
 		{
-		
+			
 		}
 		
 		// Deconstruct
@@ -34,11 +34,6 @@ package classes
 		public function draw():void
 		{
 		
-		}
-		
-		public function log(color:int, text:String):void
-		{
-			trace(color + ":[" + class_name + "] " + text);
 		}
 		
 		public function get class_name():String

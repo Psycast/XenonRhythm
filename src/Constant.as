@@ -1,8 +1,5 @@
 package
 {
-	import flash.display.Loader;
-	import flash.text.TextFormat;
-	import flash.text.TextFormatAlign;
 	
 	public class Constant
 	{
@@ -20,7 +17,7 @@ package
 		public static const USER_AVATAR_URL:String = "http://www.flashflashrevolution.com/avatar_imgembedded.php";
 		public static const HISCORES_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-hiscores.php";
 		//public static const PLAYLIST_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-playlist.php";
-		//public static const LANGUAGE_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-language.php";
+		public static const LANGUAGE_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-language.php";
 		public static const LANGUAGE_FONT_URL:String = "http://www.flashflashrevolution.com/game/r3/R^3Font.swf";
 		public static const NOTESKIN_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-noteSkins.xml";
 		public static const NOTESKIN_SWF_URL:String = "http://www.flashflashrevolution.com/game/r3/noteskins/";
@@ -37,11 +34,9 @@ package
 		public static const GAME_ENGINE:String = "ffr";
 		public static const GAME_NAME:String = "FlashFlashRevolution";
 		public static var GAME_WIDTH:int = 800;
+		public static var GAME_WIDTH_CENTER:int = GAME_WIDTH >> 1;
 		public static var GAME_HEIGHT:int = 600;
-		
-		//- Formats
-		public static const TEXT_FORMAT:TextFormat = new TextFormat("Segoe UI", 14, 0xFFFFFF, true);
-		public static const TEXT_FORMAT_CENTER:TextFormat = new TextFormat("Segoe UI", 14, 0xFFFFFF, true, null, null, null, null, TextFormatAlign.CENTER);
+		public static var GAME_HEIGHT_CENTER:int = GAME_HEIGHT >> 1;
 	
 		//- Functions
 	}

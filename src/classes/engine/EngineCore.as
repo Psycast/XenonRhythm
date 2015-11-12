@@ -1,6 +1,6 @@
 package classes.engine
 {
-	import classes.UICore;
+	import classes.ui.UICore;
 	import classes.user.User;
 	import classes.engine.EnginePlaylist;
 	
@@ -22,6 +22,8 @@ package classes.engine
 		
 		// Active UI
 		public var ui:UI;
+		
+		public var flags:Array = [];
 		
 		public function EngineCore()
 		{
@@ -54,13 +56,13 @@ package classes.engine
 		public function registerLoader(loader:EngineLoader):void
 		{
 			_loaders[loader.id] = loader;
-			trace("0:[EngineCore] Registered EngineLoader:", loader.id);
+			Logger.log(this, Logger.INFO, "Registered EngineLoader: " + loader.id);
 		}
 		
 		public function removeLoader(loader:EngineLoader):void
 		{
 			delete _loaders[loader.id];
-			trace("0:[EngineCore] Removed EngineLoader:", loader.id);
+			Logger.log(this, Logger.INFO, "Removed EngineLoader: " + loader.id);
 		}
 		
 		///- Engine Playlist
@@ -83,7 +85,7 @@ package classes.engine
 		public function registerPlaylist(engine:EnginePlaylist):void
 		{
 			_playlists[engine.id] = engine;
-			trace("0:[EngineCore] Registered Playlist:", engine.id);
+			Logger.log(this, Logger.INFO, "Registered Playlist: " + engine.id);
 		}
 		
 		///- Engine Info
@@ -106,7 +108,7 @@ package classes.engine
 		public function registerInfo(info:EngineSiteInfo):void
 		{
 			_info[info.id] = info;
-			trace("0:[EngineCore] Registered SiteInfo:", info.id);
+			Logger.log(this, Logger.INFO, "Registered SiteInfo: " + info.id);
 		}
 		
 		///- Engine Language
@@ -120,7 +122,7 @@ package classes.engine
 			return _languages[Constant.GAME_ENGINE];
 		}
 		
-		// Get Engine Playlist.
+		// Get Engine Language.
 		public function getLanguage(id:String):EngineLanguage
 		{
 			return _languages[id];
@@ -129,7 +131,7 @@ package classes.engine
 		public function registerLanguage(language:EngineLanguage):void
 		{
 			_languages[language.id] = language;
-			trace("0:[EngineCore] Registered Language:", language.id);
+			Logger.log(this, Logger.INFO, "Registered Language: " + language.id);
 		}
 		
 		public function getString(id:String, lang:String = "us"):String
@@ -141,11 +143,14 @@ package classes.engine
 			for each (var eid:String in[source, Constant.GAME_ENGINE])
 			{
 				el = getLanguage(eid);
-				for each (var s:String in[lang, "us"])
+				if (el != null)
 				{
-					if ((out = el.getString(id, lang)) != "")
+					for each (var s:String in[lang, "us"])
 					{
-						return out;
+						if ((out = el.getString(id, lang)) != "")
+						{
+							return out;
+						}
 					}
 				}
 			}

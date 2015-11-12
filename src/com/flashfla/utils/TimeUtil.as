@@ -1,8 +1,5 @@
 package com.flashfla.utils {
 	
-	/**
-	 * @author Jonathan (Velocity)
-	 */
 	public class TimeUtil {
 		public static function getCurrentDate():String {
 			return getFormattedDate(new Date());

@@ -6,12 +6,17 @@ package classes.user
 	import classes.user.UserInfo;
 	import classes.user.UserPermissions;
 	import com.adobe.serialization.json.JSONManager;
+	import com.adobe.utils.StringUtil;
 	import com.flashfla.net.WebRequest;
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.net.URLRequest;
 	
+	/**
+	 * Core User Class for Game Engine.
+	 * Handles all user information for a single user.
+	 */
 	public class User extends EventDispatcher
 	{
 		private var _isLoaded:Boolean;
@@ -27,6 +32,12 @@ package classes.user
 		public var settings:EngineSettings;
 		public var levelranks:UserLevelRanks;
 		
+		/**
+		 * Constructor for User
+		 * @param	loadData		Automatically Load User Data
+		 * @param	isActiveUser	Is Active/Current User
+		 * @param	userid			UserID
+		 */
 		public function User(loadData:Boolean = false, isActiveUser:Boolean = false, userid:int = 0):void
 		{
 			this.info = new UserInfo();
@@ -44,6 +55,10 @@ package classes.user
 			}
 		}
 		
+		/**
+		 * Loads user info for the specified userid.
+		 * @param	userid	UserID to load.
+		 */
 		public function load(userid:int = 0):void
 		{
 			// Create Request
@@ -59,6 +74,9 @@ package classes.user
 			wr.load(o);
 		}
 		
+		/**
+		 * Loads the user level ranks if not guest.
+		 */
 		public function loadLevelRanks():void
 		{
 			// Guest don't need ranks.
@@ -83,6 +101,10 @@ package classes.user
 			wr.load(o);
 		}
 		
+		/**
+		 * Sets user info from the loaded data from "load()".
+		 * @param	_data	Object Containing User information.
+		 */
 		public function setupUserData(_data:Object):void
 		{
 			// Important Data
@@ -104,41 +126,59 @@ package classes.user
 			}
 		}
 		
-		public function setupRanks(_data:Object):void
+		/**
+		 * Sets User ranks for loaded data from "loadLevelRanks()".
+		 * @param	_data	String containing formatted user ranks.
+		 */
+		public function setupRanks(_data:String):void
 		{
 			var er:EngineRanks = levelranks.getEngineRanks(Constant.GAME_ENGINE);
 			var songRank:EngineRanksLevel;
 			
 			// Parse Data
-			var rankTemp:Array = _data.split(",");
-			var rankLength:int = rankTemp.length;
-			for (var x:int = 0; x < rankLength; x++)
+			if (_data != "")
 			{
-				// [0] = Level ID : [1] = Rank : [2] = Score : [3] = Genre : [4] = Results
-				var rankSplit:Array = rankTemp[x].split(":");
-				
-				songRank = new EngineRanksLevel(rankSplit[0]);
-				songRank.rank = int(rankSplit[1]);
-				songRank.score = int(rankSplit[2]);
-				songRank.genre = int(rankSplit[3]);
-				songRank.results = rankSplit[4];
-				
-				er.setRank(songRank);
+				var rankTemp:Array = _data.split(",");
+				var rankLength:int = rankTemp.length;
+				for (var x:int = 0; x < rankLength; x++)
+				{
+					// [0] = Level ID : [1] = Rank : [2] = Score : [3] = Genre : [4] = Results
+					var rankSplit:Array = rankTemp[x].split(":");
+					
+					if (rankSplit.length == 5)
+					{
+						songRank = new EngineRanksLevel(rankSplit[0]);
+						songRank.rank = int(rankSplit[1]);
+						songRank.score = int(rankSplit[2]);
+						songRank.genre = int(rankSplit[3]);
+						songRank.results = rankSplit[4];
+						
+						er.setRank(songRank);
+					}
+				}
 			}
 		}
 		
+		/**
+		 * Returns true if User Info is loaded.
+		 */
 		public function get isLoaded():Boolean
 		{
 			return this.permissions.isActiveUser ? (_isLoaded && _isLoadedRanks) : _isLoaded;
 		}
 		
 		//- Events
-		// Profile Data
+		// User Data
+		/**
+		 * Profile Load Complete Event.
+		 * JSON decodes loaded data and setups user info and loads level ranks if not guest.
+		 * @param	e 	URLLoader event from "load()" WebRequest.
+		 */
 		private function e_profileOnComplete(e:Event):void
 		{
-			trace("0:[User] Profile Load Complete");
+			Logger.log(this, Logger.INFO, "Profile Load Complete");
 			// JSON Decode Data
-			var _data:Object = JSONManager.decode(e.target.data);
+			var _data:Object = JSONManager.decode(StringUtil.trim(e.target.data));
 			
 			// Setup Data
 			setupUserData(_data);
@@ -156,16 +196,25 @@ package classes.user
 			_eventIsLoaded();
 		}
 		
+		/**
+		 * Profile Load Error Event.
+		 * @param	e 	URLLoader event from "load()" WebRequest.
+		 */
 		private function e_profileOnError(e:Event):void
 		{
-			trace("3:[User] Profile Load Error");
+			Logger.log(this, Logger.ERROR, "Profile Load Error");
 		}
 		
 		// Ranks
+		/**
+		 * User Ranks Load Complete Event.
+		 * Setups user ranks.
+		 * @param	e 	URLLoader event from "loadLevelRanks()" WebRequest.
+		 */
 		private function e_ranksOnComplete(e:Event):void
 		{
-			trace("0:[User] Ranks Load Complete");
-			var _data:Object = e.target.data;
+			Logger.log(this, Logger.INFO, "Ranks Load Complete");
+			var _data:String = StringUtil.trim(e.target.data);
 			
 			setupRanks(_data);
 			
@@ -176,9 +225,13 @@ package classes.user
 			_eventIsLoaded();
 		}
 		
+		/**
+		 * User Ranks Load Error Event.
+		 * @param	e 	URLLoader event from "loadLevelRanks()" WebRequest.
+		 */
 		private function e_ranksOnError(e:Event):void
 		{
-			trace("3:[User] Ranks Load Error");
+			Logger.log(this, Logger.ERROR, "Ranks Load Error");
 		}
 		
 		//- Event Dispatching

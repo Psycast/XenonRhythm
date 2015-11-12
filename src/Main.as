@@ -5,7 +5,8 @@ package
 	import com.adobe.serialization.json.JSONManager;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import scenes.loader.GameLoader_UI;
+	import flash.events.KeyboardEvent;
+	import scenes.loader.GameLoader;
 	
 	public class Main extends Sprite
 	{
@@ -13,9 +14,6 @@ package
 		
 		public function Main():void
 		{
-			//trace("2:------------------------------------------------------------------------------------------------");
-			//for (var i:int = 0; i < 5; i++) trace(i + ":", i);
-			
 			if (stage)
 				init();
 			else
@@ -26,20 +24,26 @@ package
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
+			// Welcome Message
+			Logger.divider(this);
+			Logger.log(this, Logger.WARNING, "Game Started, Welcome to " + Constant.GAME_NAME + "!");
+			
 			// Init Classes
 			JSONManager.init();
+			stage.stageFocusRect = false;
 			
 			core = new EngineCore();
 			core.ui = new UI();
-			
+			CONFIG::debug { stage.addEventListener(KeyboardEvent.KEY_DOWN, core.ui.e_debugKeyDown); }
 			addChild(core.ui);
 			
 			// Load User
 			core.user = new User(true, true);
 			
 			// Jump to Game Loader
-			core.scene = new GameLoader_UI(core);
+			core.scene = new GameLoader(core);
 		}
+		
 	}
 
 }

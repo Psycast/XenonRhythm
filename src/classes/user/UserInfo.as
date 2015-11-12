@@ -1,6 +1,9 @@
 package classes.user
 {
-	
+	/**
+	 * User Information Class
+	 * Stores user specific information unique to FFR the Game.
+	 */
 	public class UserInfo
 	{
 		public var hash:String;

@@ -1,10 +1,10 @@
-package classes.engine 
+package classes.engine
 {
-
-	public class EngineRanksLevel 
+	
+	public class EngineRanksLevel
 	{
 		public var level:String = "";
-		public var genre:int = 0;
+		public var genre:int = 0; // Used to calculate average rank.
 		
 		public var rank:int = 0;
 		public var score:int = 0;
@@ -17,12 +17,13 @@ package classes.engine
 		public var boo:int = 0;
 		public var combo:int = 0;
 		
-		public function EngineRanksLevel(level:String) 
+		public function EngineRanksLevel(level:String)
 		{
 			this.level = level;
 		}
 		
 		// Results - Format [0]'perfect' - [1]'good' - [2]'average' - [3]'miss' - [4]'boo' - [5]'maxcombo'
+		// Optional prefix [0]'amazing'
 		public function set results(results:String):void
 		{
 			// Split Results
@@ -48,7 +49,7 @@ package classes.engine
 		
 		public function get results():String
 		{
-			return (amazing > 0 ? amazing + "-" : "") + perfect + "-" +  good + "-" + average + "-" + miss + "-" + boo + "-" + combo;
+			return (amazing > 0 ? amazing + "-" : "") + perfect + "-" + good + "-" + average + "-" + miss + "-" + boo + "-" + combo;
 		}
 		
 		public function get raw_score():int

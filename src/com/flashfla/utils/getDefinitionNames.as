@@ -3,7 +3,7 @@
  * Visit http://etcs.ru for documentation, updates and more free code.
  *
  * You may distribute this class freely, provided it is not modified in any way (including
- * removing this header or changing the package path).
+ * removing this header).
  *
  *
  * Please contact etc[at]mail.ru prior to distributing modified versions of this class.

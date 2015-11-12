@@ -3,6 +3,8 @@
  */
 
 package com.flashfla.utils {
+	import flash.xml.XMLNode;
+	import flash.xml.XMLNodeType;
 	
 	public class StringUtil {
 		public static const KEY_ARRAY:Array = [
@@ -77,11 +79,8 @@ package com.flashfla.utils {
 			return KEY_ARRAY[input] || ("[" + input.toString() + "]");
 		}
 		
-		public static function htmlencode(s:String):String {
-			s = s.replace(/=/g, "%3D");
-			s = s.replace(/\//g, "%2F");
-			s = s.replace(/\+/g, "%2B");
-			return s;
+		public static function htmlEscape(str:String):String {
+			return XML( new XMLNode( XMLNodeType.TEXT_NODE, str ) ).toXMLString();
 		}
 		
 		public static function getURLPieces(urlStr:String):Array {

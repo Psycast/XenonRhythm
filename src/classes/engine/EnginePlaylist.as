@@ -3,6 +3,7 @@ package classes.engine
 	import com.adobe.serialization.json.JSONManager;
 	import com.adobe.utils.StringUtil;
 	import com.flashfla.utils.ObjectUtil;
+	import com.flashfla.utils.sprintf;
 	
 	public class EnginePlaylist
 	{
@@ -16,6 +17,7 @@ package classes.engine
 		public var genre_list:Array;
 		public var generated_queues:Array;
 		
+		public var total_genres:int = 0;
 		public var total_songs:int = 0;
 		public var total_public_songs:int = 0;
 		
@@ -78,6 +80,7 @@ package classes.engine
 				song = new EngineLevel();
 				song.id = item.level.toString();
 				song.index = genre_list[_genre].length;
+				song.genre = item.genre;
 				song.name = item.name;
 				song.author = item.author;
 				song.author_url = item.authorURL;
@@ -105,12 +108,6 @@ package classes.engine
 				index_list.push(song);
 				genre_list[_genre].push(song);
 				generated_queues[_genre].push(song.id);
-				
-				total_songs++;
-				if (_genre != 10 && _genre != 12 && _genre != 23)
-				{
-					total_public_songs++;
-				}
 			}
 			
 			valid = true;
@@ -157,6 +154,11 @@ package classes.engine
 		public function setLoadPath(song_url:String):void
 		{
 			this.load_path = song_url;
+		}
+		
+		public function getLevelPath(level:EngineLevel):String
+		{
+			return sprintf(this.load_path, level);
 		}
 	}
 

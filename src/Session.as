@@ -32,7 +32,7 @@ package
 		private function e_loginComplete(e:Event):void
 		{
 			var _data:Object = JSONManager.decode(e.target.data);
-			if (_data["result"] == 1 && _data["session"] != null)
+			if (_data["result"] && _data["session"] && _data["result"] == 1)
 			{
 				trace("4:[Session] Login Success! - Session ID:", _data["session"]);
 				SESSION_ID = _data["session"];

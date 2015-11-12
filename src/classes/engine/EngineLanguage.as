@@ -27,7 +27,7 @@ package classes.engine
 			}
 			catch (e:Error)
 			{
-				trace("3:[EngineLanguage] \"" + id + "\" - Malformed XML Language");
+				Logger.log(this, Logger.ERROR, "\"" + id + "\" - Malformed XML Language");
 				return;
 			}
 			

@@ -3,6 +3,10 @@ package classes.user
 	import classes.user.User;
 	import com.flashfla.utils.ArrayUtil;
 	
+	/**
+	 * User Permissions
+	 * Setups user permissions based on the users usergroups.
+	 */
 	public class UserPermissions
 	{
 		//- Constants
@@ -17,7 +21,6 @@ package classes.user
 		public static const VETERAN_ID:Number = 49;
 		
 		//- Variables
-		public var didLogin:Boolean = false;
 		public var isActiveUser:Boolean;
 		public var isGuest:Boolean;
 		public var isVeteran:Boolean;
@@ -43,7 +46,7 @@ package classes.user
 		
 		public function setup(user:User):void
 		{
-			this.isGuest 			= user.id == 2;
+			this.isGuest 			= user.id <= 2;
 			this.isVeteran 			= ArrayUtil.in_array(user.info.forum_groups, [VETERAN_ID]);
 			this.isAdmin 			= ArrayUtil.in_array(user.info.forum_groups, [ADMIN_ID]);
 			this.isForumBanned 		= ArrayUtil.in_array(user.info.forum_groups, [BANNED_ID]);
