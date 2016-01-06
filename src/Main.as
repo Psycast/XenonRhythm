@@ -4,9 +4,12 @@ package
 	import classes.user.User;
 	import com.adobe.serialization.json.JSONManager;
 	import flash.display.Sprite;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import scenes.loader.GameLoader;
+	import flash.geom.Rectangle;
+	import scenes.loader.SceneGameLoader;
 	
 	public class Main extends Sprite
 	{
@@ -31,17 +34,21 @@ package
 			// Init Classes
 			JSONManager.init();
 			stage.stageFocusRect = false;
+			stage.scaleMode = StageScaleMode.NO_SCALE; 
+			stage.align = StageAlign.TOP_LEFT; 
 			
 			core = new EngineCore();
 			core.ui = new UI();
 			CONFIG::debug { stage.addEventListener(KeyboardEvent.KEY_DOWN, core.ui.e_debugKeyDown); }
-			addChild(core.ui);
+			addChildAt(core.ui, 0);
 			
 			// Load User
 			core.user = new User(true, true);
 			
 			// Jump to Game Loader
-			core.scene = new GameLoader(core);
+			core.scene = new SceneGameLoader(core);
+			
+			stage.addEventListener(Event.RESIZE, core.e_stageResize);
 		}
 		
 	}

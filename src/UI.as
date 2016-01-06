@@ -1,23 +1,20 @@
 package
 {
 	import classes.ui.UICore;
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.KeyboardEvent;
+	import flash.filters.BlurFilter;
+	import flash.geom.ColorTransform;
 	import flash.ui.Keyboard;
-	import scenes.DebugLogger;
+	import scenes.SceneDebugLogger;
 	
 	public class UI extends Sprite
 	{
 		// Active Scene
 		private var _scene:UICore;
-		private var _debugscrene:UICore = new DebugLogger(null);
-		
-		public function UI()
-		{
-			super();
-			_debugscrene.init();
-		}
-		
+		private var _debugscrene:UICore = new SceneDebugLogger(null);
+
 		// Game Scene
 		public function get scene():UICore
 		{
@@ -41,6 +38,24 @@ package
 			_scene.init();
 			addChildAt(_scene, 0);
 			_scene.onStage();
+		}
+		
+		// Overlays
+		public function addOverlay(overlay:DisplayObject):void
+		{
+			addChild(overlay);
+		}
+		
+		public function blurInterface():void
+		{
+			scene.filters = [new BlurFilter(8, 8, 1)];
+			scene.transform.colorTransform = new ColorTransform(0.5, 0.5, 0.5);
+		}
+		
+		public function unblurInterface():void
+		{
+			scene.filters = [];
+			scene.transform.colorTransform = new ColorTransform();
 		}
 		
 		CONFIG::debug {

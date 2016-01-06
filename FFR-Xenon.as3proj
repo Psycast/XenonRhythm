@@ -5,7 +5,7 @@
     <movie outputType="Application" />
     <movie input="" />
     <movie path="bin\FFRXenon.swf" />
-    <movie fps="30" />
+    <movie fps="60" />
     <movie width="800" />
     <movie height="600" />
     <movie version="10" />
@@ -22,7 +22,7 @@
     <option accessible="False" />
     <option advancedTelemetry="False" />
     <option allowSourcePathOverlap="False" />
-    <option benchmark="False" />
+    <option benchmark="True" />
     <option es="False" />
     <option inline="False" />
     <option locale="" />
@@ -38,7 +38,7 @@
     <option useNetwork="True" />
     <option useResourceBundleMetadata="True" />
     <option warnings="True" />
-    <option verboseStackTraces="False" />
+    <option verboseStackTraces="True" />
     <option linkReport="" />
     <option loadExterns="" />
     <option staticLinkRSL="True" />

@@ -1,7 +1,6 @@
 package classes.ui
 {
 	import flash.display.DisplayObjectContainer;
-	import flash.display.GradientType;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -31,10 +30,6 @@ package classes.ui
 			setSize(100, 20);
 		}
 		
-		///////////////////////////////////
-		// public methods
-		///////////////////////////////////
-		
 		/**
 		 * Draws the visual ui of the component.
 		 */
@@ -50,33 +45,54 @@ package classes.ui
 			this.graphics.endFill();
 		}
 		
+		///////////////////////////////////
+		// getter/setters
+		///////////////////////////////////
+		/**
+		 * Gets the highlight status of the box.
+		 */
 		public function get highlight():Boolean
 		{
 			return _highlight;
 		}
 		
+		/**
+		 * Sets the highlight status of the box.
+		 */
 		public function set highlight(val:Boolean):void
 		{
 			_highlight = val;
 			invalidate();
 		}
 		
+		/**
+		 * Gets the background color for the box.
+		 */
 		public function get color():uint
 		{
 			return _background_color;
 		}
 		
+		/**
+		 * Sets the background color for the box.
+		 */
 		public function set color(value:uint):void
 		{
 			_background_color = value;
 			invalidate();
 		}
 
+		/**
+		 * Gets the border color for the box.
+		 */
 		public function get borderColor():uint
 		{
 			return _border_color;
 		}
 		
+		/**
+		 * Sets the border color for the box.
+		 */
 		public function set borderColor(value:uint):void
 		{
 			_border_color = value;

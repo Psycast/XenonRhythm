@@ -5,15 +5,17 @@ package classes.ui
 	import flash.events.Event;
 
 	[Event(name="resize", type="flash.events.Event")]
-	[Event(name="draw", type="flash.events.Event")]
 	public class UIComponent extends Sprite
 	{
+		protected var _x:Number = 0;
+		protected var _y:Number = 0;
 		protected var _width:Number = 0;
 		protected var _height:Number = 0;
 		protected var _tag:* = -1;
 		protected var _enabled:Boolean = true;
+		protected var _anchor:String = UIAnchor.NONE;
+		protected var _invalid:Boolean = false;
 		
-		public static const DRAW:String = "draw";
 
 		/**
 		 * Constructor
@@ -54,8 +56,12 @@ package classes.ui
 		 */
 		protected function invalidate():void
 		{
-			addEventListener(Event.ENTER_FRAME, onInvalidate);
-			//draw();
+			if (!_invalid)
+			{
+				_invalid = true;
+				addEventListener(Event.ENTER_FRAME, onInvalidate);
+				//draw();
+			}
 		}
 		
 		/**
@@ -65,8 +71,8 @@ package classes.ui
 		 */
 		public function move(xpos:Number, ypos:Number):void
 		{
-			x = Math.round(xpos);
-			y = Math.round(ypos);
+			x = xpos;
+			y = ypos;
 		}
 		
 		/**
@@ -83,15 +89,48 @@ package classes.ui
 		}
 		
 		/**
+		 * Sets the size of the component and drawing instantly.
+		 * @param w The width of the component.
+		 * @param h The height of the component.
+		 */
+		public function setSizeInstant(w:Number, h:Number):void
+		{
+			_width = w;
+			_height = h;
+			dispatchEvent(new Event(Event.RESIZE));
+			draw();
+		}
+		
+		/**
 		 * Abstract draw function.
 		 */
 		public function draw():void
 		{
-			dispatchEvent(new Event(UIComponent.DRAW));
+			
 		}
 		
+		/**
+		 * Abstract stage resize function.
+		 */
+		public function onResize():void
+		{
+			move(_x, _y);
+		}
 		
+		///////////////////////////////////
+		// public methods
+		///////////////////////////////////
 		
+		/**
+		 * Remove All Children for this UI component.
+		 */
+		public function removeChildren():void
+		{
+			while (numChildren > 0)
+			{
+				removeChildAt(0);
+			}
+		}
 		
 		///////////////////////////////////
 		// event handlers
@@ -102,12 +141,10 @@ package classes.ui
 		 */
 		protected function onInvalidate(event:Event):void
 		{
+			_invalid = false;
 			removeEventListener(Event.ENTER_FRAME, onInvalidate);
 			draw();
 		}
-		
-		
-		
 		
 		///////////////////////////////////
 		// getter/setters
@@ -119,7 +156,7 @@ package classes.ui
 		override public function set width(w:Number):void
 		{
 			_width = w;
-			invalidate();
+			draw();
 			dispatchEvent(new Event(Event.RESIZE));
 		}
 		override public function get width():Number
@@ -133,7 +170,7 @@ package classes.ui
 		override public function set height(h:Number):void
 		{
 			_height = h;
-			invalidate();
+			draw();
 			dispatchEvent(new Event(Event.RESIZE));
 		}
 		override public function get height():Number
@@ -154,19 +191,91 @@ package classes.ui
 		}
 		
 		/**
-		 * Overrides the setter for x to always place the component on a whole pixel.
+		 * Overrides the getter for x to allow for anchor points.
 		 */
-		override public function set x(value:Number):void
+		override public function get x():Number
 		{
-			super.x = Math.round(value);
+			return _x;
 		}
 		
 		/**
-		 * Overrides the setter for y to always place the component on a whole pixel.
+		 * Returns the real x position instead of the anchor based x.
+		 */
+		public function get real_x():Number
+		{
+			return super.x;
+		}
+		
+		/**
+		 * Overrides the setter for x to always place the component on a whole pixel and anchors..
+		 */
+		override public function set x(value:Number):void
+		{
+			_x = Math.round(value);
+			switch(anchor)
+			{
+				default:
+				case UIAnchor.NONE:
+				case UIAnchor.TOP_LEFT:
+				case UIAnchor.MIDDLE_LEFT:
+				case UIAnchor.BOTTOM_LEFT:
+					super.x = _x;
+					break;
+				case UIAnchor.TOP_CENTER:
+				case UIAnchor.MIDDLE_CENTER:
+				case UIAnchor.BOTTOM_CENTER:
+					super.x = Constant.GAME_WIDTH_CENTER + _x;
+					break;
+				case UIAnchor.TOP_RIGHT:
+				case UIAnchor.MIDDLE_RIGHT:
+				case UIAnchor.BOTTOM_RIGHT:
+					super.x = Constant.GAME_WIDTH + _x;
+					break;
+			}
+		}
+		
+		/**
+		 * Overrides the getter for y to allow for anchor points.
+		 */
+		override public function get y():Number
+		{
+			return _y;
+		}
+		
+		/**
+		 * Returns the real y position instead of the anchor based y.
+		 */
+		public function get real_y():Number
+		{
+			return super.y;
+		}
+		
+		/**
+		 * Overrides the setter for y to always place the component on a whole pixel and anchors.
 		 */
 		override public function set y(value:Number):void
 		{
-			super.y = Math.round(value);
+			_y = Math.round(value);
+			switch(anchor)
+			{
+				default:
+				case UIAnchor.NONE:
+				case UIAnchor.TOP_LEFT:
+				case UIAnchor.TOP_CENTER:
+				case UIAnchor.TOP_RIGHT:
+					super.y = _y;
+					break;
+				case UIAnchor.MIDDLE_LEFT:
+				case UIAnchor.MIDDLE_CENTER:
+				case UIAnchor.MIDDLE_RIGHT:
+					super.y = Constant.GAME_HEIGHT_CENTER + _y;
+					break;
+				case UIAnchor.BOTTOM_LEFT:
+				case UIAnchor.BOTTOM_CENTER:
+				case UIAnchor.BOTTOM_RIGHT:
+					super.y = Constant.GAME_HEIGHT + _y;
+					break;
+			}
 		}
 
 		/**
@@ -204,15 +313,25 @@ package classes.ui
 		}
 		
 		/**
-		 * Remove All Children for this UI component.
+		 * Gets the currently set anchor point.
 		 */
-		public function removeChildren():void
+		public function get anchor():String 
 		{
-			while (numChildren > 0)
-			{
-				removeChildAt(0);
-			}
+			return _anchor;
 		}
+		
+		/**
+		 * Sets the anchor point for the object to follow when the game stage resizes.
+		 * Positioning is relative to the anchor points provided in the UIAnchor class.
+		 * Thus being, (0,0) is the anchor point on the stage and not it's real coordinates on stage.
+		 */
+		public function set anchor(value:String):void 
+		{
+			_anchor = value;
+			(_anchor == UIAnchor.NONE ? ResizeListener.removeObject(this) : ResizeListener.addObject(this));
+			onResize();
+		}
+		
 	}
 
 }

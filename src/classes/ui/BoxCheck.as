@@ -1,11 +1,7 @@
 package classes.ui
 {
 	import flash.display.DisplayObjectContainer;
-	import flash.display.GradientType;
-	import flash.display.Sprite;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.geom.Matrix;
 	
 	public class BoxCheck extends UIComponent
 	{
@@ -48,7 +44,6 @@ package classes.ui
 			addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 		
-		
 		///////////////////////////////////
 		// public methods
 		///////////////////////////////////
@@ -62,19 +57,15 @@ package classes.ui
 			this.graphics.clear();
 			
 			//- Draw Box
-			this.graphics.lineStyle(1, border_color, _border_alpha * (highlight ?  1.5 : 1));
+			var _alpha:Number = (highlight ? 1.5 : 1);
+			this.graphics.lineStyle(1, border_color, _border_alpha * _alpha);
 			if (checked)
-			{
-				this.graphics.beginFill(check_color, _check_alpha * (highlight ?  1.5 : 1));
-			}
+				this.graphics.beginFill(check_color, _check_alpha * _alpha);
 			else
-			{
-				this.graphics.beginFill(color, _background_alpha * (highlight ?  1.5 : 1));
-			}
+				this.graphics.beginFill(color, _background_alpha * _alpha);
 			this.graphics.drawRect(0, 0, width, height);
 			this.graphics.endFill();
 		}
-		
 		
 		///////////////////////////////////
 		// event handler
@@ -84,7 +75,7 @@ package classes.ui
 		 * Internal click handler.
 		 * @param event The MouseEvent passed by the system.
 		 */
-		protected function onMouseClick(e:MouseEvent):void 
+		protected function onMouseClick(e:MouseEvent):void
 		{
 			checked = !checked;
 		}
@@ -114,7 +105,9 @@ package classes.ui
 		///////////////////////////////////
 		// getter/setters
 		///////////////////////////////////
-		
+		/**
+		 * Returns true if checked.
+		 */
 		public function get checked():Boolean
 		{
 			return _checked;
@@ -130,7 +123,6 @@ package classes.ui
 		{
 			return enabled && (_highlight || _over);
 		}
-		
 		
 		public function set highlight(val:Boolean):void
 		{
@@ -148,7 +140,7 @@ package classes.ui
 			_background_color = value;
 			invalidate();
 		}
-
+		
 		public function get border_color():uint
 		{
 			return _border_color;
@@ -170,7 +162,7 @@ package classes.ui
 			_border_color = value;
 			invalidate();
 		}
-
+	
 	}
 
 }

@@ -7,6 +7,7 @@ package classes.ui
 		//- Formats
 		public static var fontSize:int = 14;
 		public static var fontColor:uint = 0xFFFFFF;
+		public static var selectedFontColor:String = "#93F0FF";
 		public static var fontName:String = new SegoeUI().fontName;
 		public static var fontName_U:String = new ArialUnicodeMS().fontName;
 		
@@ -22,7 +23,7 @@ package classes.ui
 		
 		public static function textIsUnicode(str:String):Boolean
 		{
-			return (/^[\x20-\x7E]*$/).test(str);
+			return !((/^[\x20-\x7E]*$/).test(str));
 		}
 	}
 

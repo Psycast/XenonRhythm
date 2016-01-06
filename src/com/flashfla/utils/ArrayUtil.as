@@ -6,12 +6,24 @@ package com.flashfla.utils
 		public static function count(ar:Array):uint
 		{
 			var len:uint = 0;
-			for (var item:*in ar)
+			for (var item:* in ar)
 			{
 				if (item != 'mx_internal_uid')
 					len++;
 			}
 			return len;
+		}
+		
+		/**
+		 * This method reigns in a value to keep it between
+		 * the supplied minimum and maximum limits.
+		 * Useful for wrapping number values
+		 * (particularly paginated interfaces).
+		 * Returns the reigned-in result.
+		 */
+		public static function index_wrap(value:Number, min:Number, max:Number):Number
+		{
+			return (value > max ? min : (value < min ? max : value));
 		}
 		
 		/**
@@ -54,25 +66,21 @@ package com.flashfla.utils
 		 * @param	startIndex Starting Index to start searching from, inclusive.
 		 * @param	searchArray Array to search through.
 		 * @param	condition Condition for index to be found valid.
-		 * @return 	int Next Valid Index in array.
+		 * @return 	int Next Valid Index in array or startIndex if none found.
 		 */
 		public static function find_next_index(dir:Boolean, startIndex:int, searchArray:Array, condition:Function):int
 		{
-			var newIndex:int = startIndex;
-			if (dir)
+			var indexMove:int = dir ? -1 : 1;
+			var indexTotal:int = searchArray.length - 1;
+			var toCheck:int = searchArray.length; // Prevents Hangs if no valid items found.
+			var newIndex:int = index_wrap(startIndex, 0, indexTotal);
+			while (toCheck-- > 0)
 			{
-				for (; newIndex >= 0; newIndex--)
-					if (condition(searchArray[newIndex]))
+				if (condition(searchArray[newIndex]))
 						break;
-				
+				newIndex = index_wrap(newIndex + indexMove, 0, indexTotal);
 			}
-			else
-			{
-				for (; newIndex < searchArray.length; newIndex++)
-					if (condition(searchArray[newIndex]))
-						break;
-			}
-			return startIndex != newIndex ? newIndex : startIndex;
+			return newIndex;
 		}
 	
 	}

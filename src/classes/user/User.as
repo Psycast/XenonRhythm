@@ -22,6 +22,9 @@ package classes.user
 		private var _isLoaded:Boolean;
 		private var _isLoadedRanks:Boolean;
 		
+		// Loader Data
+		public var loader_id:String = Constant.GAME_ENGINE;
+		
 		// User Data
 		public var name:String;
 		public var id:uint;
@@ -242,6 +245,7 @@ package classes.user
 				this.dispatchEvent(new Event("LOAD_COMPLETE"));
 			}
 		}
+		
 	}
 
 }

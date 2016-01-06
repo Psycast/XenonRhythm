@@ -47,10 +47,6 @@ package classes.ui
 			_tf.addEventListener(FocusEvent.FOCUS_IN, onFocusIn);
 		}
 		
-		///////////////////////////////////
-		// public methods
-		///////////////////////////////////
-		
 		/**
 		 * Draws the visual ui of the component.
 		 */

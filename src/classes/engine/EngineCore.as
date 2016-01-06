@@ -1,8 +1,10 @@
 package classes.engine
 {
+	import classes.ui.ResizeListener;
 	import classes.ui.UICore;
 	import classes.user.User;
-	import classes.engine.EnginePlaylist;
+	import flash.display.DisplayObject;
+	import flash.events.Event;
 	
 	public class EngineCore
 	{
@@ -27,14 +29,18 @@ package classes.engine
 		
 		public function EngineCore()
 		{
-			this.source = Constant.GAME_ENGINE;
+			this._source = Constant.GAME_ENGINE;
 		}
 		
 		///- Engine Content Source
 		// Set Engine Source for Content.
 		public function set source(gameEngine:String):void
 		{
-			_source = gameEngine;
+			if (_loaders[gameEngine] != null)
+			{
+				_source = gameEngine;
+				Logger.log(this, Logger.INFO, "Changed Default Engine: " + gameEngine);
+			}
 		}
 		
 		public function get source():String
@@ -53,6 +59,11 @@ package classes.engine
 			return _loaders[Constant.GAME_ENGINE];
 		}
 		
+		public function get canonLoader():EngineLoader
+		{
+			return _loaders[Constant.GAME_ENGINE]
+		}
+		
 		public function registerLoader(loader:EngineLoader):void
 		{
 			_loaders[loader.id] = loader;
@@ -63,6 +74,11 @@ package classes.engine
 		{
 			delete _loaders[loader.id];
 			Logger.log(this, Logger.INFO, "Removed EngineLoader: " + loader.id);
+		}
+		
+		public function get engineLoaders():Object
+		{
+			return _loaders;
 		}
 		
 		///- Engine Playlist
@@ -136,11 +152,16 @@ package classes.engine
 		
 		public function getString(id:String, lang:String = "us"):String
 		{
+			return getStringSource(source, id, lang);
+		}
+		
+		public function getStringSource(engineSource:String, id:String, lang:String = "us"):String
+		{
 			var out:String;
 			var el:EngineLanguage;
 			
-			// Get Text for Source Language, Fall back to FFR incase.
-			for each (var eid:String in[source, Constant.GAME_ENGINE])
+			// Get Text for Source Language, Fall back to FFR.
+			for each (var eid:String in[engineSource, Constant.GAME_ENGINE])
 			{
 				el = getLanguage(eid);
 				if (el != null)
@@ -167,7 +188,28 @@ package classes.engine
 		
 		public function set scene(scene:UICore):void
 		{
+			ResizeListener.clear();
 			ui.scene = scene;
+		}
+		
+		public function addOverlay(overlay:DisplayObject):void
+		{
+			ui.addOverlay(overlay);
+		}
+		
+		public function e_stageResize(e:Event):void 
+		{
+			Constant.GAME_WIDTH = e.target.stageWidth;
+			Constant.GAME_HEIGHT = e.target.stageHeight;
+			
+			if (Constant.GAME_WIDTH < 800) Constant.GAME_WIDTH = 800;
+			if (Constant.GAME_HEIGHT < 600) Constant.GAME_HEIGHT = 600;
+			
+			Constant.GAME_WIDTH_CENTER = Constant.GAME_WIDTH / 2;
+			Constant.GAME_HEIGHT_CENTER = Constant.GAME_HEIGHT / 2;
+			
+			ui.scene.onResize();
+			ResizeListener.signal();
 		}
 	}
 

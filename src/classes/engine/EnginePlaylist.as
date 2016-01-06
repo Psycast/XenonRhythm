@@ -2,7 +2,6 @@ package classes.engine
 {
 	import com.adobe.serialization.json.JSONManager;
 	import com.adobe.utils.StringUtil;
-	import com.flashfla.utils.ObjectUtil;
 	import com.flashfla.utils.sprintf;
 	
 	public class EnginePlaylist
@@ -53,14 +52,14 @@ package classes.engine
 			}
 			catch (e:Error)
 			{
-				trace("3:[EnginePlaylist] \"" + id + "\" - Malformed Playlist Format");
+				Logger.log(this, Logger.ERROR, "\"" + id + "\" - Malformed Playlist Format");
 				return;
 			}
 			
 			// Check that playlist was parsed correctly.
 			if (data == null)
 			{
-				trace("3:[EnginePlaylist] \"" + id + "\" - Playlist is null");
+				Logger.log(this, Logger.ERROR, "\"" + id + "\" - Playlist is null");
 				return;
 			}
 			
@@ -78,6 +77,7 @@ package classes.engine
 				
 				// Create Song Object
 				song = new EngineLevel();
+				song.source = id;
 				song.id = item.level.toString();
 				song.index = genre_list[_genre].length;
 				song.genre = item.genre;
@@ -123,6 +123,7 @@ package classes.engine
 			{
 				var node:XML = nodes[i];
 				var song:Object = new Object();
+				song.source = id;
 				song.genre = int(node.@genre.toString());
 				song.name = node.songname.toString();
 				song.difficulty = int(node.songdifficulty.toString());

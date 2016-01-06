@@ -22,7 +22,7 @@ package
 		
 		private function e_loginFailure(e:Event):void
 		{
-			trace("3:[Session] Login Failure");
+			Logger.log(this, Logger.ERROR, "Login Failure");
 			if (_funOnError != null)
 			{
 				_funOnError(e);
@@ -34,7 +34,7 @@ package
 			var _data:Object = JSONManager.decode(e.target.data);
 			if (_data["result"] && _data["session"] && _data["result"] == 1)
 			{
-				trace("4:[Session] Login Success! - Session ID:", _data["session"]);
+				Logger.log(this, Logger.NOTICE, "Login Success! - Session ID: " + _data["session"]);
 				SESSION_ID = _data["session"];
 				if (_funOnComplete != null)
 				{
@@ -52,7 +52,7 @@ package
 		{
 			if (!wr.active)
 			{
-				trace("0:[Session] Attempted Login:", uname);
+				Logger.log(this, Logger.INFO, "Attempted Login: " + uname);
 				wr.load({"username": uname, "password": upass, "ver": Constant.VERSION});
 			}
 		}

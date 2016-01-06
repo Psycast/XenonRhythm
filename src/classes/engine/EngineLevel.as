@@ -1,10 +1,10 @@
 package classes.engine
 {
 	import com.flashfla.utils.StringUtil;
-	import com.flashfla.utils.StringUtil;
 	
 	public class EngineLevel
 	{
+		public var source:String;
 		public var id:String;
 		public var index:int;
 		public var genre:int;

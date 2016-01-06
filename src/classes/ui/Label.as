@@ -2,13 +2,14 @@ package classes.ui
 {
 	import com.flashfla.utils.StringUtil;
 	import flash.display.DisplayObjectContainer;
-	import flash.events.Event;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	
 	public class Label extends UIComponent
 	{
+		protected var DEFAULT_FONT_SIZE:int = 14;
+		protected var RESET_FONT_SIZE:int = 14;
 		protected var _useHtml:Boolean = false;
 		protected var _useArea:Boolean = false;
 		protected var _autoSize:String = TextFieldAutoSize.LEFT;
@@ -16,10 +17,12 @@ package classes.ui
 		protected var _text:String = "";
 		protected var _tf:TextField;
 		
+		private var _textformat:TextFormat;
+		
 		public function Label(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, text:String = "", useHtml:Boolean = false)
 		{
 			_useHtml = useHtml;
-			this.text = text;
+			_text = text;
 			super(parent, xpos, ypos);
 		}
 		
@@ -28,9 +31,10 @@ package classes.ui
 		 */
 		override protected function init():void
 		{
-			super.init();
+			_textformat = UIStyle.getTextFormat(UIStyle.textIsUnicode(text));
 			mouseEnabled = false;
 			mouseChildren = false;
+			super.init();
 		}
 		
 		/**
@@ -40,20 +44,15 @@ package classes.ui
 		{
 			_height = 18;
 			_tf = new TextField();
-			_tf.height = _height;
 			_tf.embedFonts = true;
 			_tf.selectable = false;
 			_tf.mouseEnabled = false;
-			_tf.defaultTextFormat = UIStyle.getTextFormat();
+			_tf.defaultTextFormat = _textformat;
 			_tf.autoSize = TextFieldAutoSize.LEFT;
-			_tf.text = _text;
+			//_tf.border = true;
 			addChild(_tf);
 			draw();
 		}
-		
-		///////////////////////////////////
-		// public methods
-		///////////////////////////////////
 		
 		/**
 		 * Sets the size of the component.
@@ -62,25 +61,14 @@ package classes.ui
 		 */
 		override public function setSize(w:Number, h:Number):void
 		{
+			if (w > _width)
+				_fontSize = RESET_FONT_SIZE;
+			if (h > height)
+				_fontSize = RESET_FONT_SIZE;
 			_useArea = true;
-			super.setSize(w, h);
-		}
-		
-		/**
-		 * Sets/gets the width of the component.
-		 */
-		override public function set width(w:Number):void
-		{
-			_useArea = true;
-			super.width = w;
-		}
-		/**
-		 * Sets/gets the height of the component.
-		 */
-		override public function set height(h:Number):void
-		{
-			_useArea = true;
-			super.height = h;
+			_width = w;
+			_height = h;
+			draw();
 		}
 		
 		/**
@@ -91,54 +79,75 @@ package classes.ui
 			super.draw();
 			
 			_tf.htmlText = formatted_text;
-				
+			
 			// Adjust sizes
 			if (_useArea)
 			{
 				//- Fit Witin Area
-				if (width > 0)
+				while (_tf.width > width)
 				{
-					while (_tf.width > width)
-					{
-						if (_fontSize <= 1) break;
-						
-						_fontSize--;
-						_tf.htmlText = formatted_text;
-					}
+					if (_fontSize <= 1)
+						break;
+					
+					_fontSize--;
+					_tf.htmlText = formatted_text;
 				}
 				
-				//- Text Alignment to Area
-				if (_autoSize == TextFieldAutoSize.LEFT)
-				{
-					_tf.x = 0;
-				}
-				else if (_autoSize == TextFieldAutoSize.CENTER)
-				{
-					_tf.x = ((_width - _tf.width) / 2);
-				}
-				else if (_autoSize == TextFieldAutoSize.RIGHT)
-				{
-					_tf.x = (_width - _tf.width);
-				}
+				_height = Math.max(_height, _tf.height);
 				
 				//- Text Alignment Vertical
-				_tf.y = ((_height - _tf.height) / 2);
+				_tf.y = ((height - _tf.height) / 2);
+			}
+			
+			//- Text Alignment to Area
+			if (_autoSize == TextFieldAutoSize.LEFT)
+			{
+				_tf.x = 0;
+			}
+			else if (_autoSize == TextFieldAutoSize.CENTER)
+			{
+				_tf.x = ((width - _tf.width) / 2);
+			}
+			else if (_autoSize == TextFieldAutoSize.RIGHT)
+			{
+				_tf.x = (width - _tf.width);
 			}
 			
 			// Draw Click Area
 			this.graphics.clear();
 			this.graphics.beginFill(0, 0);
-			this.graphics.drawRect(0,0, _width, _height);
+			//this.graphics.lineStyle(1, 0xFFFFFF, 1);
+			this.graphics.drawRect(0, 0, width, height);
 			this.graphics.endFill();
 		}
 		
 		///////////////////////////////////
-		// event handlers
-		///////////////////////////////////
-		
-		///////////////////////////////////
 		// getter/setters
 		///////////////////////////////////
+		
+		/**
+		 * Sets/gets the width of the component.
+		 */
+		override public function set width(w:Number):void
+		{
+			if (w > _width)
+				_fontSize = RESET_FONT_SIZE;
+			_useArea = true;
+			_width = w;
+			draw();
+		}
+		
+		/**
+		 * Sets/gets the height of the component.
+		 */
+		override public function set height(h:Number):void
+		{
+			if (h > height)
+				_fontSize = RESET_FONT_SIZE;
+			_useArea = true;
+			_height = h;
+			draw();
+		}
 		
 		/**
 		 * Gets / sets the text of this Label.
@@ -156,7 +165,7 @@ package classes.ui
 		
 		public function get formatted_text():String
 		{
-			return (_fontSize != 14 ? "<font size=\"" + _fontSize + "px\">" : "") + (_useHtml ? text : StringUtil.htmlEscape(text)) + (_fontSize != 14 ? "</font>" : "");
+			return (_fontSize != DEFAULT_FONT_SIZE ? "<FONT SIZE=\"" + _fontSize + "px\">" : "") + (_useHtml ? text : StringUtil.htmlEscape(text)) + (_fontSize != DEFAULT_FONT_SIZE ? "</font>" : "");
 		}
 		
 		/**
@@ -182,6 +191,7 @@ package classes.ui
 			_text = t;
 			if (_text == null)
 				_text = "";
+			
 			invalidate();
 		}
 		
@@ -205,6 +215,30 @@ package classes.ui
 		public function get textField():TextField
 		{
 			return _tf;
+		}
+		
+		public function get fontSize():int 
+		{
+			return (_textformat.size != null ? _textformat.size as int : 12);
+		}
+		
+		public function set fontSize(value:int):void 
+		{
+			var def:TextFormat = UIStyle.getTextFormat(UIStyle.textIsUnicode(text));
+			if (value == DEFAULT_FONT_SIZE)
+			{
+				_textformat = def;
+			}
+			else
+			{
+				_textformat = new TextFormat();
+				_textformat.font = def.font;
+				_textformat.color = def.color;
+				_textformat.size = value;
+			}
+			RESET_FONT_SIZE = value;
+			_fontSize = value;
+			draw();
 		}
 	}
 

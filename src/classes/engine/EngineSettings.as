@@ -1,5 +1,4 @@
 package classes.engine {
-	import com.flashfla.utils.ObjectUtil;
 	import flash.ui.Keyboard;
 	
 	/**

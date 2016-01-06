@@ -1,6 +1,5 @@
 package classes.engine
 {
-	import classes.engine.EnginePlaylist;
 	import com.adobe.serialization.json.JSONManager;
 	import com.adobe.utils.StringUtil;
 	import com.flashfla.net.WebRequest;
@@ -34,6 +33,7 @@ package classes.engine
 		
 		public var id:String = "";
 		public var name:String = "";
+		private var _short_name:String = "";
 		
 		public function EngineLoader(core:EngineCore, id:String = "", name:String = "")
 		{
@@ -45,6 +45,21 @@ package classes.engine
 			{
 				_core.registerLoader(this);
 			}
+		}
+		
+		public function get short_name():String 
+		{
+			return _short_name != null && _short_name != "" ? _short_name : name;
+		}
+		
+		public function set short_name(value:String):void 
+		{
+			_short_name = value;
+		}
+		
+		public function get infoArray():Array
+		{
+			return [ name, short_name, id ];
 		}
 		
 		///- Get Loaded Status
@@ -132,6 +147,10 @@ package classes.engine
 					this.domain = node.domain.toString();
 					this.song_url = node.songURL.toString();
 					
+					// Short Name
+					if (node.shortName != null)
+						this.short_name = node.shortName.toString();
+					
 					// Load Playlist
 					loadPlaylist(node.playlistURL.toString(), _requestParams);
 					
@@ -178,6 +197,7 @@ package classes.engine
 				if (this.id == "")
 					this.id = json.id + "-external";
 				this.name = json.name;
+				this.short_name = json.short_name;
 				this.domain = json.domain;
 				this.song_url = json.songURL;
 				

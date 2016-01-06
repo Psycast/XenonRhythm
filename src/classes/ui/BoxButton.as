@@ -40,7 +40,7 @@ package classes.ui
 		 */
 		override protected function addChildren():void
 		{
-			_label = new Label(this, 0, 0, _label_text);
+			_label = new Label(this, 0, 0, _label_text, true);
 			_label.autoSize = TextFieldAutoSize.CENTER;
 			addChild(_label);
 			
