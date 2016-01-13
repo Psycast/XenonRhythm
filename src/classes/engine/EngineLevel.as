@@ -33,6 +33,7 @@ package classes.engine
 		public var play_hash:String;
 		public var preview_hash:String;
 		public var prerelease:Boolean;
+		public var is_title_only:Boolean = false;
 		
 		// Author
 		public function get author_with_url():String

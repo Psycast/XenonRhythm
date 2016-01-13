@@ -67,6 +67,10 @@ package classes.engine
 			var song:EngineLevel;
 			for each (var item:Object in data)
 			{
+				// Skip Invalid Levels
+				if (!item.level || item.level.toString() == "")
+					continue;
+					
 				// Create Genre-based list.
 				var _genre:int = item.genre;
 				if (!genre_list[_genre])
@@ -96,6 +100,8 @@ package classes.engine
 				song.prerelease = item.prerelease;
 				
 				// Optional
+				if (item.is_title_only)
+					song.is_title_only = item.is_title_only;
 				if (item.min_nps)
 					song.min_nps = item.min_nps;
 				if (item.max_nps)
@@ -136,12 +142,17 @@ package classes.engine
 				song.authorURL = node.songauthorURL.toString();
 				song.stepauthor = node.songstepauthor.toString();
 				song.stepauthorURL = node.songstepauthorurl.toString();
-				song.min_nps = int(node.min_nps.toString());
-				song.max_nps = int(node.max_nps.toString());
 				song.credits = int(node.secretcredits.toString());
 				song.price = int(node.price.toString());
 				song.engine = engine;
 				
+				if(node.min_nps)
+					song.min_nps = int(node.min_nps.toString());
+				if (node.max_nps)
+					song.max_nps = int(node.max_nps.toString());
+				if (node.is_title_only)
+					song.is_title_only = Boolean(node.is_title_only.toString());
+					
 				if (Boolean(node.arc_sync.toString()))
 					song.sync = int(node.arc_sync.toString());
 				else if (engine && engine.sync)

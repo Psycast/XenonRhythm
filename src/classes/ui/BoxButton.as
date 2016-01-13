@@ -11,8 +11,6 @@ package classes.ui
 		protected var _over:Boolean = false;
 		protected var _down:Boolean = false;
 		
-		protected var _fontSize:int = 12;
-		
 		public function BoxButton(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, label:String = "", defaultHandler:Function = null)
 		{
 			this._label_text = label;
@@ -45,6 +43,15 @@ package classes.ui
 			addChild(_label);
 			
 			addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
+		}
+		
+		/**
+		 * Draws the visual ui of the component.
+		 */
+		override public function draw():void
+		{
+			super.draw();
+			_label.setSize(width, height + 1);
 		}
 		
 		///////////////////////////////////
@@ -91,25 +98,12 @@ package classes.ui
 			return enabled && (super.highlight || _over);
 		}
 		
-		///////////////////////////////////
-		// public methods
-		///////////////////////////////////
-		
-		/**
-		 * Draws the visual ui of the component.
-		 */
-		override public function draw():void
+		public function set fontSize(size:int):void
 		{
-			super.draw();
-			_label.height = height + 1;
-			_label.width = width;
+			_label.fontSize = size;
 		}
 		
-		public function fontSize(size:int):void
-		{
-			_fontSize = size;
-			invalidate();
-		}
+		
 	}
 
 }

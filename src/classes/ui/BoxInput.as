@@ -41,7 +41,7 @@ package classes.ui
 			_tf.embedFonts = true;
 			_tf.selectable = true;
 			_tf.type = TextFieldType.INPUT;
-			_tf.defaultTextFormat = UIStyle.getTextFormat();
+			_tf.defaultTextFormat = UIStyle.getTextFormat(true);
 			addChild(_tf);
 			_tf.addEventListener(Event.CHANGE, onChange);
 			_tf.addEventListener(FocusEvent.FOCUS_IN, onFocusIn);
@@ -76,7 +76,7 @@ package classes.ui
 				_tf.height = Math.min(_tf.textHeight + 4, _height);
 			}
 			_tf.x = 2;
-			_tf.y = Math.round(_height / 2 - _tf.height / 2) - 1;
+			_tf.y = Math.round(_height / 2 - _tf.height / 2);
 		}
 		
 		///////////////////////////////////

@@ -218,6 +218,11 @@ package classes.engine
 		}
 		
 		//- Playlist
+		public function get playlist():EnginePlaylist
+		{
+			return _playlist;
+		}
+		
 		public function loadPlaylist(url:String, params:Object = null):void
 		{
 			if (url != "")
@@ -251,6 +256,11 @@ package classes.engine
 		}
 		
 		//- Info
+		public function get info():EngineSiteInfo 
+		{
+			return _info;
+		}
+		
 		public function loadInfo(url:String, params:Object = null):void
 		{
 			if (url != "")
@@ -283,6 +293,11 @@ package classes.engine
 		}
 		
 		//- Language
+		public function get language():EngineLanguage 
+		{
+			return _language;
+		}
+		
 		public function loadLanguage(url:String, params:Object = null):void
 		{
 			if (url != "")

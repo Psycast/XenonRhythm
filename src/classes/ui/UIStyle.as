@@ -7,7 +7,7 @@ package classes.ui
 		//- Formats
 		public static var fontSize:int = 14;
 		public static var fontColor:uint = 0xFFFFFF;
-		public static var selectedFontColor:String = "#93F0FF";
+		public static var activeFontColor:String = "#93F0FF";
 		public static var fontName:String = new SegoeUI().fontName;
 		public static var fontName_U:String = new ArialUnicodeMS().fontName;
 		

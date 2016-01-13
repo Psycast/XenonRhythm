@@ -20,12 +20,14 @@ package scenes.songselection.ui_songselection
 		private var _lblSongFlag:Label;
 		private var _lblSongDifficulty:Label;
 		
+		private var _highlight:Boolean;
+		
 		public function SongButton(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, core:EngineCore = null, songData:EngineLevel = null)
 		{
 			this.core = core;
 			this.songData = songData;
 			super(parent, xpos, ypos);
-			mouseEnabled = buttonMode = (songData.difficulty != 0);
+			mouseEnabled = buttonMode = !songData.is_title_only;
 			mouseChildren = false;
 		}
 		
@@ -47,9 +49,9 @@ package scenes.songselection.ui_songselection
 		 */
 		override protected function addChildren():void
 		{
-			if (songData.difficulty == 0)
+			if (songData.is_title_only || songData.difficulty == 0)
 			{
-				_lblSongName = new Label(this, 5, 2, '<font color="' + UIStyle.selectedFontColor + '">' + songData.name + '</font>', true);
+				_lblSongName = new Label(this, 5, 2, '<font color="' + UIStyle.activeFontColor + '">' + songData.name + '</font>', true);
 				_lblSongName.autoSize = TextFieldAutoSize.CENTER;
 			}
 			else

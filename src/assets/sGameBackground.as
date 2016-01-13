@@ -34,7 +34,6 @@ package assets
 					_lineSprite.graphics.moveTo(i, 510);
 					_lineSprite.graphics.lineTo(i + 510, 0);
 				}
-				_lineSprite.scrollRect = new Rectangle(0, 0, 510, 510);
 				
 				_lineBMD = new BitmapData(510, 510, true, 0x00000000);
 				_lineBMD.draw(_lineSprite);
@@ -42,7 +41,11 @@ package assets
 			
 			// Draw Component
 			draw();
-			addEventListener(Event.ADDED_TO_STAGE, e_onStage);
+			
+			CONFIG::debug
+			{
+				addEventListener(Event.ADDED_TO_STAGE, e_onStage);
+			}
 			
 			ResizeListener.addObject(this);
 		}
@@ -51,17 +54,17 @@ package assets
 		// event handlers
 		///////////////////////////////////
 		
-		private function e_onStage(e:Event):void 
+		CONFIG::debug
 		{
-			removeEventListener(Event.ADDED_TO_STAGE, e_onStage);
-			
-			// Displays Text in bottom left corner. Mainly Debug.
-			CONFIG::debug {
-			if (parent && parent is UICore && !_text)
-				text = CONFIG::timeStamp + " - " + (parent as UICore).class_name;
+			private function e_onStage(e:Event):void
+			{
+				removeEventListener(Event.ADDED_TO_STAGE, e_onStage);
+				
+				if (parent && parent is UICore && !_text)
+					text = CONFIG::timeStamp + " - " + (parent as UICore).class_name;
 			}
 		}
-
+		
 		public function set text(t:String):void
 		{
 			_text = t;
@@ -98,8 +101,8 @@ package assets
 			this.graphics.drawRect(0, 0, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 			this.graphics.endFill();
 		}
-	
-		override public function onResize():void 
+		
+		override public function onResize():void
 		{
 			draw();
 		}

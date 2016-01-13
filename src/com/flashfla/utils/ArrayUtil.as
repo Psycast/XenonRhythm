@@ -76,7 +76,7 @@ package com.flashfla.utils
 			var newIndex:int = index_wrap(startIndex, 0, indexTotal);
 			while (toCheck-- > 0)
 			{
-				if (condition(searchArray[newIndex]))
+				if (searchArray[newIndex] != null && condition(searchArray[newIndex]))
 						break;
 				newIndex = index_wrap(newIndex + indexMove, 0, indexTotal);
 			}

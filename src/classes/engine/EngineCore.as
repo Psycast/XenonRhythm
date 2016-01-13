@@ -25,7 +25,11 @@ package classes.engine
 		// Active UI
 		public var ui:UI;
 		
+		// Engine Flags
 		public var flags:Array = [];
+		
+		/** Engine Variables */
+		public var variables:EngineVariables = new EngineVariables();
 		
 		public function EngineCore()
 		{

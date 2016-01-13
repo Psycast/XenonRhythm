@@ -7,12 +7,13 @@ package scenes.songselection.ui_songselection
 	
 	public class FilterIcon extends UIComponent
 	{
-		
+		protected var _border:Boolean;
 		protected var _icon:MovieClip;
 		
-		public function FilterIcon(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, icon:String = "Unknown"):void
+		public function FilterIcon(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, icon:String = "Unknown", border:Boolean = true):void
 		{
 			_icon = getIconFromString(icon);
+			_border = border;
 			super(parent, xpos, ypos);
 		}
 		
@@ -51,7 +52,7 @@ package scenes.songselection.ui_songselection
 			_icon.height = height - 4;
 			
 			graphics.clear();
-			graphics.lineStyle(1, 0xffffff, 1, true);
+			if(_border)graphics.lineStyle(1, 0xffffff, 1, true);
 			graphics.beginFill(0, 0);
 			graphics.drawRect(0, 0, width - 1, height - 1);
 			graphics.endFill()
@@ -61,6 +62,8 @@ package scenes.songselection.ui_songselection
 		{
 			switch (icon)
 			{
+				case "Gear": 
+					return new iconGear();
 				case "ArrowCount": 
 					return new iconFilterArrowCount();
 				case "Artist": 
