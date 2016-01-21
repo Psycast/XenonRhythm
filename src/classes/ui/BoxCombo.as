@@ -34,14 +34,14 @@ package classes.ui
 		/**
 		 * Initializes the component.
 		 */
-		override protected function init():void 
+		override protected function init():void
 		{
 			super.init();
 			setSize(Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 			ResizeListener.addObject(this);
 		}
 		
-		override public function onResize():void 
+		override public function onResize():void
 		{
 			// Prevent Mouse Clicks
 			this.graphics.clear();
@@ -50,16 +50,16 @@ package classes.ui
 			this.graphics.endFill();
 			
 			// Box Holder
-			switch(_listPostion)
+			switch (_listPostion)
 			{
-				default:
-				case UIAnchor.TOP_LEFT:
+				default: 
+				case UIAnchor.TOP_LEFT: 
 					_holder.x = 15;
 					break;
-				case UIAnchor.TOP_CENTER:
+				case UIAnchor.TOP_CENTER: 
 					_holder.x = Constant.GAME_WIDTH_CENTER - (_holder.width / 2);
 					break;
-				case UIAnchor.TOP_RIGHT:
+				case UIAnchor.TOP_RIGHT: 
 					_holder.x = Constant.GAME_WIDTH - _holder.width - 15;
 					break;
 			}
@@ -78,7 +78,7 @@ package classes.ui
 		/**
 		 * Draws the visual ui of the component.
 		 */
-		override public function draw():void 
+		override public function draw():void
 		{
 			// Blue Scenes
 			(this.parent as UI).blurInterface();
@@ -123,7 +123,7 @@ package classes.ui
 		/**
 		 * Creates the option buttons and adds them to the scrollpane.
 		 */
-		private function _addOptions():void 
+		private function _addOptions():void
 		{
 			var btn:BoxButton;
 			for (var i:int = 0; i < _options.length; i++)
@@ -160,7 +160,7 @@ package classes.ui
 		/**
 		 * Event handler for the option buttons.
 		 */
-		private function e_buttonHandler(e:Event):void 
+		private function e_buttonHandler(e:Event):void
 		{
 			if (_defaultHandler != null)
 			{
@@ -181,7 +181,7 @@ package classes.ui
 		 * Gets the list postion on screen.
 		 * Either: TOP_LEFT, TOP_CENTER, TOP_RIGHT
 		 */
-		public function get listPostion():String 
+		public function get listPostion():String
 		{
 			return _listPostion;
 		}
@@ -190,7 +190,7 @@ package classes.ui
 		 * Sets the list postion on screen using UIAnchor TOP points.
 		 * Either: TOP_LEFT, TOP_CENTER, TOP_RIGHT
 		 */
-		public function set listPostion(postion:String):void 
+		public function set listPostion(postion:String):void
 		{
 			_listPostion = postion;
 			onResize();

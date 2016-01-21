@@ -1,7 +1,7 @@
-package classes.ui 
+package classes.ui
 {
-
-	public class UIAnchor 
+	
+	public class UIAnchor
 	{
 		public static const NONE:String = "NONE";
 		public static const TOP_LEFT:String = "TOP_LEFT";

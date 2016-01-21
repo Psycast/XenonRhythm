@@ -1,17 +1,17 @@
-package scenes 
+package scenes
 {
 	import classes.engine.EngineCore;
 	import classes.ui.UICore;
 	import classes.ui.UIStyle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
-
-	public class SceneDebugLogger extends UICore 
+	
+	public class SceneDebugLogger extends UICore
 	{
 		private var _tf:TextField;
 		private var _colours:Array = ["#DDDDDD", "#FFFFFF", "#FFCE7F", "#FF5E5B", "#E7ADFF"];
 		
-		public function SceneDebugLogger(core:EngineCore) 
+		public function SceneDebugLogger(core:EngineCore)
 		{
 			super(core);
 			init();
@@ -26,7 +26,7 @@ package scenes
 			_tf.height = Constant.GAME_HEIGHT - 10;
 			_tf.embedFonts = true;
 			_tf.multiline = true;
-			_tf.defaultTextFormat = UIStyle.getTextFormat();
+			_tf.defaultTextFormat = UIStyle.getTextFormat(true);
 			_tf.autoSize = TextFieldAutoSize.NONE;
 			addChild(_tf);
 			
@@ -48,7 +48,7 @@ package scenes
 			_tf.scrollV = _tf.maxScrollV;
 		}
 		
-		private function buildHistory():String 
+		private function buildHistory():String
 		{
 			var a:Array = Logger.history;
 			var b:Array;

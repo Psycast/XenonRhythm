@@ -1,10 +1,10 @@
-package classes.ui 
+package classes.ui
 {
-
+	
 	/**
 	 * Simple stage resize listener and event propagator.
 	 */
-	public class ResizeListener 
+	public class ResizeListener
 	{
 		
 		private static var items:Array = [];
@@ -52,7 +52,7 @@ package classes.ui
 				items[i].onResize();
 			}
 		}
-		
+	
 	}
 
 }

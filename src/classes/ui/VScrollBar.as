@@ -1,19 +1,19 @@
-package classes.ui 
+package classes.ui
 {
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
-
-	public class VScrollBar extends UIComponent 
+	
+	public class VScrollBar extends UIComponent
 	{
 		private var _lastScroll:Number = 0;
 		private var _scrollFactor:Number = 0.5;
 		
 		private var _dragger:Sprite;
 		
-		public function VScrollBar(parent:DisplayObjectContainer=null, xpos:Number=0, ypos:Number=0) 
+		public function VScrollBar(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0)
 		{
 			super(parent, xpos, ypos);
 		}
@@ -21,7 +21,7 @@ package classes.ui
 		/**
 		 * Initializes the component.
 		 */
-		override protected function init():void 
+		override protected function init():void
 		{
 			super.init();
 			setSize(100, 20);
@@ -30,7 +30,7 @@ package classes.ui
 		/**
 		 * Creates and adds the child display objects of this component.
 		 */
-		override protected function addChildren():void 
+		override protected function addChildren():void
 		{
 			_dragger = new Sprite();
 			_dragger.buttonMode = true;
@@ -46,7 +46,7 @@ package classes.ui
 		/**
 		 * Draws the visual ui of the component.
 		 */
-		override public function draw():void 
+		override public function draw():void
 		{
 			this.graphics.clear();
 			this.graphics.beginFill(0xffffff, 0.1);
@@ -62,19 +62,18 @@ package classes.ui
 			scroll = _lastScroll;
 		}
 		
-		
 		///////////////////////////////////
 		// event handlers
 		///////////////////////////////////
 		
-		private function e_startDrag(e:MouseEvent):void 
+		private function e_startDrag(e:MouseEvent):void
 		{
-			stage.addEventListener(MouseEvent.MOUSE_UP, e_stopDrag); 
+			stage.addEventListener(MouseEvent.MOUSE_UP, e_stopDrag);
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, e_mouseMove);
 			_dragger.startDrag(false, new Rectangle(0, 0, 0, height - _dragger.height));
 		}
 		
-		private function e_stopDrag(e:MouseEvent):void 
+		private function e_stopDrag(e:MouseEvent):void
 		{
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, e_mouseMove);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, e_stopDrag);
@@ -82,7 +81,7 @@ package classes.ui
 			_lastScroll = scroll;
 		}
 		
-		private function e_mouseMove(e:MouseEvent):void 
+		private function e_mouseMove(e:MouseEvent):void
 		{
 			this.dispatchEvent(new Event(Event.CHANGE));
 		}
@@ -111,10 +110,10 @@ package classes.ui
 		}
 		
 		/**
-		 * Gets the current scroll factor. 
+		 * Gets the current scroll factor.
 		 * Scroll factor is the percent of the height the dragger should be displayed as.
 		 */
-		public function get scrollFactor(): Number
+		public function get scrollFactor():Number
 		{
 			return _scrollFactor;
 		}
@@ -122,7 +121,7 @@ package classes.ui
 		/**
 		 * Sets the scroll factor for the dragger to use.
 		 */
-		public function set scrollFactor(value:Number):void 
+		public function set scrollFactor(value:Number):void
 		{
 			_scrollFactor = value;
 			invalidate();
@@ -139,7 +138,7 @@ package classes.ui
 		/**
 		 * Show / Hide the dragger.
 		 */
-		public function set showDragger(value:Boolean):void 
+		public function set showDragger(value:Boolean):void
 		{
 			_dragger.visible = value;
 		}

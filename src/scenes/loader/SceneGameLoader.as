@@ -46,7 +46,7 @@ package scenes.loader
 			ffrstatus.alpha = 0;
 			
 			// Logo Animation
-			var logoAnimation:TimelineLite = new TimelineLite({"paused": true, "onComplete":e_timelineComplete});
+			var logoAnimation:TimelineLite = new TimelineLite({"paused": true, "onComplete": e_timelineComplete});
 			logoAnimation.add([new TweenLite(ffrlogo, 0.5, {"alpha": 0.85}), new TweenLite(ffrlogo, 1.5, {"scaleX": 1.5, "scaleY": 1.5, "ease": Elastic.easeOut.config(0.3)})], 0);
 			logoAnimation.to(ffrlogo, 1, {"x": "-=125", "ease": Power2.easeInOut}, "-=0.7");
 			logoAnimation.add([new TweenLite(ffrname, 0.5, {"alpha": 0.85}), new TweenLite(ffrname, 1.2, {"x": "+=50", "ease": Power2.easeOut})], "-=0.7");
@@ -67,24 +67,24 @@ package scenes.loader
 		 * Event: TIMELINE_COMPLETE
 		 * Logo Animation timeline completion event.
 		 */
-		private function e_timelineComplete():void 
+		private function e_timelineComplete():void
 		{
 			ffrstatus.move(ffrname.x + 30, ffrname.y + 30);
-			new TweenLite(ffrstatus, 0.5, { "alpha": 0.85 } );
+			new TweenLite(ffrstatus, 0.5, {"alpha": 0.85});
 			
 			addEventListener(Event.ENTER_FRAME, e_frameLoadingCheck);
 		}
 		
 		//------------------------------------------------------------------------------------------------//
 		/**
-		 * Event: ENTER_FRAME: 
+		 * Event: ENTER_FRAME:
 		 * Handles the progress bar and load checks.
 		 * @param	e Frame Event
 		 */
 		private function e_frameLoadingCheck(e:Event):void
 		{
 			// Update Status Text
-			if((core.flags[Flag.LOGIN_SCREEN_SHOWN] && !core.user.isLoaded) || (core.user.isLoaded && !core.user.permissions.isGuest))
+			if ((core.flags[Flag.LOGIN_SCREEN_SHOWN] && !core.user.isLoaded) || (core.user.isLoaded && !core.user.permissions.isGuest))
 			{
 				ffrstatus.text = "Loading Game Data...";
 			}

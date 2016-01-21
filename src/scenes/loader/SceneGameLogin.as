@@ -136,13 +136,13 @@ package scenes.loader
 		private function _gotoLoader():void
 		{
 			TweenLite.to(loginBox, 1, {"x": "-=75", "alpha": 0, "ease": Power2.easeIn, "onComplete": function():void
-				{
-					// Remove Placeholder Language Loader
-					core.removeLoader(core.getCurrentLoader());
-					
-					// Jump back to Engine Loading
-					core.scene = new SceneGameLoader(core);
-				}});
+			{
+				// Remove Placeholder Language Loader
+				core.removeLoader(core.getCurrentLoader());
+				
+				// Jump back to Engine Loading
+				core.scene = new SceneGameLoader(core);
+			}});
 		}
 		
 		//------------------------------------------------------------------------------------------------//

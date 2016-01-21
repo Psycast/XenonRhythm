@@ -1,20 +1,22 @@
-package classes.ui 
+package classes.ui
 {
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
-	public class UIStyle 
+	
+	public class UIStyle
 	{
 		//- Formats
-		public static var fontSize:int = 14;
-		public static var fontColor:uint = 0xFFFFFF;
-		public static var activeFontColor:String = "#93F0FF";
-		public static var fontName:String = new SegoeUI().fontName;
-		public static var fontName_U:String = new ArialUnicodeMS().fontName;
+		public static var FONT_SIZE:int = 14;
+		public static var FONT_COLOR:uint = 0xFFFFFF;
+		public static var ACTIVE_FONT_COLOR:String = "#93F0FF";
+		public static var FONT_NAME:String = new SegoeUI().fontName;
+		public static var FONT_NAME_U:String = new ArialUnicodeMS().fontName;
+		public static var USE_ANIMATION:Boolean = false;
 		
-		public static var TEXT_FORMAT:TextFormat = new TextFormat(fontName, fontSize, fontColor, true);
-		public static var TEXT_FORMAT_CENTER:TextFormat = new TextFormat(fontName, fontSize, fontColor, true, null, null, null, null, TextFormatAlign.CENTER);
-		public static var TEXT_FORMAT_U:TextFormat = new TextFormat(fontName_U, fontSize, fontColor, true);
-		public static var TEXT_FORMAT_U_CENTER:TextFormat = new TextFormat(fontName_U, fontSize, fontColor, true, null, null, null, null, TextFormatAlign.CENTER);
+		public static var TEXT_FORMAT:TextFormat = new TextFormat(FONT_NAME, FONT_SIZE, FONT_COLOR, true);
+		public static var TEXT_FORMAT_CENTER:TextFormat = new TextFormat(FONT_NAME, FONT_SIZE, FONT_COLOR, true, null, null, null, null, TextFormatAlign.CENTER);
+		public static var TEXT_FORMAT_U:TextFormat = new TextFormat(FONT_NAME_U, FONT_SIZE, FONT_COLOR, true);
+		public static var TEXT_FORMAT_U_CENTER:TextFormat = new TextFormat(FONT_NAME_U, FONT_SIZE, FONT_COLOR, true, null, null, null, null, TextFormatAlign.CENTER);
 		
 		public static function getTextFormat(unicode:Boolean = false):TextFormat
 		{

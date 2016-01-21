@@ -1,11 +1,12 @@
-package classes.engine {
+package classes.engine
+{
 	import flash.ui.Keyboard;
 	
 	/**
 	 * Engine Settings
 	 * Contains per user settings for the game.
 	 */
-	public class EngineSettings 
+	public class EngineSettings
 	{
 		///- Variables
 		// Keys
@@ -16,7 +17,8 @@ package classes.engine {
 		public var key_restart:int = 191; // Keyboard.SLASH;
 		public var key_quit:int = Keyboard.CONTROL;
 		public var key_options:int = 145; // Scrolllock
-		public function get keys():Array { return [key_left, key_down, key_up, key_right, key_restart, key_quit, key_options]; };
+		
+		public function get keys():Array { return [key_left, key_down, key_up, key_right, key_restart, key_quit, key_options]; }
 		
 		// Speed
 		public var scroll_direction:String = "up";

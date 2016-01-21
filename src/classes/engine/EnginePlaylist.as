@@ -70,7 +70,7 @@ package classes.engine
 				// Skip Invalid Levels
 				if (!item.level || item.level.toString() == "")
 					continue;
-					
+				
 				// Create Genre-based list.
 				var _genre:int = item.genre;
 				if (!genre_list[_genre])
@@ -146,13 +146,13 @@ package classes.engine
 				song.price = int(node.price.toString());
 				song.engine = engine;
 				
-				if(node.min_nps)
+				if (node.min_nps)
 					song.min_nps = int(node.min_nps.toString());
 				if (node.max_nps)
 					song.max_nps = int(node.max_nps.toString());
 				if (node.is_title_only)
 					song.is_title_only = Boolean(node.is_title_only.toString());
-					
+				
 				if (Boolean(node.arc_sync.toString()))
 					song.sync = int(node.arc_sync.toString());
 				else if (engine && engine.sync)

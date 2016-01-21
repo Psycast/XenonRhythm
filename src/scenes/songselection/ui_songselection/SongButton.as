@@ -7,6 +7,7 @@ package scenes.songselection.ui_songselection
 	import classes.ui.UIStyle;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.GradientType;
+	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.text.TextFieldAutoSize;
 	
@@ -20,7 +21,8 @@ package scenes.songselection.ui_songselection
 		private var _lblSongFlag:Label;
 		private var _lblSongDifficulty:Label;
 		
-		private var _highlight:Boolean;
+		private var _highlight:Boolean = false;
+		private var _over:Boolean = false;
 		
 		public function SongButton(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, core:EngineCore = null, songData:EngineLevel = null)
 		{
@@ -51,7 +53,7 @@ package scenes.songselection.ui_songselection
 		{
 			if (songData.is_title_only || songData.difficulty == 0)
 			{
-				_lblSongName = new Label(this, 5, 2, '<font color="' + UIStyle.activeFontColor + '">' + songData.name + '</font>', true);
+				_lblSongName = new Label(this, 5, 2, '<font color="' + UIStyle.ACTIVE_FONT_COLOR + '">' + songData.name + '</font>', true);
 				_lblSongName.autoSize = TextFieldAutoSize.CENTER;
 			}
 			else
@@ -62,6 +64,8 @@ package scenes.songselection.ui_songselection
 				_lblSongDifficulty = new Label(this, 5, 2, songData.difficulty.toString());
 				_lblSongDifficulty.autoSize = TextFieldAutoSize.RIGHT;
 			}
+			
+			addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
 		}
 		
 		/**
@@ -71,13 +75,13 @@ package scenes.songselection.ui_songselection
 		{
 			super.draw();
 			this.graphics.clear();
-			this.graphics.lineStyle(1, 0xFFFFFF, 0.55, true);
-			this.graphics.beginGradientFill(GradientType.LINEAR, [0xFFFFFF, 0xFFFFFF], [0.35, 0.10], [0, 255], _mtxGradient);
+			this.graphics.lineStyle(1, 0xFFFFFF, (highlight ? 0.8: 0.55), true);
+			this.graphics.beginGradientFill(GradientType.LINEAR, [0xFFFFFF, 0xFFFFFF], (highlight ? [0.5, 0.25] : [0.35, 0.1]), [0, 255], _mtxGradient);
 			this.graphics.drawRect(0, 0, width, height);
 			this.graphics.endFill();
 			
 			// Song Divider
-			if (songData.difficulty == 0)
+			if (songData.is_title_only || songData.difficulty == 0)
 			{
 				_lblSongName.setSize(width, height - 3);
 			}
@@ -89,6 +93,45 @@ package scenes.songselection.ui_songselection
 				_lblSongDifficulty.x = width - 25;
 				_lblSongDifficulty.setSize(20, height - 3);
 			}
+		}
+		
+		///////////////////////////////////
+		// event handlers
+		///////////////////////////////////
+		
+		/**
+		 * Internal mouseOver handler.
+		 * @param event The MouseEvent passed by the system.
+		 */
+		protected function onMouseOver(event:MouseEvent):void
+		{
+			_over = true;
+			addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
+			invalidate();
+		}
+		
+		/**
+		 * Internal mouseOut handler.
+		 * @param event The MouseEvent passed by the system.
+		 */
+		protected function onMouseOut(event:MouseEvent):void
+		{
+			_over = false;
+			removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
+			invalidate();
+		}
+		
+		///////////////////////////////////
+		// getter/setters
+		///////////////////////////////////
+		public function get highlight():Boolean
+		{
+			return enabled && (_highlight || _over);
+		}
+		public function set highlight(val:Boolean):void
+		{
+			_highlight = val;
+			invalidate();
 		}
 	
 	}

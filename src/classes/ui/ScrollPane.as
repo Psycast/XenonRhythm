@@ -1,5 +1,6 @@
 package classes.ui
 {
+	import com.greensock.TweenLite;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
@@ -113,7 +114,7 @@ package classes.ui
 			{
 				_child = _content.getChildAt(i);
 				_child.visible = ((_child.y >= maskY || _child.y + _child.height >= maskY) && _child.y < maskY + this.height);
-			} 
+			}
 		}
 		
 		///////////////////////////////////
@@ -152,12 +153,15 @@ package classes.ui
 		 */
 		public function set scroll(val:Number):void
 		{
-			_content.y = -((contentHeight - this.height) * Math.max(Math.min(val, 1), 0));
+			if (UIStyle.USE_ANIMATION)
+				TweenLite.to(content, 0.25, {y: -((contentHeight - this.height) * Math.max(Math.min(val, 1), 0)), onUpdate: updateChildrenVisibility, onComplete: updateChildrenVisibility});
+			else
+				_content.y = -((contentHeight - this.height) * Math.max(Math.min(val, 1), 0));
 			updateChildrenVisibility();
 		}
 		
 		/**
-		 * Gets the current scroll factor. 
+		 * Gets the current scroll factor.
 		 * Scroll factor is the percent of the height the scrollpane is compared to the overall content height.
 		 */
 		public function get scrollFactor():Number
@@ -181,7 +185,7 @@ package classes.ui
 			return _content.getBounds(_content).bottom;
 		}
 		
-		public function get content():Sprite 
+		public function get content():Sprite
 		{
 			return _content;
 		}

@@ -201,7 +201,7 @@ package classes.engine
 			ui.addOverlay(overlay);
 		}
 		
-		public function e_stageResize(e:Event):void 
+		public function e_stageResize(e:Event):void
 		{
 			Constant.GAME_WIDTH = e.target.stageWidth;
 			Constant.GAME_HEIGHT = e.target.stageHeight;

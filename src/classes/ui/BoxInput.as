@@ -13,6 +13,7 @@ package classes.ui
 		protected var _password:Boolean = false;
 		protected var _text:String = "";
 		protected var _tf:TextField;
+		
 		public function BoxInput(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, text:String = "", defaultHandler:Function = null)
 		{
 			this.text = text;
@@ -144,15 +145,16 @@ package classes.ui
 			return _tf;
 		}
 		
-		override public function get highlight():Boolean 
+		override public function get highlight():Boolean
 		{
 			return super.highlight || _focus;
 		}
 		
-		override public function set highlight(value:Boolean):void 
+		override public function set highlight(value:Boolean):void
 		{
 			super.highlight = value;
 		}
+		
 		/**
 		 * Gets / sets the list of characters that are allowed in this TextInput.
 		 */

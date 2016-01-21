@@ -4,7 +4,7 @@ package classes.ui
 	import classes.engine.EngineCore;
 	import flash.display.Sprite;
 	
-	public class UICore extends Sprite 
+	public class UICore extends Sprite
 	{
 		protected var core:EngineCore;
 		
@@ -19,7 +19,7 @@ package classes.ui
 		 */
 		public function init():void
 		{
-			
+		
 		}
 		
 		/**
@@ -49,9 +49,8 @@ package classes.ui
 		 */
 		public function onResize():void
 		{
-			
-		}
 		
+		}
 		
 		/**
 		 * Abstract draw() function.
@@ -60,7 +59,7 @@ package classes.ui
 		{
 		
 		}
-
+		
 		/**
 		 * Returns the constructor class name.
 		 */

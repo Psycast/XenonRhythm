@@ -47,19 +47,19 @@ package classes.engine
 			}
 		}
 		
-		public function get short_name():String 
+		public function get short_name():String
 		{
 			return _short_name != null && _short_name != "" ? _short_name : name;
 		}
 		
-		public function set short_name(value:String):void 
+		public function set short_name(value:String):void
 		{
 			_short_name = value;
 		}
 		
 		public function get infoArray():Array
 		{
-			return [ name, short_name, id ];
+			return [name, short_name, id];
 		}
 		
 		///- Get Loaded Status
@@ -256,7 +256,7 @@ package classes.engine
 		}
 		
 		//- Info
-		public function get info():EngineSiteInfo 
+		public function get info():EngineSiteInfo
 		{
 			return _info;
 		}
@@ -293,7 +293,7 @@ package classes.engine
 		}
 		
 		//- Language
-		public function get language():EngineLanguage 
+		public function get language():EngineLanguage
 		{
 			return _language;
 		}
@@ -332,7 +332,7 @@ package classes.engine
 		private function _doLoadCompleteInit():void
 		{
 			// Language Only Load Check
-			if (!loaded_info  && loaded_language && !loaded_playlist)
+			if (!loaded_info && loaded_language && !loaded_playlist)
 			{
 				_isInit = true;
 				return;
@@ -342,21 +342,20 @@ package classes.engine
 			if (!loaded_info || !loaded_language || !loaded_playlist || !_playlist)
 				return;
 			
-				
 			// Playlist
 			_playlist.total_songs = _playlist.total_public_songs = _playlist.index_list.length;
 			_playlist.total_genres = ArrayUtil.count(_playlist.genre_list);
 			
-			if(_info != null)
+			if (_info != null)
 			{
 				// Excluded Genres from Public count
 				var nonpublic_genres:Array = _info.getData("game_nonpublic_genres");
 				if (nonpublic_genres != null)
 				{
 					_playlist.total_public_songs = _playlist.index_list.filter(function(item:*, index:int, array:Array):Boolean
-						{
-							return !ArrayUtil.in_array([item.genre], nonpublic_genres)
-						}).length;
+					{
+						return !ArrayUtil.in_array([item.genre], nonpublic_genres)
+					}).length;
 				}
 			}
 			

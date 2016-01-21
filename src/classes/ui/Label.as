@@ -8,8 +8,8 @@ package classes.ui
 	
 	public class Label extends UIComponent
 	{
-		protected var DEFAULT_FONT_SIZE:int = UIStyle.fontSize;
-		protected var RESET_FONT_SIZE:int = UIStyle.fontSize;
+		protected var DEFAULT_FONT_SIZE:int = UIStyle.FONT_SIZE;
+		protected var RESET_FONT_SIZE:int = UIStyle.FONT_SIZE;
 		protected var _useHtml:Boolean = false;
 		protected var _useArea:Boolean = false;
 		protected var _autoSize:String = TextFieldAutoSize.LEFT;
@@ -217,12 +217,12 @@ package classes.ui
 			return _tf;
 		}
 		
-		public function get fontSize():int 
+		public function get fontSize():int
 		{
-			return (_textformat.size != null ? _textformat.size as int : UIStyle.fontSize);
+			return (_textformat.size != null ? _textformat.size as int : UIStyle.FONT_SIZE);
 		}
 		
-		public function set fontSize(value:int):void 
+		public function set fontSize(value:int):void
 		{
 			var def:TextFormat = UIStyle.getTextFormat(UIStyle.textIsUnicode(text));
 			if (value == DEFAULT_FONT_SIZE)

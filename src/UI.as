@@ -25,6 +25,7 @@ package
 		{
 			Logger.divider(this);
 			Logger.log(this, Logger.WARNING, "Scene Change: " + new_scene.class_name);
+			
 			// Remove Old
 			if (_scene)
 			{
@@ -38,6 +39,10 @@ package
 			_scene.init();
 			addChildAt(_scene, 0);
 			_scene.onStage();
+			
+			// Reset Stage Focus
+			if (stage)
+				stage.focus = null;
 		}
 		
 		// Overlays

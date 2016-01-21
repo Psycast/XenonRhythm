@@ -1,10 +1,10 @@
-package classes.ui 
+package classes.ui
 {
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
-
-	[Event(name="resize", type="flash.events.Event")]
+	
+	[Event(name = "resize", type = "flash.events.Event")]
 	public class UIComponent extends Sprite
 	{
 		protected var _x:Number = 0;
@@ -16,18 +16,17 @@ package classes.ui
 		protected var _anchor:String = UIAnchor.NONE;
 		protected var _invalid:Boolean = false;
 		
-
 		/**
 		 * Constructor
 		 * @param parent The parent DisplayObjectContainer on which to add this component.
 		 * @param xpos The x position to place this component.
 		 * @param ypos The y position to place this component.
 		 */
-		public function UIComponent(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number =  0)
+		public function UIComponent(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0)
 		{
 			move(xpos, ypos);
 			init();
-			if(parent != null)
+			if (parent != null)
 			{
 				parent.addChild(this);
 			}
@@ -48,7 +47,7 @@ package classes.ui
 		 */
 		protected function addChildren():void
 		{
-			
+		
 		}
 		
 		/**
@@ -106,7 +105,7 @@ package classes.ui
 		 */
 		public function draw():void
 		{
-			
+		
 		}
 		
 		/**
@@ -159,6 +158,7 @@ package classes.ui
 			draw();
 			dispatchEvent(new Event(Event.RESIZE));
 		}
+		
 		override public function get width():Number
 		{
 			return _width;
@@ -173,6 +173,7 @@ package classes.ui
 			draw();
 			dispatchEvent(new Event(Event.RESIZE));
 		}
+		
 		override public function get height():Number
 		{
 			return _height;
@@ -185,6 +186,7 @@ package classes.ui
 		{
 			_tag = value;
 		}
+		
 		public function get tag():*
 		{
 			return _tag;
@@ -212,23 +214,23 @@ package classes.ui
 		override public function set x(value:Number):void
 		{
 			_x = Math.round(value);
-			switch(anchor)
+			switch (anchor)
 			{
-				default:
-				case UIAnchor.NONE:
-				case UIAnchor.TOP_LEFT:
-				case UIAnchor.MIDDLE_LEFT:
-				case UIAnchor.BOTTOM_LEFT:
+				default: 
+				case UIAnchor.NONE: 
+				case UIAnchor.TOP_LEFT: 
+				case UIAnchor.MIDDLE_LEFT: 
+				case UIAnchor.BOTTOM_LEFT: 
 					super.x = _x;
 					break;
-				case UIAnchor.TOP_CENTER:
-				case UIAnchor.MIDDLE_CENTER:
-				case UIAnchor.BOTTOM_CENTER:
+				case UIAnchor.TOP_CENTER: 
+				case UIAnchor.MIDDLE_CENTER: 
+				case UIAnchor.BOTTOM_CENTER: 
 					super.x = Constant.GAME_WIDTH_CENTER + _x;
 					break;
-				case UIAnchor.TOP_RIGHT:
-				case UIAnchor.MIDDLE_RIGHT:
-				case UIAnchor.BOTTOM_RIGHT:
+				case UIAnchor.TOP_RIGHT: 
+				case UIAnchor.MIDDLE_RIGHT: 
+				case UIAnchor.BOTTOM_RIGHT: 
 					super.x = Constant.GAME_WIDTH + _x;
 					break;
 			}
@@ -256,28 +258,28 @@ package classes.ui
 		override public function set y(value:Number):void
 		{
 			_y = Math.round(value);
-			switch(anchor)
+			switch (anchor)
 			{
-				default:
-				case UIAnchor.NONE:
-				case UIAnchor.TOP_LEFT:
-				case UIAnchor.TOP_CENTER:
-				case UIAnchor.TOP_RIGHT:
+				default: 
+				case UIAnchor.NONE: 
+				case UIAnchor.TOP_LEFT: 
+				case UIAnchor.TOP_CENTER: 
+				case UIAnchor.TOP_RIGHT: 
 					super.y = _y;
 					break;
-				case UIAnchor.MIDDLE_LEFT:
-				case UIAnchor.MIDDLE_CENTER:
-				case UIAnchor.MIDDLE_RIGHT:
+				case UIAnchor.MIDDLE_LEFT: 
+				case UIAnchor.MIDDLE_CENTER: 
+				case UIAnchor.MIDDLE_RIGHT: 
 					super.y = Constant.GAME_HEIGHT_CENTER + _y;
 					break;
-				case UIAnchor.BOTTOM_LEFT:
-				case UIAnchor.BOTTOM_CENTER:
-				case UIAnchor.BOTTOM_RIGHT:
+				case UIAnchor.BOTTOM_LEFT: 
+				case UIAnchor.BOTTOM_CENTER: 
+				case UIAnchor.BOTTOM_RIGHT: 
 					super.y = Constant.GAME_HEIGHT + _y;
 					break;
 			}
 		}
-
+		
 		/**
 		 * Sets/gets whether this component is enabled or not.
 		 */
@@ -315,7 +317,7 @@ package classes.ui
 		/**
 		 * Gets the currently set anchor point.
 		 */
-		public function get anchor():String 
+		public function get anchor():String
 		{
 			return _anchor;
 		}
@@ -325,13 +327,13 @@ package classes.ui
 		 * Positioning is relative to the anchor points provided in the UIAnchor class.
 		 * Thus being, (0,0) is the anchor point on the stage and not it's real coordinates on stage.
 		 */
-		public function set anchor(value:String):void 
+		public function set anchor(value:String):void
 		{
 			_anchor = value;
 			(_anchor == UIAnchor.NONE ? ResizeListener.removeObject(this) : ResizeListener.addObject(this));
 			onResize();
 		}
-		
+	
 	}
 
 }

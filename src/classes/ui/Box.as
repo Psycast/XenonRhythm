@@ -81,7 +81,7 @@ package classes.ui
 			_background_color = value;
 			invalidate();
 		}
-
+		
 		/**
 		 * Gets the border color for the box.
 		 */
@@ -98,7 +98,7 @@ package classes.ui
 			_border_color = value;
 			invalidate();
 		}
-
+	
 	}
 
 }

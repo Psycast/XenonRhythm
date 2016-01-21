@@ -102,8 +102,7 @@ package classes.ui
 		{
 			_label.fontSize = size;
 		}
-		
-		
+	
 	}
 
 }

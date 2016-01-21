@@ -56,7 +56,7 @@ package scenes.home
 			ffrname = new UISprite(this, new FFRName(), -75, -150);
 			ffrname.anchor = UIAnchor.MIDDLE_CENTER;
 			ffrname.alpha = 0.85;
-
+			
 			_createMenu();
 		}
 		
@@ -84,7 +84,10 @@ package scenes.home
 			if (newIndex != selectedIndex)
 			{
 				// Find First Menu Item
-				newIndex = ArrayUtil.find_next_index(newIndex < selectedIndex, newIndex, menuButtons, function(n:BoxButton):Boolean { return n.enabled; } );
+				newIndex = ArrayUtil.find_next_index(newIndex < selectedIndex, newIndex, menuButtons, function(n:BoxButton):Boolean
+				{
+					return n.enabled;
+				});
 				
 				// Set Highlight
 				menuButtons[selectedIndex].highlight = false;
@@ -108,11 +111,14 @@ package scenes.home
 				btn.setSize(250, 45);
 				btn.tag = i;
 				btn.anchor = UIAnchor.MIDDLE_CENTER;
-				btn.enabled =  (i == 0);
+				btn.enabled = (i == 0);
 				btn.alpha = 0;
 				menuButtons.push(btn);
 			}
-			selectedIndex = ArrayUtil.find_next_index(false, 0, menuButtons, function(n:BoxButton):Boolean { return n.enabled; } );
+			selectedIndex = ArrayUtil.find_next_index(false, 0, menuButtons, function(n:BoxButton):Boolean
+			{
+				return n.enabled;
+			});
 			menuButtons[selectedIndex].highlight = true;
 			
 			// Create Timeline Effect
@@ -133,9 +139,9 @@ package scenes.home
 			}
 			new TweenLite([ffrlogo, ffrname], 0.5, {"alpha": 0});
 			var tl:TimelineLite = new TimelineLite({"onComplete": function():void
-				{
-					_switchScene(menuIndex);
-				}});
+			{
+				_switchScene(menuIndex);
+			}});
 			tl.staggerTo(menuButtons, 1, {"x": -175, "alpha": 0}, 0.15);
 		}
 		
@@ -166,7 +172,7 @@ package scenes.home
 			_closeMenu(menuIndex);
 		}
 		
-		private function e_comboReturn(value:*):void 
+		private function e_comboReturn(value:*):void
 		{
 			core.source = value;
 		}
