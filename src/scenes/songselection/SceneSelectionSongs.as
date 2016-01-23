@@ -370,6 +370,7 @@ package scenes.songselection
 		///////////////////////////////////
 		
 		/**
+		 * Event: MOUSE_CLICK
 		 * Genre Scrollpane Click
 		 */
 		private function e_genreSelectionPaneClick(e:MouseEvent):void
@@ -400,6 +401,7 @@ package scenes.songselection
 		}
 		
 		/**
+		 * Event: MOUSE_CLICK
 		 * Search Button Click Event
 		 */
 		private function e_searchClick(e:Event):void
@@ -415,6 +417,7 @@ package scenes.songselection
 		}
 		
 		/**
+		 * Event: MOUSE_CLICK
 		 * Song Selection Scrollpane Click
 		 */
 		private function e_songSelectionPaneClick(e:MouseEvent):void
@@ -439,7 +442,6 @@ package scenes.songselection
 		/**
 		 * Event: KEY_DOWN
 		 * Used to navigate the menu using the arrow keys or user set keys
-		 * @param	e Keyboard Event
 		 */
 		private function e_keyboardDown(e:KeyboardEvent):void
 		{
@@ -491,7 +493,7 @@ package scenes.songselection
 					});
 					
 					changeSelectedSong(ss_songButtons[newIndex]);
-					ss_scrollbar.scroll = (((ss_songButtons[newIndex].y / ss_scrollpane.contentHeight) > 0.5) ? ((ss_songButtons[newIndex].y + ss_songButtons[newIndex].height) / ss_scrollpane.contentHeight) : ((ss_songButtons[newIndex].y) / ss_scrollpane.contentHeight));
+					ss_scrollbar.scroll = ss_scrollpane.scrollChild(SELECTED_SONG);
 				}
 				return;
 			}

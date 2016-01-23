@@ -1,6 +1,7 @@
 package
 {
 	import classes.ui.UICore;
+	import classes.ui.UIStyle;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.KeyboardEvent;
@@ -67,6 +68,10 @@ package
 		public function e_debugKeyDown(e:KeyboardEvent):void 
 		{
 			// Debug Logger
+			if (e.keyCode == Keyboard.F11)
+			{
+				UIStyle.USE_ANIMATION = !UIStyle.USE_ANIMATION;
+			}
 			if (e.keyCode == Keyboard.F12)
 			{
 				if (contains(_debugscrene))

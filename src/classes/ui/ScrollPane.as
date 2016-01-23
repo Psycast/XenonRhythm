@@ -161,6 +161,20 @@ package classes.ui
 		}
 		
 		/**
+		 * Gets the scroll value required to display a specified child.
+		 * @param	child Child to show.
+		 * @return	Scroll Value required to show child in center of scroll pane.
+		 */
+		public function scrollChild(child:DisplayObject):Number
+		{
+			// Checks
+			if (child == null || !_content.contains(child) || !doScroll)
+				return 0;
+			
+			return Math.max(Math.min(((child.y + (child.height / 2)) - (this.height / 2)) / (contentHeight - this.height), 1), 0);
+		}
+		
+		/**
 		 * Gets the current scroll factor.
 		 * Scroll factor is the percent of the height the scrollpane is compared to the overall content height.
 		 */

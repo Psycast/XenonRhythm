@@ -1,5 +1,6 @@
 package classes.ui
 {
+	import com.greensock.TweenLite;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -78,11 +79,12 @@ package classes.ui
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, e_mouseMove);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, e_stopDrag);
 			_dragger.stopDrag();
-			_lastScroll = scroll;
+			_lastScroll = _dragger.y / (height - 1 - _dragger.height);
 		}
 		
 		private function e_mouseMove(e:MouseEvent):void
 		{
+			_lastScroll = _dragger.y / (height - 1 - _dragger.height);
 			this.dispatchEvent(new Event(Event.CHANGE));
 		}
 		
@@ -95,17 +97,20 @@ package classes.ui
 		 */
 		public function get scroll():Number
 		{
-			return _dragger.y / (height - 1 - _dragger.height);
+			return _lastScroll;
 		}
 		
 		/**
 		 * Sets the current scroll percent.
 		 * @param percent Range of 0-1
 		 */
-		public function set scroll(percent:Number):void
+		public function set scroll(val:Number):void
 		{
-			_dragger.y = Math.max(Math.min((height - _dragger.height) * percent, height - _dragger.height), 0);
-			_lastScroll = percent;
+			if (UIStyle.USE_ANIMATION)
+				TweenLite.to(_dragger, 0.25, {y: ((height - _dragger.height) * Math.max(Math.min(val, 1), 0))});
+			else
+				_dragger.y = (height - _dragger.height) * Math.max(Math.min(val, 1), 0);
+			_lastScroll = val;
 			this.dispatchEvent(new Event(Event.CHANGE));
 		}
 		
