@@ -6,7 +6,7 @@ package classes.user
 	import classes.user.UserInfo;
 	import classes.user.UserPermissions;
 	import com.adobe.serialization.json.JSONManager;
-	import com.adobe.utils.StringUtil;
+	import com.flashfla.utils.StringUtil;
 	import com.flashfla.net.WebRequest;
 	import flash.display.Loader;
 	import flash.events.Event;

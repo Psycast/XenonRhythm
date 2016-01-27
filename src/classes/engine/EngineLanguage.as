@@ -1,6 +1,6 @@
 package classes.engine
 {
-	import com.adobe.utils.StringUtil;
+	import com.flashfla.utils.StringUtil;
 	
 	public class EngineLanguage
 	{

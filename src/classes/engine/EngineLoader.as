@@ -1,7 +1,7 @@
 package classes.engine
 {
 	import com.adobe.serialization.json.JSONManager;
-	import com.adobe.utils.StringUtil;
+	import com.flashfla.utils.StringUtil;
 	import com.flashfla.net.WebRequest;
 	import com.flashfla.utils.ArrayUtil;
 	import flash.events.Event;
