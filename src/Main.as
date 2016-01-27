@@ -8,7 +8,6 @@ package
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import flash.geom.Rectangle;
 	import scenes.loader.SceneGameLoader;
 	
 	public class Main extends Sprite

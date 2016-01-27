@@ -78,7 +78,8 @@ package scenes.songselection.ui_songselection
 					return new iconFilterID();
 				case "Name": 
 					return new iconFilterName();
-				case "NPS": 
+				case "MIN_NPS": 
+				case "MAX_NPS": 
 					return new iconFilterNPS();
 				case "Rank": 
 					return new iconFilterRank();

@@ -29,7 +29,7 @@ package classes.engine
 		// Judge
 		public var offset_global:Number = 0;
 		public var offset_judge:Number = 0;
-		public var judge_colours:Array = [0x78ef29, 0x12e006, 0x01aa0f, 0xf99800, 0xfe0000, 0x804100];
+		public var judge_colors:Array = [0x78ef29, 0x12e006, 0x01aa0f, 0xf99800, 0xfe0000, 0x804100];
 		public var judge_window:Array = null;
 		
 		// Flags
@@ -43,6 +43,7 @@ package classes.engine
 		public var display_total:Boolean = true;
 		public var display_screencut:Boolean = false;
 		public var display_song_progress:Boolean = true;
+		public var display_alt_engines:Boolean = true;
 		
 		public var display_mp_mask:Boolean = false;
 		public var display_mp_timestamp:Boolean = false;
@@ -74,7 +75,7 @@ package classes.engine
 			// Judge
 			if (obj["judgeOffset"])			offset_judge = obj["judgeOffset"];
 			if (obj["viewOffset"])			offset_global = obj["viewOffset"];
-			if (obj["judgeColours"])		judge_colours = obj["judgeColours"];
+			if (obj["judgeColours"])		judge_colors = obj["judgeColours"];
 			
 			// Flags
 			if(obj["viewSongFlag"])			display_song_flags = obj["viewSongFlag"];
@@ -89,7 +90,42 @@ package classes.engine
 			if(obj["viewSongProgress"])		display_song_progress = obj["viewSongProgress"];
 			if(obj["viewMPMask"])			display_mp_mask = obj["viewMPMask"];
 			if(obj["viewMPTimestamp"])		display_mp_timestamp = obj["viewMPTimestamp"];
+			if(obj["viewAltEngines"])		display_alt_engines = obj["viewAltEngines"];
+		}
+		
+		public function export():Object
+		{
+			var obj:Object = new Object();
+			// Keys
+			obj["keys"] = keys;
+			
+			// Speed
+			obj["direction"] 		= scroll_direction;
+			obj["speed"]			= scroll_speed;
+			obj["gap"] 				= receptor_spacing;
+			obj["screencutPosition"] = screencut_position;
+			
+			// Judge
+			obj["judgeOffset"] 		= offset_judge;
+			obj["viewOffset"] 		= offset_global;
+			obj["judgeColours"] 	= judge_colors;
+			
+			// Flags
+			obj["viewSongFlag"] 	= display_song_flags;
+			obj["viewJudge"] 		= display_judge;
+			obj["viewHealth"] 		= display_health;
+			obj["viewCombo"] 		= display_combo;
+			obj["viewPACount"] 		= display_pacount;
+			obj["viewAmazing"] 		= display_amazing;
+			obj["viewPerfect"] 		= display_perfect;
+			obj["viewTotal"] 		= display_total;
+			obj["viewScreencut"] 	= display_screencut;
+			obj["viewSongProgress"] = display_song_progress;
+			obj["viewMPMask"] 		= display_mp_mask;
+			obj["viewMPTimestamp"] 	= display_mp_timestamp;
+			obj["viewAltEngines"] 	= display_alt_engines;
+			
+			return obj;
 		}
 	}
-
 }

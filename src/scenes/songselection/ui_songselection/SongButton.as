@@ -38,7 +38,7 @@ package scenes.songselection.ui_songselection
 		 */
 		override protected function init():void
 		{
-			setSize(250, 40); // 27
+			setSize(250, 31); // 31
 			super.init();
 			
 			//- Gradient Box

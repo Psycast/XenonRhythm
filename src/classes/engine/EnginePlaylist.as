@@ -31,10 +31,10 @@ package classes.engine
 			var data:Object;
 			
 			// Create Arrays
-			song_list = new Array();
-			index_list = new Array();
-			genre_list = new Array();
-			generated_queues = new Array();
+			song_list = [];
+			index_list = [];
+			genre_list = [];
+			generated_queues = [];
 			
 			// Create Data Array
 			try
@@ -119,12 +119,12 @@ package classes.engine
 			valid = true;
 		}
 		
-		public function parse_xml_playlist(data:String, engine:Object = null):Array
+		public function parse_xml_playlist(data:String):Array
 		{
 			var xml:XML = new XML(data);
 			var nodes:XMLList = xml.children();
 			var count:int = nodes.length();
-			var songs:Array = new Array();
+			var songs:Array = [];
 			for (var i:int = 0; i < count; i++)
 			{
 				var node:XML = nodes[i];
@@ -144,7 +144,6 @@ package classes.engine
 				song.stepauthorURL = node.songstepauthorurl.toString();
 				song.credits = int(node.secretcredits.toString());
 				song.price = int(node.price.toString());
-				song.engine = engine;
 				
 				if (node.min_nps)
 					song.min_nps = int(node.min_nps.toString());
@@ -155,8 +154,6 @@ package classes.engine
 				
 				if (Boolean(node.arc_sync.toString()))
 					song.sync = int(node.arc_sync.toString());
-				else if (engine && engine.sync)
-					song.sync = engine.sync(song);
 				
 				songs.push(song);
 			}

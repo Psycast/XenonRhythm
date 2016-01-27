@@ -52,18 +52,25 @@ package classes.engine
 			
 			//- Create URL
 			// Multiple Step Authors
-			if (auth.indexOf(" & ") !== false)
+			if (auth != "" && source == Constant.GAME_ENGINE)
 			{
-				var stepAuthors:Array = auth.split(" & ");
-				_stepauthor_with_url = "<a href=\"http://www.flashflashrevolution.com/profile/" + StringUtil.htmlEscape(stepAuthors[0]) + "\">" + stepAuthors[0] + "</a>";
-				for (var i:int = 1; i < stepAuthors.length; i++)
+				if (auth.indexOf(" & ") !== false)
 				{
-					_stepauthor_with_url += " & <a href=\"http://www.flashflashrevolution.com/profile/" + StringUtil.htmlEscape(stepAuthors[i]) + "\">" + stepAuthors[i] + "</a>";
+					var stepAuthors:Array = auth.split(" & ");
+					_stepauthor_with_url = "<a href=\"http://www.flashflashrevolution.com/profile/" + StringUtil.htmlEscape(stepAuthors[0]) + "\">" + stepAuthors[0] + "</a>";
+					for (var i:int = 1; i < stepAuthors.length; i++)
+					{
+						_stepauthor_with_url += " & <a href=\"http://www.flashflashrevolution.com/profile/" + StringUtil.htmlEscape(stepAuthors[i]) + "\">" + stepAuthors[i] + "</a>";
+					}
+				}
+				else
+				{
+					_stepauthor_with_url = "<a href=\"http://www.flashflashrevolution.com/profile/" + StringUtil.htmlEscape(auth) + "\">" + auth + "</a>";
 				}
 			}
 			else
 			{
-				_stepauthor_with_url = "<a href=\"http://www.flashflashrevolution.com/profile/" + StringUtil.htmlEscape(auth) + "\">" + auth + "</a>";
+				_stepauthor_with_url = auth;
 			}
 		}
 		

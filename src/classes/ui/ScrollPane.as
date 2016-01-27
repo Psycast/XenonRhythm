@@ -171,6 +171,10 @@ package classes.ui
 			if (child == null || !_content.contains(child) || !doScroll)
 				return 0;
 			
+			// Child to Tall, Scroll to top.
+			if(child.height > height)
+				return Math.max(Math.min(child.y / (contentHeight - this.height), 1), 0);
+			
 			return Math.max(Math.min(((child.y + (child.height / 2)) - (this.height / 2)) / (contentHeight - this.height), 1), 0);
 		}
 		
