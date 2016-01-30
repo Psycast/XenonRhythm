@@ -1,5 +1,6 @@
 package classes.ui
 {
+	import com.flashfla.utils.StringUtil;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.MouseEvent;
 	import flash.text.TextFieldAutoSize;
@@ -26,11 +27,11 @@ package classes.ui
 		 */
 		override protected function init():void
 		{
-			super.init();
 			buttonMode = true;
 			useHandCursor = true;
 			mouseChildren = false;
-			setSize(100, 20);
+			setSize(100, 20, false);
+			super.init();
 		}
 		
 		/**
@@ -38,7 +39,7 @@ package classes.ui
 		 */
 		override protected function addChildren():void
 		{
-			_label = new Label(this, 0, 0, _label_text, true);
+			_label = new Label(this, 3, 0, _label_text, StringUtil.containsHtml(_label_text));
 			_label.autoSize = TextFieldAutoSize.CENTER;
 			addChild(_label);
 			
@@ -51,7 +52,7 @@ package classes.ui
 		override public function draw():void
 		{
 			super.draw();
-			_label.setSize(width, height + 1);
+			_label.setSize(width - 6, height + 1);
 		}
 		
 		///////////////////////////////////
@@ -66,7 +67,7 @@ package classes.ui
 		{
 			_over = true;
 			addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
-			invalidate();
+			draw();
 		}
 		
 		/**
@@ -77,7 +78,7 @@ package classes.ui
 		{
 			_over = false;
 			removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
-			invalidate();
+			draw();
 		}
 		
 		///////////////////////////////////

@@ -59,7 +59,7 @@ package classes.ui
 		 * @param w The width of the component.
 		 * @param h The height of the component.
 		 */
-		override public function setSize(w:Number, h:Number):void
+		override public function setSize(w:Number, h:Number, redraw:Boolean = true):void
 		{
 			if (w > _width)
 				_fontSize = RESET_FONT_SIZE;
@@ -68,7 +68,9 @@ package classes.ui
 			_useArea = true;
 			_width = w;
 			_height = h;
-			draw();
+			
+			if (redraw)
+				draw();
 		}
 		
 		/**
@@ -192,7 +194,7 @@ package classes.ui
 			if (_text == null)
 				_text = "";
 			
-			invalidate();
+			draw();
 		}
 		
 		/**
@@ -201,7 +203,7 @@ package classes.ui
 		public function set autoSize(auto:String):void
 		{
 			_autoSize = auto;
-			invalidate();
+			draw();
 		}
 		
 		public function get autoSize():String

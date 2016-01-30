@@ -294,5 +294,10 @@ package com.flashfla.utils {
 			}
 			return sb;
 		}
+		
+		static public function containsHtml(text:String):Boolean 
+		{
+			return text && (text.indexOf("<") >= 0 && text.indexOf(">") >= 0 && text.indexOf("</") >= 0);
+		}
 	}
 }

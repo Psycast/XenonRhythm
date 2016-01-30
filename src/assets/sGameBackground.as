@@ -24,6 +24,16 @@ package assets
 		
 		public function sGameBackground()
 		{
+			CONFIG::debug
+			{
+				addEventListener(Event.ADDED_TO_STAGE, e_onStage);
+			}
+			
+			ResizeListener.addObject(this);
+		}
+		
+		override protected function init():void 
+		{
 			// Init Lines
 			if (!_lineBMD)
 			{
@@ -38,16 +48,7 @@ package assets
 				_lineBMD = new BitmapData(510, 510, true, 0x00000000);
 				_lineBMD.draw(_lineSprite);
 			}
-			
-			// Draw Component
-			draw();
-			
-			CONFIG::debug
-			{
-				addEventListener(Event.ADDED_TO_STAGE, e_onStage);
-			}
-			
-			ResizeListener.addObject(this);
+			super.init();
 		}
 		
 		///////////////////////////////////

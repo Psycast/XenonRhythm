@@ -16,7 +16,7 @@ package classes.ui
 		
 		public function BoxInput(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, text:String = "", defaultHandler:Function = null)
 		{
-			this.text = text;
+			_text = text;
 			super(parent, xpos, ypos);
 			if (defaultHandler != null)
 			{
@@ -29,8 +29,8 @@ package classes.ui
 		 */
 		override protected function init():void
 		{
+			setSize(100, 16, false);
 			super.init();
-			setSize(100, 16);
 		}
 		
 		/**
@@ -103,7 +103,7 @@ package classes.ui
 		{
 			_focus = true;
 			_tf.addEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
-			invalidate();
+			draw();
 		}
 		
 		/**
@@ -114,7 +114,7 @@ package classes.ui
 		{
 			_focus = false;
 			_tf.removeEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
-			invalidate();
+			draw();
 		}
 		
 		///////////////////////////////////
@@ -129,7 +129,7 @@ package classes.ui
 			_text = t;
 			if (_text == null)
 				_text = "";
-			invalidate();
+			draw();
 		}
 		
 		public function get text():String
@@ -187,7 +187,7 @@ package classes.ui
 		public function set password(b:Boolean):void
 		{
 			_password = b;
-			invalidate();
+			draw();
 		}
 		
 		public function get password():Boolean

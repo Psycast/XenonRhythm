@@ -1,6 +1,7 @@
 package scenes.songselection.ui_songselection
 {
 	import assets.menu.icons.*;
+	import classes.engine.EngineLevelFilter;
 	import classes.ui.UIComponent;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.MovieClip;
@@ -64,32 +65,34 @@ package scenes.songselection.ui_songselection
 			{
 				case "Gear": 
 					return new iconGear();
-				case "ArrowCount": 
+					
+				// Engine Filters
+				case EngineLevelFilter.FILTER_ARROWCOUNT: 
 					return new iconFilterArrowCount();
-				case "Artist": 
+				case EngineLevelFilter.FILTER_ARTIST: 
 					return new iconFilterArtist();
-				case "BPM": 
+				case EngineLevelFilter.FILTER_BPM: 
 					return new iconFilterBPM();
-				case "Difficulty": 
+				case EngineLevelFilter.FILTER_DIFFICULTY: 
 					return new iconFilterDifficulty();
-				case "Genre": 
+				case EngineLevelFilter.FILTER_STYLE: 
 					return new iconFilterGenre();
-				case "ID": 
+				case EngineLevelFilter.FILTER_ID: 
 					return new iconFilterID();
-				case "Name": 
+				case EngineLevelFilter.FILTER_NAME: 
 					return new iconFilterName();
-				case "MIN_NPS": 
-				case "MAX_NPS": 
+				case EngineLevelFilter.FILTER_MAX_NPS: 
+				case EngineLevelFilter.FILTER_MIN_NPS: 
 					return new iconFilterNPS();
-				case "Rank": 
+				case EngineLevelFilter.FILTER_RANK: 
 					return new iconFilterRank();
-				case "Score": 
+				case EngineLevelFilter.FILTER_SCORE: 
 					return new iconFilterScore();
-				case "Stats": 
+				case EngineLevelFilter.FILTER_STATS: 
 					return new iconFilterStats();
-				case "StepArtist": 
+				case EngineLevelFilter.FILTER_STEPARTIST: 
 					return new iconFilterStepArtist();
-				case "Time": 
+				case EngineLevelFilter.FILTER_TIME: 
 					return new iconFilterTime();
 			}
 			return new iconFilterUnknown();

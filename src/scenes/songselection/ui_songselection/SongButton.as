@@ -38,12 +38,12 @@ package scenes.songselection.ui_songselection
 		 */
 		override protected function init():void
 		{
-			setSize(250, 31); // 31
-			super.init();
-			
 			//- Gradient Box
 			_mtxGradient = new Matrix();
 			_mtxGradient.createGradientBox(200, 200, (Math.PI / 180) * 225);
+			
+			super.init();
+			setSize(250, 31);
 		}
 		
 		/**
@@ -107,7 +107,7 @@ package scenes.songselection.ui_songselection
 		{
 			_over = true;
 			addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
-			invalidate();
+			draw();
 		}
 		
 		/**
@@ -118,7 +118,7 @@ package scenes.songselection.ui_songselection
 		{
 			_over = false;
 			removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
-			invalidate();
+			draw();
 		}
 		
 		///////////////////////////////////
@@ -131,7 +131,7 @@ package scenes.songselection.ui_songselection
 		public function set highlight(val:Boolean):void
 		{
 			_highlight = val;
-			invalidate();
+			draw();
 		}
 	
 	}

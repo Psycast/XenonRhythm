@@ -26,8 +26,8 @@ package classes.ui
 		 */
 		override protected function init():void
 		{
+			setSize(100, 20, false);
 			super.init();
-			setSize(100, 20);
 		}
 		
 		/**
@@ -62,7 +62,7 @@ package classes.ui
 		public function set highlight(val:Boolean):void
 		{
 			_highlight = val;
-			invalidate();
+			draw();
 		}
 		
 		/**
@@ -79,7 +79,7 @@ package classes.ui
 		public function set color(value:uint):void
 		{
 			_background_color = value;
-			invalidate();
+			draw();
 		}
 		
 		/**
@@ -96,7 +96,7 @@ package classes.ui
 		public function set borderColor(value:uint):void
 		{
 			_border_color = value;
-			invalidate();
+			draw();
 		}
 	
 	}

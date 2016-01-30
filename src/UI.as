@@ -15,6 +15,7 @@ package
 		// Active Scene
 		private var _scene:UICore;
 		private var _debugscrene:UICore = new SceneDebugLogger(null);
+		private var _overlays:int = 0;
 
 		// Game Scene
 		public function get scene():UICore
@@ -41,6 +42,9 @@ package
 			addChildAt(_scene, 0);
 			_scene.onStage();
 			
+			if (_overlays > 0)
+				blurInterface();
+				
 			// Reset Stage Focus
 			if (stage)
 				stage.focus = null;
@@ -50,6 +54,19 @@ package
 		public function addOverlay(overlay:DisplayObject):void
 		{
 			addChild(overlay);
+			_overlays++;
+			
+			if (_overlays > 0)
+				blurInterface();
+		}
+		
+		public function removeOverlay(overlay:DisplayObject):void
+		{
+			removeChild(overlay);
+			_overlays--;
+			
+			if (_overlays <= 0)
+				unblurInterface();
 		}
 		
 		public function blurInterface():void

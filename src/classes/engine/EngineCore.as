@@ -3,6 +3,7 @@ package classes.engine
 	import classes.ui.ResizeListener;
 	import classes.ui.UICore;
 	import classes.user.User;
+	import com.adobe.serialization.json.JSONManager;
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	
@@ -34,6 +35,12 @@ package classes.engine
 		public function EngineCore()
 		{
 			this._source = Constant.GAME_ENGINE;
+			
+			
+			var TF:EngineLevelFilter = new EngineLevelFilter();
+			TF.setup(JSONManager.decode('{"name":"Dummy Test Filter","filters":[{"input_number":25,"type":"Difficulty","comparison":">="},{"filters":[{"input_number":500,"type":"Score","comparison":">="},{"input_number":50000000,"type":"Score","comparison":"<"}],"type":"and"},{"filters":[{"input_string":"Drum","type":"Style","comparison":"contains"},{"input_string":"Trance","type":"Style","comparison":"contains"}],"type":"or"},{"filters":[{"input_number":0,"input_stat":"miss","type":"Stats","comparison":">"},{"input_number":0,"input_stat":"boo","type":"Stats","comparison":">"}],"type":"or"}],"type":"and"}'));
+			
+			variables.active_filter = TF;
 		}
 		
 		///- Engine Content Source

@@ -24,8 +24,8 @@ package classes.ui
 		 */
 		override protected function init():void
 		{
+			setSize(15, 100, false);
 			super.init();
-			setSize(100, 20);
 		}
 		
 		/**
@@ -80,6 +80,7 @@ package classes.ui
 			stage.removeEventListener(MouseEvent.MOUSE_UP, e_stopDrag);
 			_dragger.stopDrag();
 			_lastScroll = _dragger.y / (height - 1 - _dragger.height);
+			this.dispatchEvent(new Event(Event.CHANGE));
 		}
 		
 		private function e_mouseMove(e:MouseEvent):void
@@ -129,7 +130,7 @@ package classes.ui
 		public function set scrollFactor(value:Number):void
 		{
 			_scrollFactor = value;
-			invalidate();
+			draw();
 		}
 		
 		/**

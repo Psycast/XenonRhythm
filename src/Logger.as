@@ -1,5 +1,7 @@
 package 
 {
+	import com.flashfla.utils.TimeUtil;
+	import flash.utils.getTimer;
 
 	public class Logger 
 	{
@@ -32,7 +34,7 @@ package
 			if (debugUpdateCallback != null) debugUpdateCallback();
 			
 			// Display
-			trace(level + ":" + (!simple ? "[" + class_name(clazz) + "] " : "") + text);
+			trace(level + ":" + (!simple ? "[" + TimeUtil.convertToHHMMSS(getTimer() / 1000) + "][" + class_name(clazz) + "] " : "") + text);
 			}
 		}
 		

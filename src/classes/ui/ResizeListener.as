@@ -39,7 +39,15 @@ package classes.ui
 		 */
 		public static function clear():void
 		{
-			items = [];
+			var nItems:Array = [];
+			for (var i:int = 0; i < items.length; i++)
+			{
+				if (items[i] is UIOverlay)
+				{
+					nItems.push(items[i]);
+				}
+			}
+			items = nItems;
 		}
 		
 		/**

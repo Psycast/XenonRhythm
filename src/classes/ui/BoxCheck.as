@@ -28,11 +28,11 @@ package classes.ui
 		 */
 		override protected function init():void
 		{
-			super.init();
-			setSize(14, 14);
 			buttonMode = true;
 			useHandCursor = true;
 			mouseChildren = false;
+			setSize(14, 14, false);
+			super.init();
 		}
 		
 		/**
@@ -88,7 +88,7 @@ package classes.ui
 		{
 			_over = true;
 			addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
-			invalidate();
+			draw();
 		}
 		
 		/**
@@ -99,7 +99,7 @@ package classes.ui
 		{
 			_over = false;
 			removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
-			invalidate();
+			draw();
 		}
 		
 		///////////////////////////////////
@@ -116,7 +116,7 @@ package classes.ui
 		public function set checked(val:Boolean):void
 		{
 			_checked = val;
-			invalidate();
+			draw();
 		}
 		
 		public function get highlight():Boolean
@@ -127,7 +127,7 @@ package classes.ui
 		public function set highlight(val:Boolean):void
 		{
 			_highlight = val;
-			invalidate();
+			draw();
 		}
 		
 		public function get color():uint
@@ -138,7 +138,7 @@ package classes.ui
 		public function set color(value:uint):void
 		{
 			_background_color = value;
-			invalidate();
+			draw();
 		}
 		
 		public function get border_color():uint
@@ -149,7 +149,7 @@ package classes.ui
 		public function set border_color(value:uint):void
 		{
 			_border_color = value;
-			invalidate();
+			draw();
 		}
 		
 		public function get check_color():uint
@@ -160,7 +160,7 @@ package classes.ui
 		public function set check_color(value:uint):void
 		{
 			_border_color = value;
-			invalidate();
+			draw();
 		}
 	
 	}

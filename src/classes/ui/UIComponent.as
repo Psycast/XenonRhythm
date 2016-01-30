@@ -14,7 +14,6 @@ package classes.ui
 		protected var _tag:* = -1;
 		protected var _enabled:Boolean = true;
 		protected var _anchor:String = UIAnchor.NONE;
-		protected var _invalid:Boolean = false;
 		
 		/**
 		 * Constructor
@@ -39,7 +38,7 @@ package classes.ui
 		{
 			addChildren();
 			tabEnabled = false;
-			invalidate();
+			draw();
 		}
 		
 		/**
@@ -48,19 +47,6 @@ package classes.ui
 		protected function addChildren():void
 		{
 		
-		}
-		
-		/**
-		 * Marks the component to be redrawn on the next frame.
-		 */
-		protected function invalidate():void
-		{
-			if (!_invalid)
-			{
-				_invalid = true;
-				addEventListener(Event.ENTER_FRAME, onInvalidate);
-				//draw();
-			}
 		}
 		
 		/**
@@ -79,25 +65,14 @@ package classes.ui
 		 * @param w The width of the component.
 		 * @param h The height of the component.
 		 */
-		public function setSize(w:Number, h:Number):void
+		public function setSize(w:Number, h:Number, redraw:Boolean = true):void
 		{
 			_width = w;
 			_height = h;
 			dispatchEvent(new Event(Event.RESIZE));
-			invalidate();
-		}
-		
-		/**
-		 * Sets the size of the component and drawing instantly.
-		 * @param w The width of the component.
-		 * @param h The height of the component.
-		 */
-		public function setSizeInstant(w:Number, h:Number):void
-		{
-			_width = w;
-			_height = h;
-			dispatchEvent(new Event(Event.RESIZE));
-			draw();
+			
+			if (redraw)
+				draw();
 		}
 		
 		/**
@@ -129,20 +104,6 @@ package classes.ui
 			{
 				removeChildAt(0);
 			}
-		}
-		
-		///////////////////////////////////
-		// event handlers
-		///////////////////////////////////
-		
-		/**
-		 * Called one frame after invalidate is called.
-		 */
-		protected function onInvalidate(event:Event):void
-		{
-			_invalid = false;
-			removeEventListener(Event.ENTER_FRAME, onInvalidate);
-			draw();
 		}
 		
 		///////////////////////////////////
@@ -289,7 +250,7 @@ package classes.ui
 			_enabled = value;
 			mouseEnabled = mouseChildren = tabEnabled = _enabled;
 			alpha = ta;
-			invalidate();
+			draw();
 			//alpha = _enabled ? 1.0 : 0.5;
 		}
 		

@@ -1,7 +1,6 @@
 package scenes.songselection
 {
 	import assets.menu.FFRDude;
-	import assets.menu.icons.iconGear;
 	import classes.engine.EngineCore;
 	import classes.engine.EngineLevel;
 	import classes.engine.EngineLoader;
@@ -15,18 +14,17 @@ package scenes.songselection
 	import classes.ui.UISprite;
 	import classes.ui.UIStyle;
 	import classes.ui.VScrollBar;
-	import com.adobe.utils.StringUtil;
 	import com.flashfla.utils.ArrayUtil;
 	import com.flashfla.utils.NumberUtil;
 	import com.flashfla.utils.sprintf;
-	import com.greensock.easing.Power2;
+	import com.flashfla.utils.StringUtil;
 	import com.greensock.TweenLite;
-	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.text.TextFieldAutoSize;
 	import flash.ui.Keyboard;
+	import scenes.songselection.ui_songselection.FilterEditor;
 	import scenes.songselection.ui_songselection.FilterIcon;
 	import scenes.songselection.ui_songselection.SongButton;
 	
@@ -75,12 +73,13 @@ package scenes.songselection
 		public var DISPLAY_MODE:String = DM_STANDARD;
 		public var SELECTED_GENRE:int = 1;
 		public var SELECTED_SONG:SongButton;
+		public var CURRENT_PAGE:int = 0;
 		public var SEARCH_TEXT:String = "";
 		
 		//------------------------------------------------------------------------------------------------//
 		
 		public function SceneSelectionSongs(core:EngineCore)
-		{
+		{	
 			super(core);
 		}
 		
@@ -112,7 +111,7 @@ package scenes.songselection
 			
 			search_input = new BoxInput(top_bar_background, 5, 5);
 			search_button = new BoxButton(top_bar_background, 105, 5, core.getString("song_selection_menu_search"), e_searchClick);
-			filters_button = new BoxButton(top_bar_background, 205, 5, core.getString("song_selection_filters"));
+			filters_button = new BoxButton(top_bar_background, 205, 5, core.getString("song_selection_filters"), e_filtersClick);
 			options_button = new BoxButton(top_bar_background, 305, 5);
 			(new FilterIcon(options_button, 3, 3, "Gear", false)).setSize(21, 21);
 			search_button.fontSize = filters_button.fontSize = UIStyle.FONT_SIZE - 3;
@@ -137,42 +136,43 @@ package scenes.songselection
 		override public function onResize():void
 		{
 			// Update Genre Scrollbar Size + Position
-			genre_scrollpane.setSizeInstant(115, Constant.GAME_HEIGHT - 130);
-			genre_scrollbar.setSizeInstant(15, genre_scrollpane.height);
+			genre_scrollpane.setSize(115, Constant.GAME_HEIGHT - 130);
+			genre_scrollbar.setSize(15, genre_scrollpane.height);
 			genre_scrollbar.scrollFactor = genre_scrollpane.scrollFactor;
 			genre_scrollbar.visible = genre_scrollpane.doScroll;
 			
 			// Top Bar
-			top_bar_background.setSizeInstant(Constant.GAME_WIDTH - 150, 36);
-			options_button.setSizeInstant(top_bar_background.height - 11, top_bar_background.height - 11);
+			top_bar_background.setSize(Constant.GAME_WIDTH - 150, 36);
+			options_button.setSize(top_bar_background.height - 11, top_bar_background.height - 11);
 			options_button.x = top_bar_background.width - options_button.width - 5;
-			filters_button.setSizeInstant(75, top_bar_background.height - 11);
+			filters_button.setSize(75, top_bar_background.height - 11);
 			filters_button.x = options_button.x - filters_button.width - 5;
-			search_button.setSizeInstant(75, top_bar_background.height - 11);
+			search_button.setSize(75, top_bar_background.height - 11);
 			search_button.x = filters_button.x - search_button.width - 5;
-			search_input.setSizeInstant(search_button.x - 10, top_bar_background.height - 11);
+			search_input.setSize(search_button.x - 10, top_bar_background.height - 11);
 			
 			// Update Song Scroll Pane
-			ss_background.setSizeInstant(top_bar_background.width, Constant.GAME_HEIGHT - 80);
-			ss_scrollpane.setSizeInstant(ss_background.width - 40, ss_background.height - 20);
+			ss_background.setSize(top_bar_background.width, Constant.GAME_HEIGHT - 80);
+			ss_scrollpane.setSize(ss_background.width - 40, ss_background.height - 20);
 			
 			// Position Song Buttons
 			var songButtonYPosition:int = 0;
 			for each (var item:SongButton in ss_songButtons)
 			{
 				item.y = songButtonYPosition;
-				item.setSizeInstant(ss_scrollpane.width, 31);
+				item.width = ss_scrollpane.width;
 				songButtonYPosition += item.height + 5;
 			}
 			
 			// Update Song Scroll Bar
-			ss_scrollbar.setSizeInstant(15, ss_scrollpane.height);
+			ss_scrollbar.setSize(15, ss_scrollpane.height);
 			ss_scrollbar.move(ss_scrollpane.x + ss_scrollpane.width + 5, ss_scrollpane.y);
 			ss_scrollbar.scrollFactor = ss_scrollpane.scrollFactor;
 			ss_scrollbar.showDragger = ss_scrollpane.doScroll;
+			ss_scrollbar.scroll = ss_scrollpane.scroll;
 			
 			// Scroll Pane Size
-			bottom_bar_background.setSizeInstant(Constant.GAME_WIDTH - 150, 36);
+			bottom_bar_background.setSize(Constant.GAME_WIDTH - 150, 36);
 			bottom_bar_background.y = Constant.GAME_HEIGHT - 35;
 			bottom_user_info.setSize(bottom_bar_background.width - 10, bottom_bar_background.height - 11);
 		
@@ -209,39 +209,54 @@ package scenes.songselection
 			ss_songButtons = [];
 			
 			var i:int;
+			var list:Array;
 			
 			// Search Mode
 			if (DISPLAY_MODE == DM_SEARCH)
 			{
 				// Filter
-				var searchedPlaylist:Array = _playlist.index_list.filter(function(item:EngineLevel, index:int, array:Array):Boolean
+				list = _playlist.index_list.filter(function(item:EngineLevel, index:int, array:Array):Boolean
 				{
 					return item.name.toLowerCase().indexOf(SEARCH_TEXT) != -1;
 				}).sortOn("name");
 				
-				// Display
-				for (i = 0; i < searchedPlaylist.length; i++)
-				{
-					ss_songButtons.push(new SongButton(ss_scrollpane, 0, i * 30, core, searchedPlaylist[i]));
-				}
 			}
-			
 			// Display All
-			if (DISPLAY_MODE == DM_ALL)
+			else if (DISPLAY_MODE == DM_ALL)
 			{
+				list = _playlist.index_list;
 				
+				// User Filter
+				if (core.variables.active_filter != null)
+				{
+					list = list.filter(function(item:EngineLevel, index:int, array:Array):Boolean
+					{
+						return core.variables.active_filter.process(item, core.user);
+					});
+				}
+				list = list.slice(CURRENT_PAGE * 500, (CURRENT_PAGE + 1) * 500);
 			}
 			// Standard Display
 			else
 			{
-				// Check
-				if (_playlist.genre_list[SELECTED_GENRE] != null)
+				list = _playlist.genre_list[SELECTED_GENRE];
+			}
+			
+			// User Filter
+			if (core.variables.active_filter != null && list != null && DISPLAY_MODE != DM_ALL)
+			{
+				list = list.filter(function(item:EngineLevel, index:int, array:Array):Boolean
 				{
-					// Display
-					for (i = 0; i < _playlist.genre_list[SELECTED_GENRE].length; i++)
-					{
-						ss_songButtons.push(new SongButton(ss_scrollpane, 0, i * 30, core, _playlist.genre_list[SELECTED_GENRE][i]));
-					}
+					return core.variables.active_filter.process(item, core.user);
+				});
+			}
+			
+			// Display
+			if (list != null)
+			{
+				for (i = 0; i < list.length; i++)
+				{
+					ss_songButtons.push(new SongButton(ss_scrollpane, 0, i * 31, core, list[i]));
 				}
 			}
 			
@@ -264,13 +279,16 @@ package scenes.songselection
 			
 			// Get Engine Sources
 			var engineSources:Array = [];
-			for each (var item:EngineLoader in core.engineLoaders)
+			if (core.user.settings.display_alt_engines)
 			{
-				if (item.isCanon)
-					continue; // Skip FFR for now.
-				engineSources.push(item.infoArray);
+				for each (var item:EngineLoader in core.engineLoaders)
+				{
+					if (item.isCanon)
+						continue; // Skip FFR for now.
+					engineSources.push(item.infoArray);
+				}
+				engineSources = engineSources.sort();
 			}
-			engineSources = engineSources.sort();
 			engineSources.unshift(core.canonLoader.infoArray); // Place FFR first.
 			
 			// Draw Search Tag / Engine Label
@@ -300,12 +318,16 @@ package scenes.songselection
 						lineTo(genre_scrollpane.width, genreYPosition + 1);
 					}
 				}
+				
 				// Engine Label
-				genreLabel = new Label(genre_scrollpane, 0, genreYPosition, '<font color="' + UIStyle.ACTIVE_FONT_COLOR + '">' + engineSource[1] + '</font>', true);
-				genreLabel.tag = {"engine": engineSource[1], "genre": genre_id};
-				genreLabel.setSize(genre_scrollpane.width, 0);
-				genreLabel.fontSize = UIStyle.FONT_SIZE + 4;
-				genreYPosition += genreLabel.height + 2;
+				if (core.user.settings.display_alt_engines)
+				{
+					genreLabel = new Label(genre_scrollpane, 0, genreYPosition, '<font color="' + UIStyle.ACTIVE_FONT_COLOR + '">' + engineSource[1] + '</font>', true);
+					genreLabel.tag = {"engine": engineSource[1], "genre": genre_id};
+					genreLabel.setSize(genre_scrollpane.width, 0);
+					genreLabel.fontSize = UIStyle.FONT_SIZE + 4;
+					genreYPosition += genreLabel.height + 2;
+				}
 				
 				// All Genre
 				genreLabel = new Label(genre_scrollpane, 0, genreYPosition, core.getStringSource(engineSource[2], "genre_-1"), true);
@@ -414,6 +436,15 @@ package scenes.songselection
 				
 				drawGameList();
 			}
+		}
+		
+		/**
+		 * Event: MOUSE_CLICK
+		 * Search Button Click Event
+		 */
+		private function e_filtersClick(e:Event):void 
+		{
+			core.addOverlay(new FilterEditor(core));
 		}
 		
 		/**

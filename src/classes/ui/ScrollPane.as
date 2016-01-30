@@ -20,8 +20,8 @@ package classes.ui
 		 */
 		override protected function init():void
 		{
+			setSize(150, 100, false);
 			super.init();
-			setSize(150, 100);
 			scrollRect = new Rectangle(0, 0, width + 1, height);
 		}
 		
@@ -30,21 +30,10 @@ package classes.ui
 		 * @param w The width of the component.
 		 * @param h The height of the component.
 		 */
-		override public function setSize(w:Number, h:Number):void
+		override public function setSize(w:Number, h:Number, redraw:Boolean = true):void
 		{
 			scrollRect = new Rectangle(0, 0, w + 1, h);
-			super.setSize(w, h);
-		}
-		
-		/**
-		 * Sets the size of the component and drawing instantly.
-		 * @param w The width of the component.
-		 * @param h The height of the component.
-		 */
-		override public function setSizeInstant(w:Number, h:Number):void
-		{
-			scrollRect = new Rectangle(0, 0, w + 1, h);
-			super.setSizeInstant(w, h);
+			super.setSize(w, h, redraw);
 		}
 		
 		/**
