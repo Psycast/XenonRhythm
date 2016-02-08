@@ -18,16 +18,22 @@ package classes.ui
 			ResizeListener.addObject(this);
 		}
 		
+		/**
+		 * Draws the visual ui of the component.
+		 */
 		override public function draw():void 
 		{
 			super.draw();
 			
 			this.graphics.clear();
-			this.graphics.beginFill(sGameBackground.BG_DARK, 0.85);
+			this.graphics.beginFill(sGameBackground.BG_DARK, 0.90);
 			this.graphics.drawRect(0, 0, width, height);
 			this.graphics.endFill();
 		}
 		
+		/**
+		 * Stage resize and child positioning.
+		 */
 		override public function onResize():void 
 		{
 			_width = Constant.GAME_WIDTH
@@ -36,7 +42,7 @@ package classes.ui
 			super.onResize();
 			
 			this.graphics.clear();
-			this.graphics.beginFill(sGameBackground.BG_DARK, 0.85);
+			this.graphics.beginFill(sGameBackground.BG_DARK, 0.90);
 			this.graphics.drawRect(0, 0, width, height);
 			this.graphics.endFill();
 		}

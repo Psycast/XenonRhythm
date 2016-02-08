@@ -1,4 +1,4 @@
-package scenes.songselection.ui_songselection
+package scenes.songselection.ui.filtereditor
 {
 	import assets.menu.icons.*;
 	import classes.engine.EngineLevelFilter;

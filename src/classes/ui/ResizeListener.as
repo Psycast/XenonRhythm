@@ -1,5 +1,6 @@
 package classes.ui
 {
+	import com.flashfla.utils.ArrayUtil;
 	
 	/**
 	 * Simple stage resize listener and event propagator.
@@ -27,11 +28,7 @@ package classes.ui
 		 */
 		public static function removeObject(item:UIComponent):void
 		{
-			var ind:int;
-			if ((ind = items.indexOf(item)) != -1)
-			{
-				items.splice(ind, 1);
-			}
+			ArrayUtil.remove(item, items);
 		}
 		
 		/**

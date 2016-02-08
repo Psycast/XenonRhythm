@@ -24,9 +24,9 @@ package scenes.songselection
 	import flash.events.MouseEvent;
 	import flash.text.TextFieldAutoSize;
 	import flash.ui.Keyboard;
-	import scenes.songselection.ui_songselection.FilterEditor;
-	import scenes.songselection.ui_songselection.FilterIcon;
-	import scenes.songselection.ui_songselection.SongButton;
+	import scenes.songselection.ui.filtereditor.FilterEditor;
+	import scenes.songselection.ui.filtereditor.FilterIcon;
+	import scenes.songselection.ui.SongButton;
 	
 	public class SceneSelectionSongs extends UICore
 	{
@@ -460,11 +460,19 @@ package scenes.songselection
 			}
 		}
 		
+		/**
+		 * Event: CHANGE
+		 * Genre Scrollbar Change event.
+		 */
 		private function e_scrollGenreUpdate(e:Event):void
 		{
 			genre_scrollpane.scroll = genre_scrollbar.scroll;
 		}
 		
+		/**
+		 * Event: CHANGE
+		 * Song Selection Scrollbar Change event.
+		 */
 		private function e_scrollSongUpdate(e:Event):void
 		{
 			ss_scrollpane.scroll = ss_scrollbar.scroll;

@@ -8,35 +8,46 @@ package classes.engine
 		/// Filter Types
 		public static const FILTER_AND:String = "and";
 		public static const FILTER_OR:String = "or";
-		public static const FILTER_STYLE:String = "Style";
-		public static const FILTER_NAME:String = "Name";
-		public static const FILTER_ARTIST:String = "Artist";
-		public static const FILTER_STEPARTIST:String = "StepArtist";
-		public static const FILTER_BPM:String = "BPM";
-		public static const FILTER_DIFFICULTY:String = "Difficulty";
-		public static const FILTER_ARROWCOUNT:String = "Arrows";
-		public static const FILTER_ID:String = "ID";
-		public static const FILTER_MIN_NPS:String = "MinNPS";
-		public static const FILTER_MAX_NPS:String = "MaxNPS";
-		public static const FILTER_RANK:String = "Rank";
-		public static const FILTER_SCORE:String = "Score";
-		public static const FILTER_STATS:String = "Stats";
-		public static const FILTER_TIME:String = "Time";
+		public static const FILTER_STYLE:String = "style";
+		public static const FILTER_NAME:String = "name";
+		public static const FILTER_ARTIST:String = "artist";
+		public static const FILTER_STEPARTIST:String = "stepartist";
+		public static const FILTER_BPM:String = "bpm";
+		public static const FILTER_DIFFICULTY:String = "difficulty";
+		public static const FILTER_ARROWCOUNT:String = "arrows";
+		public static const FILTER_ID:String = "id";
+		public static const FILTER_MIN_NPS:String = "min_nps";
+		public static const FILTER_MAX_NPS:String = "max_nps";
+		public static const FILTER_RANK:String = "rank";
+		public static const FILTER_SCORE:String = "score";
+		public static const FILTER_STATS:String = "stats";
+		public static const FILTER_TIME:String = "time";
 		
-		public static const FILTERS:Array = [FILTER_AND, FILTER_OR, FILTER_STYLE, FILTER_NAME, FILTER_ARTIST, FILTER_STEPARTIST, FILTER_BPM, FILTER_DIFFICULTY, FILTER_ARROWCOUNT, FILTER_ID, FILTER_MIN_NPS, FILTER_MAX_NPS, FILTER_RANK, FILTER_SCORE, FILTER_STATS, FILTER_TIME];
+		public static const FILTERS:Array = [FILTER_AND, FILTER_OR, FILTER_STYLE, FILTER_ARTIST, FILTER_STEPARTIST, FILTER_BPM, FILTER_DIFFICULTY, FILTER_ARROWCOUNT, FILTER_ID, FILTER_MIN_NPS, FILTER_MAX_NPS, FILTER_RANK, FILTER_SCORE, FILTER_STATS, FILTER_TIME];
 		public static const FILTERS_STAT:Array = ["amazing", "perfect", "average", "miss", "boo", "combo"];
 		public static const FILTERS_NUMBER:Array = ["=", "!=", "<=", ">=", "<", ">"];
-		public static const FILTERS_STRING:Array = [["Equal", "equal"], ["Start With", "start_with"], ["End With", "end_with"], ["Contains", "contains"]];
+		public static const FILTERS_STRING:Array = ["equal", "start_with", "end_with", "contains"];
 		
 		public var name:String;
 		public var type:String;
 		public var comparison:String;
 		public var inverse:Boolean = false;
 		
+		public var parent_filter:EngineLevelFilter;
 		public var filters:Array = [];
 		public var input_number:Number = 0;
 		public var input_string:String = "";
-		public var input_stat:String; // Display4
+		public var input_stat:String = FILTERS_STAT[0]; // Display4
+		
+		public function EngineLevelFilter(topLevelFilter:Boolean = false) 
+		{
+			if (topLevelFilter)
+			{
+				name = "Untitled Filter";
+				type = "and";
+				filters = [];
+			}
+		}
 		
 		/**
 		 * Process the engine level to see if it has passed the requirements of the filters currently set.
@@ -184,6 +195,9 @@ package classes.engine
 		
 		public function setup(obj:Object):void
 		{
+			if (obj.hasOwnProperty("type"))
+				type = obj["type"];
+				
 			if (obj.hasOwnProperty("filters"))
 			{
 				var in_filter:EngineLevelFilter;
@@ -192,32 +206,34 @@ package classes.engine
 				{
 					in_filter = new EngineLevelFilter();
 					in_filter.setup(in_filters[i]);
+					in_filter.parent_filter = this;
 					filters.push(in_filter);
 				}
+				if (obj.hasOwnProperty("name"))
+					name = obj["name"];
+					
 			}
-			
-			if (obj.hasOwnProperty("comparison"))
-				comparison = obj["comparison"];
-				
-			if (obj.hasOwnProperty("name"))
-				name = obj["name"];
-				
-			if (obj.hasOwnProperty("type"))
-				type = obj["type"];
-				
-			if (obj.hasOwnProperty("input_number"))
-				input_number = obj["input_number"];
-				
-			if (obj.hasOwnProperty("input_string"))
-				input_string = obj["input_string"];
-				
-			if (obj.hasOwnProperty("input_stat"))
-				input_stat = obj["input_stat"];
+			else
+			{
+				if (obj.hasOwnProperty("comparison"))
+					comparison = obj["comparison"];
+					
+				if (obj.hasOwnProperty("input_number"))
+					input_number = obj["input_number"];
+					
+				if (obj.hasOwnProperty("input_string"))
+					input_string = obj["input_string"];
+					
+				if (obj.hasOwnProperty("input_stat"))
+					input_stat = obj["input_stat"];
+			}
 		}
 		
 		public function export():Object
 		{
-			var obj:Object = {};
+			var obj:Object = { "type": type };
+			
+			// Filter AND/OR
 			if (type == FILTER_AND || type == FILTER_OR)
 			{
 				var ex_array:Array = [];
@@ -226,20 +242,19 @@ package classes.engine
 					ex_array.push(filters[i].export());
 				}
 				obj["filters"] = ex_array;
+				
+				if (name && name != "")
+					obj["name"] = name;
 			}
-			obj["type"] = type;
-			
-			if (comparison && comparison != "")
+			else
+			{
 				obj["comparison"] = comparison;
-			if (name && name != "")
-				obj["name"] = name;
-			if (input_number)
 				obj["input_number"] = input_number;
-			if (input_string && input_string != "")
 				obj["input_string"] = input_string;
-			if (input_stat && input_stat != "")
-				obj["input_stat"] = input_stat;
-			
+					
+				if (type == FILTER_STATS)
+					obj["input_stat"] = input_stat;
+			}
 			return obj;
 		}
 		
@@ -249,6 +264,17 @@ package classes.engine
 					+ (!isNaN(input_number) ? " input_number=" + input_number : "") 
 					+ (input_string != null ? " input_string=" + input_string : "") 
 					+ (input_stat != null ? " input_stat=" + input_stat : "");
+		}
+		
+		static public function createOptions(core:EngineCore, filtersString:Array, type:String):Array 
+		{
+			var options:Array = [];
+			for (var i:int = 0; i < filtersString.length; i++) 
+			{
+				options.push([core.getString("filter_" + type + "_" + filtersString[i]), filtersString[i]]);
+			}
+			
+			return options;
 		}
 	}
 }

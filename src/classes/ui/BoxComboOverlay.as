@@ -23,7 +23,7 @@ package classes.ui
 		private var _defaultHandler:Function;
 		private var _listPostion:String;
 		
-		public function BoxComboOverlay(title:String = null, options:Array = null, defaultHandler:Function = null, postion:String = UIAnchor.TOP_LEFT)
+		public function BoxComboOverlay(title:String = null, options:Array = null, defaultHandler:Function = null, postion:String = UIAnchor.TOP_CENTER)
 		{
 			_title = title;
 			_options = options;
@@ -83,10 +83,10 @@ package classes.ui
 			// Box Holder
 			switch (_listPostion)
 			{
-				default: 
 				case UIAnchor.TOP_LEFT: 
 					_holder.x = 15;
 					break;
+				default: 
 				case UIAnchor.TOP_CENTER: 
 					_holder.x = Constant.GAME_WIDTH_CENTER - (_holder.width / 2);
 					break;
@@ -105,6 +105,7 @@ package classes.ui
 			_scrollbar.move(_pane.x + _pane.width + 5, _pane.y);
 			_scrollbar.scrollFactor = _pane.scrollFactor;
 			_scrollbar.visible = _pane.doScroll;
+			_scrollbar.scroll = _pane.scroll;
 		}
 		
 		///////////////////////////////////
@@ -132,15 +133,15 @@ package classes.ui
 					lbl = _options[i];
 					dat = _options[i];
 				}
-				else if (_options[i] is Object && _options[i]["label"] != null && _options[i]["data"] != null)
+				else if (_options[i] is Object && _options[i]["label"] != null && _options[i]["value"] != null)
 				{
 					lbl = _options[i]["label"];
-					dat = _options[i]["data"];
+					dat = _options[i]["value"];
 				}
 				
 				btn = new BoxButton(_pane, 0, i * 40, lbl, e_buttonHandler);
 				btn.setSize(_pane.width, 35);
-				btn.tag = {"text": lbl, "value": dat};
+				btn.tag = {"label": lbl, "value": dat};
 			}
 		}
 		

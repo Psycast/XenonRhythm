@@ -3,6 +3,55 @@ package com.flashfla.utils
 	
 	public class ArrayUtil
 	{
+		/**
+		 *	Remove first of the specified value from the array,
+		 *
+		 * 	@param arr The array from which the value will be removed
+		 *
+		 *	@param value The object that will be removed from the array.
+		 *
+		 * 	@langversion ActionScript 3.0
+		 *	@playerversion Flash 9.0
+		 *	@tiptext
+		 */
+		public static function remove(value:Object, arr:Array):Boolean
+		{
+			if (!arr || arr.length == 0)
+				return false;
+				
+			var ind:int;
+			if ((ind = arr.indexOf(value)) != -1)
+			{
+				arr.splice(ind, 1);
+				return true;
+			}
+			return false;
+		}
+		
+		/**
+		 *	Remove all instances of the specified value from the array,
+		 *
+		 * 	@param arr The array from which the value will be removed
+		 *
+		 *	@param value The object that will be removed from the array.
+		 *
+		 * 	@langversion ActionScript 3.0
+		 *	@playerversion Flash 9.0
+		 *	@tiptext
+		 */
+		public static function removeValue(value:Object, arr:Array):void
+		{
+			var len:uint = arr.length;
+			
+			for (var i:Number = len; i > -1; i--)
+			{
+				if (arr[i] === value)
+				{
+					arr.splice(i, 1);
+				}
+			}
+		}
+		
 		public static function count(ar:Array):uint
 		{
 			var len:uint = 0;
@@ -77,7 +126,7 @@ package com.flashfla.utils
 			while (toCheck-- > 0)
 			{
 				if (searchArray[newIndex] != null && condition(searchArray[newIndex]))
-						break;
+					break;
 				newIndex = index_wrap(newIndex + indexMove, 0, indexTotal);
 			}
 			return newIndex;

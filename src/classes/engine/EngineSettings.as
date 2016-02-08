@@ -48,6 +48,9 @@ package classes.engine
 		public var display_mp_mask:Boolean = false;
 		public var display_mp_timestamp:Boolean = false;
 		
+		// Other
+		public var filters:Array = [];
+		
 		/**
 		 * Setups Engine Settings for a passed object.
 		 * @param	obj	Object containing new settings.
@@ -91,6 +94,7 @@ package classes.engine
 			if(obj["viewMPMask"])			display_mp_mask = obj["viewMPMask"];
 			if(obj["viewMPTimestamp"])		display_mp_timestamp = obj["viewMPTimestamp"];
 			if(obj["viewAltEngines"])		display_alt_engines = obj["viewAltEngines"];
+			if (obj["filters"])				filters = doImportFilters(obj["filters"]);
 		}
 		
 		public function export():Object
@@ -125,7 +129,43 @@ package classes.engine
 			obj["viewMPTimestamp"] 	= display_mp_timestamp;
 			obj["viewAltEngines"] 	= display_alt_engines;
 			
+			// Other
+			obj["filters"]			= doExportFilters(filters);
+			
 			return obj;
+		}
+		
+		/**
+		 * Imports user filters from a save object.
+		 * @param	filters Array of Filter objects.
+		 * @return Array of EngineLevelFilters.
+		 */
+		private function doImportFilters(filters_in:Array):Array 
+		{
+			var newFilters:Array = [];
+			var filter:EngineLevelFilter;
+			for each (var item:Object in filters_in) 
+			{
+				filter = new EngineLevelFilter();
+				filter.setup(item);
+				newFilters.push(filter);
+			}
+			return newFilters;
+		}
+		
+		/**
+		 * Exports the user filters into an array of filter objects.
+		 * @param	filters_out Array of Filters to export.
+		 * @return	Array of Filter Object.
+		 */
+		private function doExportFilters(filters_out:Array):Array 
+		{
+			var filtersOut:Array = [];
+			for each (var item:EngineLevelFilter in filters_out) 
+			{
+				filtersOut.push(item.export());
+			}
+			return filtersOut;
 		}
 	}
 }

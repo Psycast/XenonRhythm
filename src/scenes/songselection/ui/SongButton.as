@@ -1,4 +1,4 @@
-package scenes.songselection.ui_songselection
+package scenes.songselection.ui
 {
 	import classes.engine.EngineCore;
 	import classes.engine.EngineLevel;
