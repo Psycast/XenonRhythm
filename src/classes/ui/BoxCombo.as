@@ -38,6 +38,11 @@ package classes.ui
 		override public function draw():void
 		{
 			super.draw();
+		}
+		
+		override public function drawBox():void 
+		{
+			super.drawBox();
 			
 			graphics.moveTo(width - 21, 0);
 			graphics.lineTo(width - 21, height);

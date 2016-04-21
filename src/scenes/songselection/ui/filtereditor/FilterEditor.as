@@ -94,8 +94,8 @@ package scenes.songselection.ui.filtereditor
 				}
 				else {
 					tabLabel.text = "No Filter Active";
-					tabLabel.visible = true;
-					addSavedFilterButton.visible = filterNameInput.visible = clearFilterButton.visible = false;
+					addSavedFilterButton.visible = tabLabel.visible = true;
+					filterNameInput.visible = clearFilterButton.visible = false;
 				}
 			}
 			// Saved Filters List
@@ -104,7 +104,7 @@ package scenes.songselection.ui.filtereditor
 				filterListButton.label = "Active Filter";
 				filterNameInput.visible = clearFilterButton.visible = false;
 				tabLabel.text = "Saved Filters";
-				addSavedFilterButton.visible = tabLabel.visible = true;
+				tabLabel.visible = true;
 				
 				var yPos:Number = -40;
 				for each (var item:EngineLevelFilter in core.user.settings.filters) 
@@ -218,6 +218,10 @@ package scenes.songselection.ui.filtereditor
 		private function e_addSavedFilterButton(e:Event):void 
 		{
 			core.user.settings.filters.push(new EngineLevelFilter(true));
+			
+			if (DRAW_TAB == TAB_FILTER)
+				core.variables.active_filter = core.user.settings.filters[core.user.settings.filters.length - 1];
+				
 			draw();
 		}
 		

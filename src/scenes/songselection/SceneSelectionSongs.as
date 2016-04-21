@@ -496,8 +496,13 @@ package scenes.songselection
 				var selectedIndex:int = SELECTED_SONG ? ss_songButtons.indexOf(SELECTED_SONG) : 0;
 				var newIndex:int = selectedIndex;
 				
+				// Select Song
+				if (e.keyCode == Keyboard.ENTER)
+				{
+					trace(SELECTED_SONG);
+				}
 				// Menu Navigation
-				if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.NUMPAD_2)
+				else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.NUMPAD_2)
 				{
 					newIndex++;
 				}
