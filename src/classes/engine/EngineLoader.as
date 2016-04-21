@@ -57,6 +57,7 @@ package classes.engine
 			_short_name = value;
 		}
 		
+		/** Contains [name, short_name, id]  */
 		public function get infoArray():Array
 		{
 			return [name, short_name, id];
@@ -143,16 +144,19 @@ package classes.engine
 					
 					if (this.id == "")
 						this.id = node.id.toString() + "-external";
-					this.name = node.name.toString();
-					this.domain = node.domain.toString();
-					this.song_url = node.songURL.toString();
-					
-					// Short Name
+						
+					if (node.name != null)
+						this.name = node.name.toString();
 					if (node.shortName != null)
 						this.short_name = node.shortName.toString();
+					if (node.domain != null)
+						this.domain = node.domain.toString();
+					if (node.songURL != null)
+						this.song_url = node.songURL.toString();
 					
 					// Load Playlist
-					loadPlaylist(node.playlistURL.toString(), _requestParams);
+					if (node.playlistURL != null)
+						loadPlaylist(node.playlistURL.toString(), _requestParams);
 					
 					// Load Site Info is existing.
 					if (node.siteinfoURL != null)
@@ -196,19 +200,25 @@ package classes.engine
 				}
 				if (this.id == "")
 					this.id = json.id + "-external";
-				this.name = json.name;
-				this.short_name = json.short_name;
-				this.domain = json.domain;
-				this.song_url = json.songURL;
+				
+				if (json.name != null)
+					this.name = json.name;
+				if (json.short_name != null)
+					this.short_name = json.short_name;
+				if (json.domain != null)
+					this.domain = json.domain;
+				if (json.songURL != null)
+					this.song_url = json.songURL;
 				
 				// Load Playlist
-				loadPlaylist(json.playlistURL, _requestParams);
+				if (json.playlistURL != null)
+					loadPlaylist(json.playlistURL, _requestParams);
 				
-				// Load Site Info is existing.
+				// Load Site Info
 				if (json.siteinfoURL != null)
 					loadInfo(json.siteinfoURL, _requestParams);
 				
-				// Load Language is existing.
+				// Load Language
 				if (json.languageURL != null)
 					loadLanguage(json.languageURL, _requestParams);
 				
@@ -369,6 +379,7 @@ package classes.engine
 			Logger.log(this, Logger.NOTICE, "Total Public Songs: " + _playlist.total_public_songs);
 			Logger.log(this, Logger.NOTICE, "Total Genres: " + _playlist.total_genres);
 			_isInit = true;
+			_core.loaderInitialized(this);
 		}
 		
 		///- Private
