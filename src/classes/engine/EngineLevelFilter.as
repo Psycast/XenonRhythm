@@ -23,13 +23,13 @@ package classes.engine
 		public static const FILTER_STATS:String = "stats";
 		public static const FILTER_TIME:String = "time";
 		
-		public static const FILTERS:Array = [FILTER_AND, FILTER_OR, FILTER_STYLE, FILTER_ARTIST, FILTER_STEPARTIST, FILTER_BPM, FILTER_DIFFICULTY, FILTER_ARROWCOUNT, FILTER_ID, FILTER_MIN_NPS, FILTER_MAX_NPS, FILTER_RANK, FILTER_SCORE, FILTER_STATS, FILTER_TIME];
+		public static const FILTERS:Array = [FILTER_AND, FILTER_OR, FILTER_STYLE, FILTER_ARTIST, FILTER_STEPARTIST, FILTER_DIFFICULTY, FILTER_ARROWCOUNT, FILTER_ID, FILTER_MIN_NPS, FILTER_MAX_NPS, FILTER_RANK, FILTER_SCORE, FILTER_STATS, FILTER_TIME];
 		public static const FILTERS_STAT:Array = ["amazing", "perfect", "average", "miss", "boo", "combo"];
 		public static const FILTERS_NUMBER:Array = ["=", "!=", "<=", ">=", "<", ">"];
 		public static const FILTERS_STRING:Array = ["equal", "start_with", "end_with", "contains"];
 		
 		public var name:String;
-		public var type:String;
+		private var _type:String;
 		public var comparison:String;
 		public var inverse:Boolean = false;
 		
@@ -47,6 +47,17 @@ package classes.engine
 				type = "and";
 				filters = [];
 			}
+		}
+		
+		public function get type():String 
+		{
+			return _type;
+		}
+		
+		public function set type(value:String):void 
+		{
+			_type = value;
+			setDefaultComparison();
 		}
 		
 		/**
@@ -101,7 +112,7 @@ package classes.engine
 					return compareString(songData.stepauthor, input_string);
 				
 				case FILTER_BPM: 
-					return false; //compareNumber(songData.bpm, input_number);
+					return false; // TODO: compareNumber(songData.bpm, input_number);
 				
 				case FILTER_DIFFICULTY: 
 					return compareNumber(songData.difficulty, input_number);
@@ -256,6 +267,35 @@ package classes.engine
 					obj["input_stat"] = input_stat;
 			}
 			return obj;
+		}
+		
+		public function setDefaultComparison():void
+		{
+			switch (type)
+			{
+				case FILTER_STATS: 
+					comparison = FILTERS_STAT[0];
+					break;
+				
+				case FILTER_ARROWCOUNT: 
+				case FILTER_BPM: 
+				case FILTER_DIFFICULTY: 
+				case FILTER_MAX_NPS: 
+				case FILTER_MIN_NPS: 
+				case FILTER_RANK: 
+				case FILTER_SCORE: 
+				case FILTER_TIME: 
+					comparison = FILTERS_NUMBER[0];
+					break;
+				
+				case FILTER_ID: 
+				case FILTER_NAME: 
+				case FILTER_STYLE: 
+				case FILTER_ARTIST: 
+				case FILTER_STEPARTIST: 
+					comparison = FILTERS_STRING[0];
+					break;
+			}
 		}
 		
 		public function toString():String
