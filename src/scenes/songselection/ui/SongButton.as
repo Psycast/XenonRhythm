@@ -20,6 +20,7 @@ package scenes.songselection.ui
 		private var _lblSongName:Label;
 		private var _lblSongFlag:Label;
 		private var _lblSongDifficulty:Label;
+		private var _lblSongStyle:Label;
 		
 		private var _highlight:Boolean = false;
 		private var _over:Boolean = false;
@@ -63,6 +64,8 @@ package scenes.songselection.ui
 				_lblSongFlag.autoSize = TextFieldAutoSize.RIGHT;
 				_lblSongDifficulty = new Label(this, 5, 2, songData.difficulty.toString());
 				_lblSongDifficulty.autoSize = TextFieldAutoSize.RIGHT;
+				_lblSongStyle = new Label(this, 5, 2, songData.style);
+				_lblSongStyle.autoSize = TextFieldAutoSize.RIGHT;
 			}
 			
 			addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
@@ -74,25 +77,50 @@ package scenes.songselection.ui
 		override public function draw():void
 		{
 			super.draw();
-			this.graphics.clear();
-			this.graphics.lineStyle(1, 0xFFFFFF, (highlight ? 0.8: 0.55), true);
-			this.graphics.beginGradientFill(GradientType.LINEAR, [0xFFFFFF, 0xFFFFFF], (highlight ? [0.5, 0.25] : [0.35, 0.1]), [0, 255], _mtxGradient);
-			this.graphics.drawRect(0, 0, width, height);
-			this.graphics.endFill();
+			drawBox();
 			
 			// Song Divider
 			if (songData.is_title_only || songData.difficulty == 0)
 			{
-				_lblSongName.setSize(width, height - 3);
+				_lblSongName.setSize(width - 10, height - 3);
 			}
 			else
 			{
-				_lblSongName.setSize(width - 150, height - 3);
-				_lblSongFlag.x = width - 140;
-				_lblSongFlag.setSize(110, height - 3);
 				_lblSongDifficulty.x = width - 25;
 				_lblSongDifficulty.setSize(20, height - 3);
+				_lblSongFlag.x = _lblSongDifficulty.x - 95;
+				_lblSongFlag.setSize(90, height - 3);
+				if (width >= 650)
+				{
+					_lblSongStyle.visible = true;
+					_lblSongStyle.x = _lblSongFlag.x - 115;
+					_lblSongStyle.setSize(110, height - 3);
+					_lblSongName.setSize(_lblSongStyle.x - 10, height - 3);
+				}
+				else
+				{
+					_lblSongStyle.visible = false;
+					_lblSongName.setSize(_lblSongFlag.x - 10, height - 3);
+				}
 			}
+		}
+		
+		
+		///////////////////////////////////
+		// public methods
+		///////////////////////////////////
+		
+		/**
+		 * Draws the background rectangle.
+		 */
+		public function drawBox():void 
+		{
+			//- Draw Box
+			this.graphics.clear();
+			this.graphics.lineStyle(1, 0xFFFFFF, (highlight ? 0.8: 0.55));
+			this.graphics.beginGradientFill(GradientType.LINEAR, [0xFFFFFF, 0xFFFFFF], (highlight ? [0.5, 0.25] : [0.35, 0.1]), [0, 255], _mtxGradient);
+			this.graphics.drawRect(0, 0, width, height);
+			this.graphics.endFill();
 		}
 		
 		///////////////////////////////////
@@ -107,7 +135,7 @@ package scenes.songselection.ui
 		{
 			_over = true;
 			addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
-			draw();
+			drawBox();
 		}
 		
 		/**
@@ -118,7 +146,7 @@ package scenes.songselection.ui
 		{
 			_over = false;
 			removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
-			draw();
+			drawBox();
 		}
 		
 		///////////////////////////////////
@@ -131,9 +159,9 @@ package scenes.songselection.ui
 		public function set highlight(val:Boolean):void
 		{
 			_highlight = val;
-			draw();
+			drawBox();
 		}
-	
+		
 	}
 
 }

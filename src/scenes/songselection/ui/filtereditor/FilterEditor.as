@@ -8,6 +8,7 @@ package scenes.songselection.ui.filtereditor
 	import classes.ui.BoxInput;
 	import classes.ui.Label;
 	import classes.ui.ScrollPane;
+	import classes.ui.ScrollPaneBars;
 	import classes.ui.UIComponent;
 	import classes.ui.UIOverlay;
 	import classes.ui.UIStyle;
@@ -25,8 +26,7 @@ package scenes.songselection.ui.filtereditor
 		
 		public var core:EngineCore;
 		private var _holder:Box;
-		private var _pane:ScrollPane;
-		private var _scrollbar:VScrollBar;
+		private var _pane:ScrollPaneBars;
 		
 		private var tabLabel:Label;
 		private var filterNameInput:BoxInput;
@@ -54,9 +54,7 @@ package scenes.songselection.ui.filtereditor
 		override protected function addChildren():void 
 		{
 			_holder = new Box(this, 5, 5);
-			_pane = new ScrollPane(_holder, 5, 41);
-			_scrollbar = new VScrollBar(_holder, 50, 41);
-			_scrollbar.addEventListener(Event.CHANGE, e_scrollUpdate);
+			_pane = new ScrollPaneBars(_holder, 5, 41, true, true);
 			
 			tabLabel = new Label(_holder, 10, 7);
 			tabLabel.fontSize = UIStyle.FONT_SIZE + 3;
@@ -78,8 +76,8 @@ package scenes.songselection.ui.filtereditor
 		{
 			super.draw();
 			
-			pG.clear();
 			_pane.removeChildren();
+			pG.clear();
 			filterButtons = [];
 			
 			// Active Filter Editor
@@ -125,12 +123,7 @@ package scenes.songselection.ui.filtereditor
 			super.onResize();
 			
 			_holder.setSize(width - 10, height - 10);
-			_pane.setSize(_holder.width - 30, _holder.height - 46);
-			_scrollbar.setSize(15, _pane.height);
-			_scrollbar.move(_pane.x + _pane.width + 5, _pane.y);
-			_scrollbar.scrollFactor = _pane.scrollFactor;
-			_scrollbar.showDragger = _pane.doScroll;
-			_pane.scroll = _scrollbar.scroll;
+			_pane.setSize(_holder.width - 10, _holder.height - 46);
 			
 			closeButton.move(_holder.width - 105, 5);
 			filterListButton.move(closeButton.x - 105, 5);
@@ -140,7 +133,7 @@ package scenes.songselection.ui.filtereditor
 			
 			for each (var item:UIComponent in filterButtons) 
 			{
-				item.setSize(_pane.width, 33);
+				item.setSize(_pane.paneWidth, 33);
 			}
 		}
 		
@@ -170,7 +163,7 @@ package scenes.songselection.ui.filtereditor
 						pG.lineTo(xPos - INDENT_GAP + 10, yPos + 14);
 						
 						// AND / OR Label
-						new Label(_pane, xPos, yPos + 2, filter.type.toUpperCase());
+						new Label(_pane, xPos, yPos + 2, core.getString("filter_type_" + filter.type));
 						
 						// Remove Filter Button
 						var removeFilter:BoxButton = new BoxButton(_pane, xPos + INDENT_GAP + 327, yPos, "X", e_removeFilter);
@@ -295,15 +288,6 @@ package scenes.songselection.ui.filtereditor
 			{
 				draw();
 			}
-		}
-		
-		/**
-		 * Event: CHANGE
-		 * Genre Scrollbar Change event.
-		 */
-		private function e_scrollUpdate(e:Event):void 
-		{
-			_pane.scroll = _scrollbar.scroll;
 		}
 		
 		///////////////////////////////////

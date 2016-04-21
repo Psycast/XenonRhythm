@@ -15,11 +15,11 @@ package classes.ui
 	public class BoxComboOverlay extends UIOverlay
 	{
 		private var _holder:Box;
-		private var _pane:ScrollPane;
-		private var _scrollbar:VScrollBar;
+		private var _pane:ScrollPaneBars;
 		private var _title:String;
 		private var _titletf:TextField;
 		private var _options:Array = [];
+		private var _optionButtons:Array = [];
 		private var _defaultHandler:Function;
 		private var _listPostion:String;
 		
@@ -39,12 +39,8 @@ package classes.ui
 			_holder.setSize(250, Constant.GAME_HEIGHT + 2);
 			
 			// Pane
-			_pane = new ScrollPane(_holder, 10, 10);
+			_pane = new ScrollPaneBars(_holder, 10, 10);
 			_pane.width = _holder.width - 22;
-			
-			// Scroll Bar
-			_scrollbar = new VScrollBar(_holder, 10, 10);
-			_scrollbar.addEventListener(Event.CHANGE, e_scrollUpdate);
 			
 			// Add Title
 			if (_title)
@@ -69,11 +65,6 @@ package classes.ui
 			
 			// Move / Positioning
 			onResize();
-		}
-		
-		private function e_scrollUpdate(e:Event):void 
-		{
-			_pane.scroll = _scrollbar.scroll;
 		}
 		
 		override public function onResize():void
@@ -101,11 +92,12 @@ package classes.ui
 			_pane.height = _holder.height - 10 - yOffset;
 			_pane.y = yOffset;
 			
-			_scrollbar.setSize(15, _pane.height);
-			_scrollbar.move(_pane.x + _pane.width + 5, _pane.y);
-			_scrollbar.scrollFactor = _pane.scrollFactor;
-			_scrollbar.visible = _pane.doScroll;
-			_scrollbar.scroll = _pane.scroll;
+			// button Size
+			var paneWidth:Number = _pane.paneWidth;
+			for (var i:int = 0; i < _optionButtons.length; i++)
+			{
+				_optionButtons[i].width = paneWidth;
+			}
 		}
 		
 		///////////////////////////////////
@@ -140,8 +132,9 @@ package classes.ui
 				}
 				
 				btn = new BoxButton(_pane, 0, i * 40, lbl, e_buttonHandler);
-				btn.setSize(_pane.width, 35);
-				btn.tag = {"label": lbl, "value": dat};
+				btn.setSize(200, 35);
+				btn.tag = { "label": lbl, "value": dat };
+				_optionButtons.push(btn);
 			}
 		}
 		
@@ -159,7 +152,7 @@ package classes.ui
 			{
 				_defaultHandler((e.target as BoxButton).tag);
 			}
-			if (parent && parent.contains(this))
+			if (parent && parent.contains(this) && (parent is UI))
 			{
 				(parent as UI).removeOverlay(this);
 			}

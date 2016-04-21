@@ -36,9 +36,16 @@ package classes.ui
 		override public function draw():void
 		{
 			super.draw();
-			this.graphics.clear();
-			
+			drawBox();
+		}
+		
+		/**
+		 * Draws the background rectangle.
+		 */
+		public function drawBox():void 
+		{
 			//- Draw Box
+			this.graphics.clear();
 			this.graphics.lineStyle(1, borderColor, (highlight ? _border_alpha * 1.5 : _border_alpha));
 			this.graphics.beginFill(color, (highlight ? _background_alpha * 1.5 : _background_alpha));
 			this.graphics.drawRect(0, 0, width, height);
@@ -62,7 +69,7 @@ package classes.ui
 		public function set highlight(val:Boolean):void
 		{
 			_highlight = val;
-			draw();
+			drawBox();
 		}
 		
 		/**

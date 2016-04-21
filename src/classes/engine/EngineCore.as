@@ -3,17 +3,22 @@ package classes.engine
 	import classes.ui.ResizeListener;
 	import classes.ui.UICore;
 	import classes.user.User;
-	import com.adobe.serialization.json.JSONManager;
+	import com.flashfla.utils.ObjectUtil;
 	import flash.display.DisplayObject;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	
-	public class EngineCore
+	public class EngineCore extends EventDispatcher
 	{
+		//
+		static public const LOADERS_UPDATE:String = "loadersUpdate";
+		
 		// Engine Source
 		private var _source:String;
 		
 		// Engine Loaders
-		private var _loaders:Object = {};
+		private var _loaders:Object = { };
+		private var _loaderCount:uint = 0;
 		
 		// Indexed List of Components
 		private var _playlists:Object = {};
@@ -54,6 +59,11 @@ package classes.engine
 		}
 		
 		///- Engine Loader
+		public function get loaderCount():uint
+		{
+			return _loaderCount;
+		}
+		
 		// Get Active Engine Loader.
 		public function getCurrentLoader():EngineLoader
 		{
@@ -72,13 +82,35 @@ package classes.engine
 		public function registerLoader(loader:EngineLoader):void
 		{
 			_loaders[loader.id] = loader;
+			_loaderCount = ObjectUtil.count(_loaders);
 			Logger.log(this, Logger.INFO, "Registered EngineLoader: " + loader.id);
 		}
 		
 		public function removeLoader(loader:EngineLoader):void
 		{
+			// Remove Playlist, Info and Language First
+			removePlaylist(loader.playlist);
+			removeInfo(loader.info);
+			removeLanguage(loader.language);
+			
+			// Remove Loader itself.
 			delete _loaders[loader.id];
+			
+			// Reset Source if active source was removed.
+			if (source == loader.id)
+			{
+				source = Constant.GAME_ENGINE;
+			}
+			
+			_loaderCount = ObjectUtil.count(_loaders);
+			
+			dispatchEvent(new Event(LOADERS_UPDATE));
 			Logger.log(this, Logger.INFO, "Removed EngineLoader: " + loader.id);
+		}
+		
+		public function loaderInitialized(loader:EngineLoader):void
+		{
+			dispatchEvent(new Event(LOADERS_UPDATE));
 		}
 		
 		public function get engineLoaders():Object
@@ -109,6 +141,15 @@ package classes.engine
 			Logger.log(this, Logger.INFO, "Registered Playlist: " + engine.id);
 		}
 		
+		public function removePlaylist(engine:EnginePlaylist):void
+		{
+			if (engine && _playlists[engine.id] != null)
+			{
+				Logger.log(this, Logger.INFO, "Removed Playlist: " + engine.id);
+				delete _playlists[engine.id];
+			}
+		}
+		
 		///- Engine Info
 		// Get Active Engine Language.
 		public function getCurrentInfo():EngineSiteInfo
@@ -132,6 +173,15 @@ package classes.engine
 			Logger.log(this, Logger.INFO, "Registered SiteInfo: " + info.id);
 		}
 		
+		public function removeInfo(info:EngineSiteInfo):void
+		{
+			if (info && _info[info.id])
+			{
+				Logger.log(this, Logger.INFO, "Removed SiteInfo: " + info.id);
+				delete _info[info.id];
+			}
+		}
+		
 		///- Engine Language
 		// Get Active Engine Language.
 		public function getCurrentLanguage():EngineLanguage
@@ -153,6 +203,15 @@ package classes.engine
 		{
 			_languages[language.id] = language;
 			Logger.log(this, Logger.INFO, "Registered Language: " + language.id);
+		}
+		
+		public function removeLanguage(language:EngineLanguage):void
+		{
+			if (language && _languages[language.id])
+			{
+				Logger.log(this, Logger.INFO, "Removed Language: " + language.id);
+				delete _languages[language.id];
+			}
 		}
 		
 		public function getString(id:String, lang:String = "us"):String

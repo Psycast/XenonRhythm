@@ -10,12 +10,14 @@ package scenes.songselection
 	import classes.ui.BoxInput;
 	import classes.ui.Label;
 	import classes.ui.ScrollPane;
+	import classes.ui.ScrollPaneBars;
 	import classes.ui.UICore;
 	import classes.ui.UISprite;
 	import classes.ui.UIStyle;
 	import classes.ui.VScrollBar;
 	import com.flashfla.utils.ArrayUtil;
 	import com.flashfla.utils.NumberUtil;
+	import com.flashfla.utils.ObjectUtil;
 	import com.flashfla.utils.sprintf;
 	import com.flashfla.utils.StringUtil;
 	import com.greensock.TweenLite;
@@ -45,8 +47,7 @@ package scenes.songselection
 		private var ffr_logo:UISprite;
 		
 		/** Genre Selection Scroll Pane */
-		private var genre_scrollpane:ScrollPane;
-		private var genre_scrollbar:VScrollBar;
+		private var genre_scrollpane:ScrollPaneBars;
 		private var genre_songButtons:Array;
 		
 		/** Song Selection Background */
@@ -59,8 +60,7 @@ package scenes.songselection
 		
 		/** Song Selection */
 		private var ss_background:Box;
-		private var ss_scrollpane:ScrollPane;
-		private var ss_scrollbar:VScrollBar;
+		private var ss_scrollpane:ScrollPaneBars;
 		private var ss_songButtons:Array;
 		
 		/** Bottom Area */
@@ -87,6 +87,13 @@ package scenes.songselection
 		{
 			super.onStage();
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
+			core.addEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
+		}
+		
+		override public function destroy():void 
+		{
+			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
+			core.removeEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
 		}
 		
 		override public function draw():void
@@ -100,10 +107,7 @@ package scenes.songselection
 			ffr_logo = new UISprite(shift_plane, new FFRDude(), 22, 12);
 			
 			// Setup Genre Selection Pane/Bar
-			(genre_scrollpane = new ScrollPane(shift_plane, 5, 125)).setSize(115, 100);
-			genre_scrollbar = new VScrollBar(shift_plane);
-			genre_scrollbar.move(genre_scrollpane.x + genre_scrollpane.width + 5, genre_scrollpane.y);
-			genre_scrollbar.addEventListener(Event.CHANGE, e_scrollGenreUpdate);
+			(genre_scrollpane = new ScrollPaneBars(shift_plane, 5, 125)).setSize(115, 100);
 			genre_scrollpane.addEventListener(MouseEvent.CLICK, e_genreSelectionPaneClick);
 			
 			// Search / Filter Box
@@ -118,9 +122,7 @@ package scenes.songselection
 			
 			// Setup Song Selection Pane/Bar
 			ss_background = new Box(shift_plane, 145, 40);
-			ss_scrollpane = new ScrollPane(ss_background, 10, 10);
-			ss_scrollbar = new VScrollBar(ss_background);
-			ss_scrollbar.addEventListener(Event.CHANGE, e_scrollSongUpdate);
+			ss_scrollpane = new ScrollPaneBars(ss_background, 10, 10);
 			ss_scrollpane.addEventListener(MouseEvent.CLICK, e_songSelectionPaneClick);
 			
 			// Search / Filter Box
@@ -136,10 +138,7 @@ package scenes.songselection
 		override public function onResize():void
 		{
 			// Update Genre Scrollbar Size + Position
-			genre_scrollpane.setSize(115, Constant.GAME_HEIGHT - 130);
-			genre_scrollbar.setSize(15, genre_scrollpane.height);
-			genre_scrollbar.scrollFactor = genre_scrollpane.scrollFactor;
-			genre_scrollbar.visible = genre_scrollpane.doScroll;
+			genre_scrollpane.setSize(135, Constant.GAME_HEIGHT - 130);
 			
 			// Top Bar
 			top_bar_background.setSize(Constant.GAME_WIDTH - 150, 36);
@@ -153,23 +152,13 @@ package scenes.songselection
 			
 			// Update Song Scroll Pane
 			ss_background.setSize(top_bar_background.width, Constant.GAME_HEIGHT - 80);
-			ss_scrollpane.setSize(ss_background.width - 40, ss_background.height - 20);
+			ss_scrollpane.setSize(ss_background.width - 20, ss_background.height - 20);
 			
-			// Position Song Buttons
-			var songButtonYPosition:int = 0;
+			// Update Song Button Widths
 			for each (var item:SongButton in ss_songButtons)
 			{
-				item.y = songButtonYPosition;
-				item.width = ss_scrollpane.width;
-				songButtonYPosition += item.height + 5;
+				item.width = ss_scrollpane.paneWidth;
 			}
-			
-			// Update Song Scroll Bar
-			ss_scrollbar.setSize(15, ss_scrollpane.height);
-			ss_scrollbar.move(ss_scrollpane.x + ss_scrollpane.width + 5, ss_scrollpane.y);
-			ss_scrollbar.scrollFactor = ss_scrollpane.scrollFactor;
-			ss_scrollbar.showDragger = ss_scrollpane.doScroll;
-			ss_scrollbar.scroll = ss_scrollpane.scroll;
 			
 			// Scroll Pane Size
 			bottom_bar_background.setSize(Constant.GAME_WIDTH - 150, 36);
@@ -200,12 +189,122 @@ package scenes.songselection
 		}
 		
 		/**
+		 * Creates the Genre Buttons.
+		 */
+		public function drawGenreList():void
+		{
+			genre_scrollpane.removeChildren();
+			genre_scrollpane.content.graphics.clear();
+			genre_songButtons = [];
+			
+			var genreLabel:Label;
+			var genreYPosition:int = 0;
+			var drawPosition:Object = { "y": 0, "height": 10 };
+			var displayAltEngines:Boolean = (core.loaderCount > 1 && core.user.settings.display_alt_engines);
+			
+			// Get Engine Sources
+			var engineSources:Array = [];
+			if (displayAltEngines)
+			{
+				for each (var item:EngineLoader in core.engineLoaders)
+				{
+					if (item.isCanon || !item.loaded)
+						continue; // Skip FFR/Non-loaded engines for now.
+					engineSources.push(item.infoArray);
+				}
+				engineSources = engineSources.sort();
+			}
+			engineSources.unshift(core.canonLoader.infoArray); // Place FFR first.
+			
+			// Draw Search Tag / Engine Label
+			if (DISPLAY_MODE == DM_SEARCH)
+			{
+				genreLabel = new Label(genre_scrollpane, 0, genreYPosition, 'Search');
+				genreLabel.tag = {"engine": core.source, "genre": "search"};
+				genreLabel.setSize(genre_scrollpane.paneWidth, 0);
+				genreLabel.fontSize = UIStyle.FONT_SIZE + 4;
+				drawPosition = {"y": genreYPosition, "height": genreLabel.height};
+				genreYPosition += genreLabel.height + 2;
+			}
+			
+			// Draw Genre Labels
+			var engineSource:Array;
+			for (var engine:int = 0; engine < engineSources.length; engine++)
+			{
+				engineSource = engineSources[engine];
+				
+				// Draw Diving Border
+				if (genreYPosition != 0)
+				{
+					with (genre_scrollpane.content.graphics)
+					{
+						lineStyle(1, 0xFFFFFFF, 0.5);
+						moveTo(0, genreYPosition + 1);
+						lineTo(genre_scrollpane.paneWidth, genreYPosition + 1);
+					}
+				}
+				
+				// Engine Label
+				if (displayAltEngines)
+				{
+					genreLabel = new Label(genre_scrollpane, 0, genreYPosition, '<font color="' + UIStyle.ACTIVE_FONT_COLOR + '">' + engineSource[1] + '</font>', true);
+					genreLabel.tag = {"engine": engineSource[1], "genre": genre_id};
+					genreLabel.setSize(genre_scrollpane.paneWidth, 0);
+					genreLabel.fontSize = UIStyle.FONT_SIZE + 4;
+					genreYPosition += genreLabel.height + 2;
+				}
+				
+				// All Genre
+				genreLabel = new Label(genre_scrollpane, 0, genreYPosition, core.getStringSource(engineSource[2], "genre_-1"), true);
+				genreLabel.tag = {"engine": engineSource[2], "genre": "all"};
+				genreLabel.setSize(genre_scrollpane.paneWidth, 20);
+				genreLabel.mouseEnabled = true;
+				if (core.source == engineSource[2] && DISPLAY_MODE == DM_ALL)
+				{
+					genreLabel.fontSize = UIStyle.FONT_SIZE + 2;
+					drawPosition = {"y": genreYPosition, "height": genreLabel.height};
+				}
+				genreYPosition += genreLabel.height + 5;
+				
+				// Genre Labels
+				for (var genre_id:String in core.getPlaylist(engineSource[2]).genre_list)
+				{
+					var genre_int:int = parseInt(genre_id);
+					genreLabel = new Label(genre_scrollpane, 0, genreYPosition, core.getStringSource(engineSource[2], "genre_" + (genre_int - 1)), true);
+					genreLabel.tag = {"engine": engineSource[2], "genre": genre_id};
+					genreLabel.setSize(genre_scrollpane.paneWidth, 20);
+					genreLabel.mouseEnabled = true;
+					
+					if (core.source == engineSource[2] && genre_int == SELECTED_GENRE)
+					{
+						genreLabel.fontSize = UIStyle.FONT_SIZE + 2;
+						drawPosition = {"y": genreYPosition, "height": genreLabel.height};
+					}
+					
+					genreYPosition += genreLabel.height + 5;
+					genre_songButtons.push(genreLabel);
+				}
+			}
+			
+			// Draw Active Genre
+			with (genre_scrollpane.content.graphics)
+			{
+				lineStyle(1, 0xFFFFFFF, 0.5);
+				beginFill(0xFFFFFF, 0.25);
+				drawRect(0, drawPosition.y, genre_scrollpane.paneWidth, drawPosition.height);
+				endFill();
+			}
+			
+			// Reset Scroll
+			genre_scrollpane.scrollReset();
+		}
+		
+		/**
 		 * Creates the Song Buttons
 		 */
 		public function drawSongList():void
 		{
 			ss_scrollpane.removeChildren();
-			ss_scrollbar.scroll = 0;
 			ss_songButtons = [];
 			
 			var i:int;
@@ -254,122 +353,19 @@ package scenes.songselection
 			// Display
 			if (list != null)
 			{
+				var songButtonYPosition:int = 0;
 				for (i = 0; i < list.length; i++)
 				{
-					ss_songButtons.push(new SongButton(ss_scrollpane, 0, i * 31, core, list[i]));
+					ss_songButtons.push(new SongButton(ss_scrollpane, 0, songButtonYPosition, core, list[i]));
+					songButtonYPosition += ss_songButtons[ss_songButtons.length - 1].height + 5;
 				}
 			}
 			
 			// Select First Song
 			changeSelectedSong(ss_songButtons[0]);
-		}
-		
-		/**
-		 * Creates the Genre Buttons.
-		 */
-		public function drawGenreList():void
-		{
-			genre_scrollpane.removeChildren();
-			genre_scrollpane.content.graphics.clear();
-			genre_songButtons = [];
 			
-			var genreLabel:Label;
-			var genreYPosition:int = 0;
-			var drawPosition:Object = {"y": 0, "height": 10};
-			
-			// Get Engine Sources
-			var engineSources:Array = [];
-			if (core.user.settings.display_alt_engines)
-			{
-				for each (var item:EngineLoader in core.engineLoaders)
-				{
-					if (item.isCanon)
-						continue; // Skip FFR for now.
-					engineSources.push(item.infoArray);
-				}
-				engineSources = engineSources.sort();
-			}
-			engineSources.unshift(core.canonLoader.infoArray); // Place FFR first.
-			
-			// Draw Search Tag / Engine Label
-			if (DISPLAY_MODE == DM_SEARCH)
-			{
-				genreLabel = new Label(genre_scrollpane, 0, genreYPosition, 'Search');
-				genreLabel.tag = {"engine": core.source, "genre": "search"};
-				genreLabel.setSize(genre_scrollpane.width, 0);
-				genreLabel.fontSize = UIStyle.FONT_SIZE + 4;
-				drawPosition = {"y": genreYPosition, "height": genreLabel.height};
-				genreYPosition += genreLabel.height + 2;
-			}
-			
-			// Draw Genre Labels
-			var engineSource:Array;
-			for (var engine:int = 0; engine < engineSources.length; engine++)
-			{
-				engineSource = engineSources[engine];
-				
-				// Draw Diving Border
-				if (genreYPosition != 0)
-				{
-					with (genre_scrollpane.content.graphics)
-					{
-						lineStyle(1, 0xFFFFFFF, 0.5);
-						moveTo(0, genreYPosition + 1);
-						lineTo(genre_scrollpane.width, genreYPosition + 1);
-					}
-				}
-				
-				// Engine Label
-				if (core.user.settings.display_alt_engines)
-				{
-					genreLabel = new Label(genre_scrollpane, 0, genreYPosition, '<font color="' + UIStyle.ACTIVE_FONT_COLOR + '">' + engineSource[1] + '</font>', true);
-					genreLabel.tag = {"engine": engineSource[1], "genre": genre_id};
-					genreLabel.setSize(genre_scrollpane.width, 0);
-					genreLabel.fontSize = UIStyle.FONT_SIZE + 4;
-					genreYPosition += genreLabel.height + 2;
-				}
-				
-				// All Genre
-				genreLabel = new Label(genre_scrollpane, 0, genreYPosition, core.getStringSource(engineSource[2], "genre_-1"), true);
-				genreLabel.tag = {"engine": engineSource[2], "genre": "all"};
-				genreLabel.setSize(genre_scrollpane.width, 20);
-				genreLabel.mouseEnabled = true;
-				if (core.source == engineSource[2] && DISPLAY_MODE == DM_ALL)
-				{
-					genreLabel.fontSize = UIStyle.FONT_SIZE + 2;
-					drawPosition = {"y": genreYPosition, "height": genreLabel.height};
-				}
-				genreYPosition += genreLabel.height + 5;
-				
-				// Genre Labels
-				for (var genre_id:String in core.getPlaylist(engineSource[2]).genre_list)
-				{
-					var genre_int:int = parseInt(genre_id);
-					genreLabel = new Label(genre_scrollpane, 0, genreYPosition, core.getStringSource(engineSource[2], "genre_" + (genre_int - 1)), true);
-					genreLabel.tag = {"engine": engineSource[2], "genre": genre_id};
-					genreLabel.setSize(genre_scrollpane.width, 20);
-					genreLabel.mouseEnabled = true;
-					
-					if (core.source == engineSource[2] && genre_int == SELECTED_GENRE)
-					{
-						genreLabel.fontSize = UIStyle.FONT_SIZE + 2;
-						drawPosition = {"y": genreYPosition, "height": genreLabel.height};
-					}
-					
-					genreYPosition += genreLabel.height + 5;
-					genre_songButtons.push(genreLabel);
-				}
-			}
-			
-			// Draw Active Genre
-			with (genre_scrollpane.content.graphics)
-			{
-				lineStyle(1, 0xFFFFFFF, 0.5);
-				beginFill(0xFFFFFF, 0.25);
-				drawRect(0, drawPosition.y, genre_scrollpane.width, drawPosition.height);
-				endFill();
-			}
-		
+			// Reset Scroll
+			ss_scrollpane.scrollReset();
 		}
 		
 		/**
@@ -390,6 +386,20 @@ package scenes.songselection
 		///////////////////////////////////
 		// event handlers
 		///////////////////////////////////
+		
+		/**
+		 * Event: EngineCore.LOADERS_UPDATE
+		 * Called when a engine loader is added or removed from the core.
+		 */
+		private function e_loadersUpdate(e:Event):void 
+		{
+			// Current Playlist got removed.
+			if (!core.engineLoaders[_playlist.id])
+			{
+				SELECTED_GENRE = 1;
+			}
+			drawGameList();
+		}
 		
 		/**
 		 * Event: MOUSE_CLICK
@@ -461,24 +471,6 @@ package scenes.songselection
 		}
 		
 		/**
-		 * Event: CHANGE
-		 * Genre Scrollbar Change event.
-		 */
-		private function e_scrollGenreUpdate(e:Event):void
-		{
-			genre_scrollpane.scroll = genre_scrollbar.scroll;
-		}
-		
-		/**
-		 * Event: CHANGE
-		 * Song Selection Scrollbar Change event.
-		 */
-		private function e_scrollSongUpdate(e:Event):void
-		{
-			ss_scrollpane.scroll = ss_scrollbar.scroll;
-		}
-		
-		/**
 		 * Event: KEY_DOWN
 		 * Used to navigate the menu using the arrow keys or user set keys
 		 */
@@ -532,7 +524,7 @@ package scenes.songselection
 					});
 					
 					changeSelectedSong(ss_songButtons[newIndex]);
-					ss_scrollbar.scroll = ss_scrollpane.scrollChild(SELECTED_SONG);
+					ss_scrollpane.scrollChild(SELECTED_SONG);
 				}
 				return;
 			}

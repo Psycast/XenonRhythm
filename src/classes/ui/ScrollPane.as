@@ -9,6 +9,7 @@ package classes.ui
 	public class ScrollPane extends UIComponent
 	{
 		private var _content:Sprite;
+		private var _batchMode:Boolean = false;
 		
 		public function ScrollPane(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0)
 		{
@@ -96,13 +97,15 @@ package classes.ui
 		
 		private function updateChildrenVisibility():void
 		{
+			var maskX:Number = _content.x * -1;
 			var maskY:Number = _content.y * -1;
 			var _children:int = _content.numChildren;
 			var _child:DisplayObject;
 			for (var i:int = 0; i < _children; i++)
 			{
 				_child = _content.getChildAt(i);
-				_child.visible = ((_child.y >= maskY || _child.y + _child.height >= maskY) && _child.y < maskY + this.height);
+				_child.visible = ((_child.x >= maskX || _child.x + _child.width >= maskX) && _child.x < maskX + this.width) 
+						&& ((_child.y >= maskY || _child.y + _child.height >= maskY) && _child.y < maskY + this.height);
 			}
 		}
 		
@@ -128,19 +131,25 @@ package classes.ui
 			super.height = h;
 		}
 		
+		public function scroll(v:Number, h:Number):void
+		{
+			scrollVertical = v;
+			scrollHorizontal = h;
+		}
+		
 		/**
-		 * Returns the current scroll percent.
+		 * Returns the current vertical scroll percent.
 		 */
-		public function get scroll():Number
+		public function get scrollVertical():Number
 		{
 			return -_content.y / (contentHeight - this.height);
 		}
 		
 		/**
-		 * Sets the current scroll percent.
+		 * Sets the current vertical scroll percent.
 		 * @param percent Range of 0-1
 		 */
-		public function set scroll(val:Number):void
+		public function set scrollVertical(val:Number):void
 		{
 			if (UIStyle.USE_ANIMATION)
 				TweenLite.to(content, 0.25, {y: -((contentHeight - this.height) * Math.max(Math.min(val, 1), 0)), onUpdate: updateChildrenVisibility, onComplete: updateChildrenVisibility});
@@ -150,14 +159,45 @@ package classes.ui
 		}
 		
 		/**
-		 * Gets the scroll value required to display a specified child.
+		 * Returns the current horizontal scroll percent.
+		 */
+		public function get scrollHorizontal():Number
+		{
+			return -_content.x / (contentWidth - this.width);
+		}
+		
+		/**
+		 * Sets the current horizontal scroll percent.
+		 * @param percent Range of 0-1
+		 */
+		public function set scrollHorizontal(val:Number):void
+		{
+			if (UIStyle.USE_ANIMATION)
+				TweenLite.to(content, 0.25, {x: -((contentWidth - this.width) * Math.max(Math.min(val, 1), 0)), onUpdate: updateChildrenVisibility, onComplete: updateChildrenVisibility});
+			else
+				_content.x = -((contentWidth - this.width) * Math.max(Math.min(val, 1), 0));
+			updateChildrenVisibility();
+		}
+		
+		/**
+		 * Gets the scroll values required to display a specified child.
 		 * @param	child Child to show.
 		 * @return	Scroll Value required to show child in center of scroll pane.
 		 */
-		public function scrollChild(child:DisplayObject):Number
+		public function scrollChild(child:DisplayObject):Array
+		{
+			return [scrollChildVertical(child), scrollChildHorizontal(child)];
+		}
+		
+		/**
+		 * Gets the vertical scroll value required to display a specified child.
+		 * @param	child Child to show.
+		 * @return	Scroll Value required to show child in center of scroll pane.
+		 */
+		public function scrollChildVertical(child:DisplayObject):Number
 		{
 			// Checks
-			if (child == null || !_content.contains(child) || !doScroll)
+			if (child == null || !_content.contains(child) || !doScrollVertical)
 				return 0;
 			
 			// Child to Tall, Scroll to top.
@@ -168,20 +208,55 @@ package classes.ui
 		}
 		
 		/**
-		 * Gets the current scroll factor.
-		 * Scroll factor is the percent of the height the scrollpane is compared to the overall content height.
+		 * Gets the horizontal scroll value required to display a specified child.
+		 * @param	child Child to show.
+		 * @return	Scroll Value required to show child in center of scroll pane.
 		 */
-		public function get scrollFactor():Number
+		public function scrollChildHorizontal(child:DisplayObject):Number
 		{
-			return Math.max(Math.min(height / contentHeight, 1), 0);
+			// Checks
+			if (child == null || !_content.contains(child) || !doScrollHorizontal)
+				return 0;
+			
+			// Child to Tall, Scroll to top.
+			if(child.width > width)
+				return Math.max(Math.min(child.x / (contentWidth - this.width), 1), 0);
+			
+			return Math.max(Math.min(((child.x + (child.width / 2)) - (this.width / 2)) / (contentWidth - this.width), 1), 0);
 		}
 		
 		/**
-		 * Gets if the content height is taller then the scrollpane visible area.
+		 * Gets the current vertical scroll factor.
+		 * Scroll factor is the percent of the height the scrollpane is compared to the overall content height.
 		 */
-		public function get doScroll():Boolean
+		public function get scrollFactorVertical():Number
+		{
+			return Math.max(Math.min(height / contentHeight, 1), 0) || 0;
+		}
+		
+		/**
+		 * Gets the current horizontal scroll factor.
+		 * Scroll factor is the percent of the width the scrollpane is compared to the overall content width.
+		 */
+		public function get scrollFactorHorizontal():Number
+		{
+			return Math.max(Math.min(width / contentWidth, 1), 0) || 0;
+		}
+		
+		/**
+		 * Gets if the content height is taller then the scrollpane height visible area.
+		 */
+		public function get doScrollVertical():Boolean
 		{
 			return contentHeight > height;
+		}
+		
+		/**
+		 * Gets if the content width is taller then the scrollpane width visible area.
+		 */
+		public function get doScrollHorizontal():Boolean
+		{
+			return contentWidth > width;
 		}
 		
 		/**
@@ -190,6 +265,14 @@ package classes.ui
 		public function get contentHeight():Number
 		{
 			return _content.getBounds(_content).bottom;
+		}
+		
+		/**
+		 * Gets the overall content width.
+		 */
+		public function get contentWidth():Number
+		{
+			return _content.getBounds(_content).right;
 		}
 		
 		public function get content():Sprite

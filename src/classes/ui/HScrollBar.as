@@ -7,14 +7,14 @@ package classes.ui
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	
-	public class VScrollBar extends UIComponent
+	public class HScrollBar extends UIComponent
 	{
 		private var _lastScroll:Number = 0;
 		private var _scrollFactor:Number = 0.5;
 		
 		private var _dragger:Sprite;
 		
-		public function VScrollBar(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0)
+		public function HScrollBar(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0)
 		{
 			super(parent, xpos, ypos);
 		}
@@ -24,7 +24,7 @@ package classes.ui
 		 */
 		override protected function init():void
 		{
-			setSize(15, 100, false);
+			setSize(100, 15, false);
 			super.init();
 		}
 		
@@ -57,7 +57,7 @@ package classes.ui
 			_dragger.graphics.clear();
 			_dragger.graphics.lineStyle(1, 0xffffff, 0.5);
 			_dragger.graphics.beginFill(0xffffff, 0.25);
-			_dragger.graphics.drawRect(0, 0, width - 1, Math.max(height * scrollFactor, 30));
+			_dragger.graphics.drawRect(0, 0, Math.max(width * scrollFactor, 30), height - 1);
 			_dragger.graphics.endFill();
 			
 			scroll = _lastScroll;
@@ -71,7 +71,7 @@ package classes.ui
 		{
 			stage.addEventListener(MouseEvent.MOUSE_UP, e_stopDrag);
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, e_mouseMove);
-			_dragger.startDrag(false, new Rectangle(0, 0, 0, height - _dragger.height));
+			_dragger.startDrag(false, new Rectangle(0, 0, width - _dragger.width, 0));
 		}
 		
 		private function e_stopDrag(e:MouseEvent):void
@@ -79,13 +79,13 @@ package classes.ui
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, e_mouseMove);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, e_stopDrag);
 			_dragger.stopDrag();
-			_lastScroll = _dragger.y / (height - 1 - _dragger.height);
+			_lastScroll = _dragger.x / (width - 1 - _dragger.width);
 			this.dispatchEvent(new Event(Event.CHANGE));
 		}
 		
 		private function e_mouseMove(e:MouseEvent):void
 		{
-			_lastScroll = _dragger.y / (height - 1 - _dragger.height);
+			_lastScroll = _dragger.x / (width - 1 - _dragger.width);
 			this.dispatchEvent(new Event(Event.CHANGE));
 		}
 		
@@ -108,9 +108,9 @@ package classes.ui
 		public function set scroll(val:Number):void
 		{
 			if (UIStyle.USE_ANIMATION)
-				TweenLite.to(_dragger, 0.25, {y: ((height - _dragger.height) * Math.max(Math.min(val, 1), 0))});
+				TweenLite.to(_dragger, 0.25, {x: ((width - _dragger.width) * Math.max(Math.min(val, 1), 0))});
 			else
-				_dragger.y = (height - _dragger.height) * Math.max(Math.min(val, 1), 0);
+				_dragger.x = (width - _dragger.width) * Math.max(Math.min(val, 1), 0);
 			_lastScroll = Math.max(Math.min(val, 1), 0);
 			this.dispatchEvent(new Event(Event.CHANGE));
 		}

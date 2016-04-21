@@ -67,7 +67,7 @@ package classes.ui
 		{
 			_over = true;
 			addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
-			draw();
+			drawBox();
 		}
 		
 		/**
@@ -78,7 +78,7 @@ package classes.ui
 		{
 			_over = false;
 			removeEventListener(MouseEvent.ROLL_OUT, onMouseOut);
-			draw();
+			drawBox();
 		}
 		
 		///////////////////////////////////

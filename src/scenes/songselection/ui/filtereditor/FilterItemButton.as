@@ -92,11 +92,11 @@ package scenes.songselection.ui.filtereditor
 				case EngineLevelFilter.FILTER_STEPARTIST: 
 					new Label(this, 5, 6, core.getString("filter_type_" + filter.type));
 					
-					combo_compare = new BoxCombo(core, this, 110, 5, filter.comparison, e_valueCompareChange);
+					combo_compare = new BoxCombo(core, this, 100, 5, filter.comparison, e_valueCompareChange);
 					combo_compare.options = EngineLevelFilter.createOptions(core, EngineLevelFilter.FILTERS_STRING, "compare_string");
 					combo_compare.title = core.getString("filter_editor_comparison");
 					combo_compare.selectedIndex = filter.comparison;
-					combo_compare.setSize(100, 23);
+					combo_compare.setSize(110, 23);
 					
 					input_box = new BoxInput(this, 215, 5, filter.input_string, e_valueStringChange);
 					input_box.setSize(107, 23);
@@ -134,9 +134,7 @@ package scenes.songselection.ui.filtereditor
 		private function e_clickRemovefilter(e:Event):void
 		{
 			if(ArrayUtil.remove(filter, filter.parent_filter.filters))
-			{
 				updater.draw();
-			}
 		}
 	}
 
