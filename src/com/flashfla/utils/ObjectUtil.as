@@ -1,5 +1,8 @@
 package com.flashfla.utils {
 	import flash.utils.ByteArray;
+	import flash.utils.describeType;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
 	
 	public class ObjectUtil {
 		public static function clone(o:Object):Object {
@@ -89,6 +92,32 @@ package com.flashfla.utils {
 				}
 				return len;
 			}
+		}
+		
+		/**
+		 * Returns an object with all class variables and accessors.
+		 * @param	clazz Class of object to get all variables and accessor.
+		 * @return	Object containing all variables and accessors.
+		 */
+		public static function get_class_variables(clazz:*):Object
+		{
+			var output:Object = { };
+			var type:Class = getDefinitionByName(getQualifiedClassName(clazz)) as Class;
+			var description:XML = describeType(type);
+			for each(var category:XML in description.children())
+			{
+				for each(var node:XML in category.children())
+				{
+					if (node.@access.toString() != "writeonly" && (node.localName() == "variable" || node.localName() == "accessor"))
+					{
+						output[node.@name] = { "name": node.@name.toString(), "value": clazz[node.@name], "type": node.localName() } ;
+						
+						if(node.@type != null)
+							output[node.@name]["class"] = node.@type.toString();
+					}
+				}
+			}
+			return output;
 		}
 	
 	}

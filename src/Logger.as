@@ -22,7 +22,7 @@ package
 			log(clazz, WARNING, "------------------------------------------------------------------------------------------------", true);
 		}
 		
-		public static function log(clazz:*, level:int, text:String, simple:Boolean = false):void
+		public static function log(clazz:*, level:int, text:*, simple:Boolean = false):void
 		{
 			CONFIG::debug {
 			// Check if Logger Enabled
