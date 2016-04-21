@@ -263,17 +263,7 @@ package classes.engine
 		
 		public function e_stageResize(e:Event):void
 		{
-			Constant.GAME_WIDTH = e.target.stageWidth;
-			Constant.GAME_HEIGHT = e.target.stageHeight;
-			
-			if (Constant.GAME_WIDTH < 800) Constant.GAME_WIDTH = 800;
-			if (Constant.GAME_HEIGHT < 600) Constant.GAME_HEIGHT = 600;
-			
-			Constant.GAME_WIDTH_CENTER = Constant.GAME_WIDTH / 2;
-			Constant.GAME_HEIGHT_CENTER = Constant.GAME_HEIGHT / 2;
-			
-			ui.scene.onResize();
-			ResizeListener.signal();
+			ui.updateStageResize();
 		}
 	}
 

@@ -1,9 +1,11 @@
 package
 {
+	import classes.ui.ResizeListener;
 	import classes.ui.UICore;
 	import classes.ui.UIStyle;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.display.StageScaleMode;
 	import flash.events.KeyboardEvent;
 	import flash.filters.BlurFilter;
 	import flash.geom.ColorTransform;
@@ -16,7 +18,7 @@ package
 		private var _scene:UICore;
 		private var _debugscrene:UICore = new SceneDebugLogger(null);
 		private var _overlays:int = 0;
-
+		
 		// Game Scene
 		public function get scene():UICore
 		{
@@ -81,10 +83,43 @@ package
 			scene.transform.colorTransform = new ColorTransform();
 		}
 		
+		public function setStageSize(w:int, h:int, scale:String = null):void
+		{
+			var oS:String = stage.scaleMode;
+			var oW:int = Constant.GAME_WIDTH;
+			var oH:int = Constant.GAME_HEIGHT;
+			
+			Constant.GAME_WIDTH = w;
+			Constant.GAME_HEIGHT = h;
+			
+			if (Constant.GAME_WIDTH < 800) Constant.GAME_WIDTH = 800;
+			if (Constant.GAME_HEIGHT < 600) Constant.GAME_HEIGHT = 600;
+			
+			Constant.GAME_WIDTH_CENTER = Constant.GAME_WIDTH / 2;
+			Constant.GAME_HEIGHT_CENTER = Constant.GAME_HEIGHT / 2;
+			
+			if (oW != Constant.GAME_WIDTH || oH != Constant.GAME_HEIGHT)
+			{
+				scene.onResize();
+				ResizeListener.signal();
+			}
+			if (scale != null && oS != scale)
+			{
+				stage.scaleMode = scale;
+			}
+		}
+		
+		public function updateStageResize():void 
+		{
+			if (stage.scaleMode == StageScaleMode.NO_SCALE)
+			{
+				setStageSize(stage.stageWidth, stage.stageHeight);
+			}
+		}
+		
 		CONFIG::debug {
 		public function e_debugKeyDown(e:KeyboardEvent):void 
 		{
-			// Debug Logger
 			if (e.keyCode == Keyboard.F11)
 			{
 				UIStyle.USE_ANIMATION = !UIStyle.USE_ANIMATION;
@@ -102,7 +137,6 @@ package
 				}
 			}
 		}
-		
 		}
 	}
 
