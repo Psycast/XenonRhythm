@@ -61,16 +61,19 @@ package classes.ui
 		 */
 		override public function setSize(w:Number, h:Number, redraw:Boolean = true):void
 		{
-			if (w > _width)
-				_fontSize = RESET_FONT_SIZE;
-			if (h > height)
-				_fontSize = RESET_FONT_SIZE;
-			_useArea = true;
-			_width = w;
-			_height = h;
-			
-			if (redraw)
-				draw();
+			if (w != _width || h != _height)
+			{
+				if (w > _width)
+					_fontSize = RESET_FONT_SIZE;
+				if (h > height)
+					_fontSize = RESET_FONT_SIZE;
+				_useArea = true;
+				_width = w;
+				_height = h;
+				
+				if (redraw)
+					draw();
+			}
 		}
 		
 		/**

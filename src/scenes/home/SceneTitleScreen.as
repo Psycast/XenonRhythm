@@ -67,8 +67,14 @@ package scenes.home
 		{
 			var newIndex:int = selectedIndex;
 			
+			// Menu Selection
+			if (e.keyCode == Keyboard.ENTER)
+			{
+				_closeMenu(menuButtons[selectedIndex].tag);
+			}
+			
 			// Menu Navigation
-			if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.NUMPAD_2)
+			else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.NUMPAD_2)
 			{
 				newIndex++;
 			}
