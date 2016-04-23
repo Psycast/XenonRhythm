@@ -16,7 +16,7 @@ package scenes.songselection.ui.filtereditor
 	import com.flashfla.utils.ArrayUtil;
 	import flash.display.Graphics;
 	import flash.events.Event;
-	import scenes.songselection.SceneSelectionSongs;
+	import scenes.songselection.SceneSongSelection;
 	
 	public class FilterEditor extends UIOverlay 
 	{
@@ -252,9 +252,9 @@ package scenes.songselection.ui.filtereditor
 		private function e_closeButton(e:Event):void 
 		{
 			core.ui.removeOverlay(this);
-			if (core.scene is SceneSelectionSongs)
+			if (core.scene is SceneSongSelection)
 			{
-				(core.scene as SceneSelectionSongs).drawGameList();
+				(core.scene as SceneSongSelection).drawGameList();
 			}
 		}
 		

@@ -7,6 +7,7 @@ package classes.ui
 	public class UICore extends Sprite
 	{
 		protected var core:EngineCore;
+		public var INPUT_DISABLED:Boolean = false;
 		
 		public function UICore(core:EngineCore)
 		{

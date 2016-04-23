@@ -9,28 +9,25 @@ package scenes.songselection
 	import classes.ui.BoxButton;
 	import classes.ui.BoxInput;
 	import classes.ui.Label;
-	import classes.ui.ScrollPane;
 	import classes.ui.ScrollPaneBars;
 	import classes.ui.UICore;
 	import classes.ui.UISprite;
 	import classes.ui.UIStyle;
-	import classes.ui.VScrollBar;
 	import com.flashfla.utils.ArrayUtil;
 	import com.flashfla.utils.NumberUtil;
-	import com.flashfla.utils.ObjectUtil;
-	import com.flashfla.utils.sprintf;
 	import com.flashfla.utils.StringUtil;
+	import com.flashfla.utils.sprintf;
 	import com.greensock.TweenLite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.text.TextFieldAutoSize;
 	import flash.ui.Keyboard;
+	import scenes.songselection.ui.SongButton;
 	import scenes.songselection.ui.filtereditor.FilterEditor;
 	import scenes.songselection.ui.filtereditor.FilterIcon;
-	import scenes.songselection.ui.SongButton;
 	
-	public class SceneSelectionSongs extends UICore
+	public class SceneSongSelection extends UICore
 	{
 		public const DM_STANDARD:String = "normal";
 		public const DM_ALL:String = "all";
@@ -78,8 +75,8 @@ package scenes.songselection
 		
 		//------------------------------------------------------------------------------------------------//
 		
-		public function SceneSelectionSongs(core:EngineCore)
-		{	
+		public function SceneSongSelection(core:EngineCore)
+		{
 			super(core);
 		}
 		
@@ -90,7 +87,7 @@ package scenes.songselection
 			core.addEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
 		}
 		
-		override public function destroy():void 
+		override public function destroy():void
 		{
 			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
 			core.removeEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
@@ -101,7 +98,7 @@ package scenes.songselection
 			// Overall Background
 			shift_plane = new UISprite(this);
 			shift_plane.alpha = 0;
-			TweenLite.to(shift_plane, 1, {"delay": 0.5, "alpha": 1});
+			TweenLite.to(shift_plane, 0.5, {"delay": 0.5, "alpha": 1});
 			
 			// Game Logo
 			ffr_logo = new UISprite(shift_plane, new FFRDude(), 22, 12);
@@ -199,7 +196,7 @@ package scenes.songselection
 			
 			var genreLabel:Label;
 			var genreYPosition:int = 0;
-			var drawPosition:Object = { "y": 0, "height": 10 };
+			var drawPosition:Object = {"y": 0, "height": 10};
 			var displayAltEngines:Boolean = (core.loaderCount > 1 && core.user.settings.display_alt_engines);
 			
 			// Get Engine Sources
@@ -381,6 +378,46 @@ package scenes.songselection
 			(SELECTED_SONG = songButton).highlight = true;
 		}
 		
+		/**
+		 * Adds the currently selected song
+		 * @param	goToLoader Jump to song loader scene after adding to queue.
+		 */
+		private function _addSelectedSongToQueue(goToLoader:Boolean = false):void
+		{
+			if (SELECTED_SONG)
+			{
+				core.variables.song_queue.push(SELECTED_SONG.songData);
+				if (goToLoader)
+				{
+					_closeScene(0);
+				}
+			}
+		}
+		
+		private function _closeScene(sceneIndex:int):void
+		{
+			INPUT_DISABLED = true;
+			TweenLite.to(shift_plane, 0.5, {"alpha": 0, "onComplete": function():void
+			{
+				_switchScene(sceneIndex);
+			}});
+		}
+		
+		/**
+		 * Changes scenes based on ID.
+		 * @param	menuIndex Scene ID to change to.
+		 */
+		private function _switchScene(sceneIndex:int):void
+		{
+			// Switch to Intended UI scene
+			switch (sceneIndex)
+			{
+				case 0: 
+					core.scene = new SceneSongLoader(core);
+					break;
+			}
+		}
+		
 		//------------------------------------------------------------------------------------------------//
 		
 		///////////////////////////////////
@@ -391,7 +428,7 @@ package scenes.songselection
 		 * Event: EngineCore.LOADERS_UPDATE
 		 * Called when a engine loader is added or removed from the core.
 		 */
-		private function e_loadersUpdate(e:Event):void 
+		private function e_loadersUpdate(e:Event):void
 		{
 			// Current Playlist got removed.
 			if (!core.engineLoaders[_playlist.id])
@@ -452,7 +489,7 @@ package scenes.songselection
 		 * Event: MOUSE_CLICK
 		 * Search Button Click Event
 		 */
-		private function e_filtersClick(e:Event):void 
+		private function e_filtersClick(e:Event):void
 		{
 			core.addOverlay(new FilterEditor(core));
 		}
@@ -476,6 +513,9 @@ package scenes.songselection
 		 */
 		private function e_keyboardDown(e:KeyboardEvent):void
 		{
+			if (INPUT_DISABLED)
+				return;
+			
 			// Focus is Search Input
 			if (stage.focus == search_input.textField)
 			{
@@ -499,7 +539,7 @@ package scenes.songselection
 				// Select Song
 				if (e.keyCode == Keyboard.ENTER)
 				{
-					trace(SELECTED_SONG);
+					_addSelectedSongToQueue(true);
 				}
 				// Menu Navigation
 				else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.NUMPAD_2)

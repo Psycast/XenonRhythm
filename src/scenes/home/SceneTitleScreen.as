@@ -14,7 +14,7 @@ package scenes.home
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
-	import scenes.songselection.SceneSelectionSongs;
+	import scenes.songselection.SceneSongSelection;
 	
 	public class SceneTitleScreen extends UICore
 	{
@@ -65,12 +65,15 @@ package scenes.home
 		 */
 		private function e_keyDown(e:KeyboardEvent):void
 		{
+			if (INPUT_DISABLED)
+				return;
+				
 			var newIndex:int = selectedIndex;
 			
 			// Menu Selection
 			if (e.keyCode == Keyboard.ENTER)
 			{
-				_closeMenu(menuButtons[selectedIndex].tag);
+				_closeScene(menuButtons[selectedIndex].tag);
 			}
 			
 			// Menu Navigation
@@ -133,13 +136,11 @@ package scenes.home
 		 * Transitions the menu to closed state and jumps to the menu index UI scene.
 		 * @param	menuIndex	Selected Menu Index
 		 */
-		private function _closeMenu(menuIndex:int):void
+		private function _closeScene(menuIndex:int):void
 		{
+			INPUT_DISABLED = true;
+			
 			// Animate Menu Close
-			for each (var item:BoxButton in menuButtons)
-			{
-				item.enabled = false;
-			}
 			new TweenLite([ffrlogo, ffrname], 0.5, {"alpha": 0});
 			var tl:TimelineLite = new TimelineLite({"onComplete": function():void
 			{
@@ -158,7 +159,7 @@ package scenes.home
 			switch (menuIndex)
 			{
 				case 0: 
-					core.scene = new SceneSelectionSongs(core);
+					core.scene = new SceneSongSelection(core);
 					break;
 			}
 		}
@@ -170,9 +171,12 @@ package scenes.home
 		 */
 		private function e_menuClick(e:Event):void
 		{
+			if (INPUT_DISABLED)
+				return;
+				
 			var menuIndex:int = (e.target as UIComponent).tag;
 			
-			_closeMenu(menuIndex);
+			_closeScene(menuIndex);
 		}
 		
 		private function e_comboReturn(value:*):void
