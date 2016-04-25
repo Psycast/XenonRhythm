@@ -11,6 +11,8 @@ package scenes
 		private var _tf:TextField;
 		private var _colours:Array = ["#DDDDDD", "#FFFFFF", "#FFCE7F", "#FF5E5B", "#E7ADFF"];
 		
+		//------------------------------------------------------------------------------------------------//
+		
 		public function SceneDebugLogger(core:EngineCore)
 		{
 			super(core);
@@ -44,11 +46,17 @@ package scenes
 		
 		override public function draw():void
 		{
-			_tf.htmlText = buildHistory();
+			_tf.htmlText = _buildHistory();
 			_tf.scrollV = _tf.maxScrollV;
 		}
 		
-		private function buildHistory():String
+		//------------------------------------------------------------------------------------------------//
+		
+		///////////////////////////////////
+		// private methods
+		///////////////////////////////////
+		
+		private function _buildHistory():String
 		{
 			var a:Array = Logger.history;
 			var b:Array;

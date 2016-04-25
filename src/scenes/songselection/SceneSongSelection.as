@@ -359,17 +359,23 @@ package scenes.songselection
 			}
 			
 			// Select First Song
-			changeSelectedSong(ss_songButtons[0]);
+			_changeSelectedSong(ss_songButtons[0]);
 			
 			// Reset Scroll
 			ss_scrollpane.scrollReset();
 		}
 		
+		//------------------------------------------------------------------------------------------------//
+		
+		///////////////////////////////////
+		// private methods
+		///////////////////////////////////
+		
 		/**
 		 * Changes the selected/highlighted song to the provided song button.
 		 * @param	songButton Song to set as active.
 		 */
-		private function changeSelectedSong(songButton:SongButton):void
+		private function _changeSelectedSong(songButton:SongButton):void
 		{
 			if (SELECTED_SONG != null)
 				SELECTED_SONG.highlight = false;
@@ -394,6 +400,10 @@ package scenes.songselection
 			}
 		}
 		
+		/**
+		 * Does the scene closing animation before switching scene.
+		 * @param	sceneIndex Scene Index to jump to.
+		 */
 		private function _closeScene(sceneIndex:int):void
 		{
 			INPUT_DISABLED = true;
@@ -444,6 +454,9 @@ package scenes.songselection
 		 */
 		private function e_genreSelectionPaneClick(e:MouseEvent):void
 		{
+			if (INPUT_DISABLED)
+				return;
+			
 			var target:* = e.target;
 			if (target is Label)
 			{
@@ -475,6 +488,9 @@ package scenes.songselection
 		 */
 		private function e_searchClick(e:Event):void
 		{
+			if (INPUT_DISABLED)
+				return;
+			
 			SEARCH_TEXT = StringUtil.trim(search_input.text.toLowerCase());
 			if (SEARCH_TEXT != "")
 			{
@@ -491,6 +507,9 @@ package scenes.songselection
 		 */
 		private function e_filtersClick(e:Event):void
 		{
+			if (INPUT_DISABLED)
+				return;
+			
 			core.addOverlay(new FilterEditor(core));
 		}
 		
@@ -500,10 +519,20 @@ package scenes.songselection
 		 */
 		private function e_songSelectionPaneClick(e:MouseEvent):void
 		{
+			if (INPUT_DISABLED)
+				return;
+			
 			var target:* = e.target;
 			if (target is SongButton)
 			{
-				changeSelectedSong(e.target as SongButton);
+				if (SELECTED_SONG != null && SELECTED_SONG == e.target)
+				{
+					_addSelectedSongToQueue(true);
+				}
+				else
+				{
+					_changeSelectedSong(e.target as SongButton);
+				}
 			}
 		}
 		
@@ -568,7 +597,7 @@ package scenes.songselection
 						return !n.songData.is_title_only;
 					});
 					
-					changeSelectedSong(ss_songButtons[newIndex]);
+					_changeSelectedSong(ss_songButtons[newIndex]);
 					ss_scrollpane.scrollChild(SELECTED_SONG);
 				}
 				return;

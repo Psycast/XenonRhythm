@@ -36,13 +36,13 @@ package scenes.loader
 		
 		override public function onStage():void
 		{
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_loginKeyDown);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
 			super.onStage();
 		}
 		
 		override public function destroy():void
 		{
-			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_loginKeyDown);
+			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
 		}
 		
 		override public function draw():void
@@ -111,6 +111,10 @@ package scenes.loader
 		
 		//------------------------------------------------------------------------------------------------//
 		
+		///////////////////////////////////
+		// private methods
+		///////////////////////////////////
+		
 		/**
 		 * Changes Username/Password UI fields.
 		 * @param	enabled		Sets enabled status on relevent UI fields.
@@ -145,45 +149,6 @@ package scenes.loader
 			}});
 		}
 		
-		//------------------------------------------------------------------------------------------------//
-		/**
-		 * Event: CLICK
-		 * Click Event for "Login" button.
-		 * @param	e
-		 */
-		private function e_playAsUser(e:Event):void
-		{
-			_loginUser(input_user.text, input_pass.text);
-		}
-		
-		/**
-		 * Event: CLICK
-		 * Click event for "Guest" button.
-		 * @param	e
-		 */
-		private function e_playAsGuest(e:Event):void
-		{
-			_asGuest();
-		}
-		
-		/**
-		 * Event: KEY_DOWN
-		 * Keyboard listener for enter key to login user or play as guest.
-		 * @param	e
-		 */
-		private function e_loginKeyDown(e:KeyboardEvent):void
-		{
-			if (e.keyCode == Keyboard.ENTER)
-			{
-				if (input_user.text.length > 0)
-					e_playAsUser(e);
-				else
-					e_playAsGuest(e);
-			}
-			e.stopPropagation();
-		}
-		
-		//------------------------------------------------------------------------------------------------//
 		/**
 		 * Guest Play, disables UI items and goes back to game loader.
 		 */
@@ -274,5 +239,49 @@ package scenes.loader
 			}
 			return ["", "", false];
 		}
+		
+		//------------------------------------------------------------------------------------------------//
+		
+		///////////////////////////////////
+		// event handlers
+		///////////////////////////////////
+		
+		/**
+		 * Event: CLICK
+		 * Click Event for "Login" button.
+		 * @param	e
+		 */
+		private function e_playAsUser(e:Event):void
+		{
+			_loginUser(input_user.text, input_pass.text);
+		}
+		
+		/**
+		 * Event: CLICK
+		 * Click event for "Guest" button.
+		 * @param	e
+		 */
+		private function e_playAsGuest(e:Event):void
+		{
+			_asGuest();
+		}
+		
+		/**
+		 * Event: KEY_DOWN
+		 * Keyboard listener for enter key to login user or play as guest.
+		 * @param	e
+		 */
+		private function e_keyboardDown(e:KeyboardEvent):void
+		{
+			if (e.keyCode == Keyboard.ENTER)
+			{
+				if (input_user.text.length > 0)
+					e_playAsUser(e);
+				else
+					e_playAsGuest(e);
+			}
+			e.stopPropagation();
+		}
+		
 	}
 }

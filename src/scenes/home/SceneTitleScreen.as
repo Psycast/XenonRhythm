@@ -25,6 +25,8 @@ package scenes.home
 		private var selectedIndex:int = 0;
 		private var menuButtons:Array;
 		
+		//------------------------------------------------------------------------------------------------//
+		
 		public function SceneTitleScreen(core:EngineCore)
 		{
 			super(core);
@@ -58,51 +60,11 @@ package scenes.home
 		}
 		
 		//------------------------------------------------------------------------------------------------//
-		/**
-		 * Event: KEY_DOWN
-		 * Used to navigate the menu using the arrow keys or user set keys
-		 * @param	e Keyboard Event
-		 */
-		private function e_keyDown(e:KeyboardEvent):void
-		{
-			if (INPUT_DISABLED)
-				return;
-				
-			var newIndex:int = selectedIndex;
-			
-			// Menu Selection
-			if (e.keyCode == Keyboard.ENTER)
-			{
-				_closeScene(menuButtons[selectedIndex].tag);
-			}
-			
-			// Menu Navigation
-			else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.NUMPAD_2)
-			{
-				newIndex++;
-			}
-			else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP || e.keyCode == Keyboard.NUMPAD_8)
-			{
-				newIndex--;
-			}
-			
-			// New Index
-			if (newIndex != selectedIndex)
-			{
-				// Find First Menu Item
-				newIndex = ArrayUtil.find_next_index(newIndex < selectedIndex, newIndex, menuButtons, function(n:BoxButton):Boolean
-				{
-					return n.enabled;
-				});
-				
-				// Set Highlight
-				menuButtons[selectedIndex].highlight = false;
-				menuButtons[newIndex].highlight = true;
-				selectedIndex = newIndex;
-			}
-		}
 		
-		//------------------------------------------------------------------------------------------------//
+		///////////////////////////////////
+		// private methods
+		///////////////////////////////////
+		
 		/**
 		 * Creates the menu buttons.
 		 */
@@ -164,6 +126,56 @@ package scenes.home
 			}
 		}
 		
+		//------------------------------------------------------------------------------------------------//
+		
+		///////////////////////////////////
+		// event handlers
+		///////////////////////////////////
+		
+		/**
+		 * Event: KEY_DOWN
+		 * Used to navigate the menu using the arrow keys or user set keys
+		 * @param	e Keyboard Event
+		 */
+		private function e_keyDown(e:KeyboardEvent):void
+		{
+			if (INPUT_DISABLED)
+				return;
+				
+			var newIndex:int = selectedIndex;
+			
+			// Menu Selection
+			if (e.keyCode == Keyboard.ENTER)
+			{
+				_closeScene(menuButtons[selectedIndex].tag);
+			}
+			
+			// Menu Navigation
+			else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.NUMPAD_2)
+			{
+				newIndex++;
+			}
+			else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP || e.keyCode == Keyboard.NUMPAD_8)
+			{
+				newIndex--;
+			}
+			
+			// New Index
+			if (newIndex != selectedIndex)
+			{
+				// Find First Menu Item
+				newIndex = ArrayUtil.find_next_index(newIndex < selectedIndex, newIndex, menuButtons, function(n:BoxButton):Boolean
+				{
+					return n.enabled;
+				});
+				
+				// Set Highlight
+				menuButtons[selectedIndex].highlight = false;
+				menuButtons[newIndex].highlight = true;
+				selectedIndex = newIndex;
+			}
+		}
+		
 		/**
 		 * Event: CLICK
 		 * Handles the click event for menu buttons.
@@ -177,11 +189,6 @@ package scenes.home
 			var menuIndex:int = (e.target as UIComponent).tag;
 			
 			_closeScene(menuIndex);
-		}
-		
-		private function e_comboReturn(value:*):void
-		{
-			core.source = value;
 		}
 	}
 
