@@ -82,19 +82,9 @@ package scenes.songselection
 		
 		override public function onStage():void
 		{
-			super.onStage();
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
 			core.addEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
-		}
-		
-		override public function destroy():void
-		{
-			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
-			core.removeEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
-		}
-		
-		override public function draw():void
-		{
+			
 			// Overall Background
 			shift_plane = new UISprite(this);
 			shift_plane.alpha = 0;
@@ -130,9 +120,17 @@ package scenes.songselection
 			
 			// Draw All Game List
 			drawGameList();
+			
+			super.onStage();
 		}
 		
-		override public function onResize():void
+		override public function destroy():void
+		{
+			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
+			core.removeEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
+		}
+		
+		override public function position():void
 		{
 			// Update Genre Scrollbar Size + Position
 			genre_scrollpane.setSize(135, Constant.GAME_HEIGHT - 130);
@@ -161,7 +159,6 @@ package scenes.songselection
 			bottom_bar_background.setSize(Constant.GAME_WIDTH - 150, 36);
 			bottom_bar_background.y = Constant.GAME_HEIGHT - 35;
 			bottom_user_info.setSize(bottom_bar_background.width - 10, bottom_bar_background.height - 11);
-		
 		}
 		
 		//------------------------------------------------------------------------------------------------//
@@ -182,7 +179,7 @@ package scenes.songselection
 			drawSongList();
 			
 			// Size / Position
-			onResize();
+			position();
 		}
 		
 		/**

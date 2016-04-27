@@ -8,10 +8,10 @@ package scenes.loader
 	import classes.ui.UIAnchor;
 	import classes.ui.UICore;
 	import classes.ui.UISprite;
-	import com.greensock.easing.Elastic;
-	import com.greensock.easing.Power2;
 	import com.greensock.TimelineLite;
 	import com.greensock.TweenLite;
+	import com.greensock.easing.Elastic;
+	import com.greensock.easing.Power2;
 	import flash.events.Event;
 	import scenes.home.SceneTitleScreen;
 	
@@ -27,7 +27,7 @@ package scenes.loader
 			super(core);
 		}
 		
-		override public function draw():void
+		override public function onStage():void
 		{
 			// FFR Dude
 			ffrlogo = new UISprite(this, new FFRDudeCenter());
@@ -61,6 +61,8 @@ package scenes.loader
 			{
 				logoAnimation.play();
 			}
+			
+			super.onStage();
 		}
 		
 		/**

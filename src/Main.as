@@ -48,6 +48,7 @@ package
 			core.scene = new SceneGameLoader(core);
 			
 			stage.addEventListener(Event.RESIZE, core.e_stageResize);
+			core.ui.updateStageResize();
 		}
 		
 	}

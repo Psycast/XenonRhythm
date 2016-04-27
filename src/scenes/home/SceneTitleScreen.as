@@ -35,16 +35,7 @@ package scenes.home
 		override public function onStage():void
 		{
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyDown);
-			super.onStage();
-		}
-		
-		override public function destroy():void
-		{
-			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyDown);
-		}
-		
-		override public function draw():void
-		{
+			
 			// FFR Dude
 			ffrlogo = new UISprite(this, new FFRDudeCenter(), -125, -150);
 			ffrlogo.anchor = UIAnchor.MIDDLE_CENTER;
@@ -57,6 +48,13 @@ package scenes.home
 			ffrname.alpha = 0.85;
 			
 			_createMenu();
+			
+			super.onStage();
+		}
+		
+		override public function destroy():void
+		{
+			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyDown);
 		}
 		
 		//------------------------------------------------------------------------------------------------//

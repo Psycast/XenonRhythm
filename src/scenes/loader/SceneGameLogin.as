@@ -37,16 +37,7 @@ package scenes.loader
 		override public function onStage():void
 		{
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
-			super.onStage();
-		}
-		
-		override public function destroy():void
-		{
-			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
-		}
-		
-		override public function draw():void
-		{
+			
 			// FFR Dude
 			var ffrlogo:FFRDudeCenter = new FFRDudeCenter();
 			ffrlogo.x = Constant.GAME_WIDTH_CENTER - 125;
@@ -106,7 +97,14 @@ package scenes.loader
 			input_user.textField.setSelection(input_user.text.length, input_user.text.length);
 			
 			_setFields(true);
-			TweenLite.to(loginBox, 1, {"x": "-=75", "alpha": 1, "ease": Power2.easeOut});
+			TweenLite.to(loginBox, 1, { "x": "-=75", "alpha": 1, "ease": Power2.easeOut } );
+			
+			super.onStage();
+		}
+		
+		override public function destroy():void
+		{
+			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
 		}
 		
 		//------------------------------------------------------------------------------------------------//

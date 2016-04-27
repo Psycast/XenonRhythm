@@ -41,6 +41,7 @@ package classes.ui
 			var bg:sGameBackground = new sGameBackground();
 			addChildAt(bg, 0);
 			
+			position();
 			draw();
 		}
 		
@@ -50,7 +51,7 @@ package classes.ui
 		 */
 		public function onResize():void
 		{
-		
+			position();
 		}
 		
 		/**
@@ -59,6 +60,14 @@ package classes.ui
 		public function draw():void
 		{
 		
+		}
+		
+		/**
+		 * Abstract position() function.
+		 */
+		public function position():void
+		{
+			
 		}
 		
 		/**
