@@ -9,30 +9,30 @@ package classes.engine
 		public var index:int;
 		public var genre:int;
 		
-		public var name:String;
-		public var author:String;
-		public var author_url:String;
-		private var _stepauthor:String;
-		private var _stepauthor_with_url:String;
+		public var name:String = "";
+		public var author:String = "";
+		public var author_url:String = "";
+		private var _stepauthor:String = "";
+		private var _stepauthor_with_url:String = "";
 		
-		public var style:String;
-		public var release_date:int;
-		private var _time:String;
-		private var _time_secs:int;
-		public var order:int;
-		public var difficulty:int;
-		private var _notes:int;
+		public var style:String = "";
+		public var release_date:int = 0;
+		private var _time:String = "0:00";
+		private var _time_secs:int = 0;
+		public var order:int = 0;
+		public var difficulty:int = 0;
+		private var _notes:int = 0;
 		public var sync_frames:int = 0;
 		
-		private var _score_raw:int;
-		private var _score_combo:int;
+		private var _score_raw:int = 0;
+		private var _score_combo:int = 0;
 		
 		public var min_nps:Number = 0;
 		public var max_nps:Number = 0;
 		
-		public var play_hash:String;
-		public var preview_hash:String;
-		public var prerelease:Boolean;
+		public var play_hash:String = "";
+		public var preview_hash:String = "";
+		public var prerelease:Boolean = false;
 		public var is_title_only:Boolean = false;
 		
 		// Author
@@ -92,9 +92,14 @@ package classes.engine
 		
 		public function set time(time:String):void
 		{
-			var pieces:Array = time.split(":");
 			_time = time;
-			_time_secs = (int(pieces[0]) * 60) + int(pieces[1]);
+			
+			var pieces:Array = time.split(":");
+			if(pieces.length >= 2) {
+				_time_secs = (int(pieces[0]) * 60) + int(pieces[1]);
+			} else {
+				_time_secs = int(pieces[0]);
+			}
 		}
 		
 		public function get time_secs():int

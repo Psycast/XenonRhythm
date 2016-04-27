@@ -84,20 +84,35 @@ package classes.engine
 				song.source = id;
 				song.id = item.level.toString();
 				song.index = genre_list[_genre].length;
-				song.genre = item.genre;
-				song.name = item.name;
-				song.author = item.author;
-				song.author_url = item.authorURL;
-				song.stepauthor = item.stepauthor;
-				song.style = item.style;
-				song.release_date = item.releasedate;
-				song.time = item.time;
-				song.order = item.order;
-				song.difficulty = item.difficulty;
-				song.notes = item.arrows;
-				song.play_hash = item.previewhash;
-				song.preview_hash = item.previewhash;
-				song.prerelease = item.prerelease;
+				
+				if (item.genre)
+					song.genre = item.genre;
+				if (item.name)
+					song.name = item.name;
+				if (item.author)
+					song.author = item.author;
+				if (item.authorURL)
+					song.author_url = item.authorURL;
+				if (item.stepauthor)
+					song.stepauthor = item.stepauthor;
+				if (item.style)
+					song.style = item.style;
+				if (item.releasedate)
+					song.release_date = item.releasedate;
+				if (item.time)
+					song.time = item.time;
+				if (item.order)
+					song.order = item.order;
+				if (item.difficulty)
+					song.difficulty = item.difficulty;
+				if (item.arrows)
+					song.notes = item.arrows;
+				if (item.previewhash)
+					song.play_hash = item.previewhash;
+				if (item.previewhash)
+					song.preview_hash = item.previewhash;
+				if (item.prerelease)
+					song.prerelease = item.prerelease;
 				
 				// Optional
 				if (item.is_title_only)
@@ -130,21 +145,37 @@ package classes.engine
 				var node:XML = nodes[i];
 				var song:Object = new Object();
 				song.source = id;
-				song.genre = int(node.@genre.toString());
-				song.name = node.songname.toString();
-				song.difficulty = int(node.songdifficulty.toString());
-				song.style = node.songstyle.toString();
-				song.time = node.songlength.toString();
-				song.level = node.level.toString();
-				song.order = int(node.order.toString());
-				song.arrows = int(node.arrows.toString());
-				song.author = node.songauthor.toString();
-				song.authorURL = node.songauthorURL.toString();
-				song.stepauthor = node.songstepauthor.toString();
-				song.stepauthorURL = node.songstepauthorurl.toString();
-				song.credits = int(node.secretcredits.toString());
-				song.price = int(node.price.toString());
 				
+				if (node.@genre)
+					song.genre = int(node.@genre.toString());
+				if (node.songname)
+					song.name = node.songname.toString();
+				if (node.songdifficulty)
+					song.difficulty = int(node.songdifficulty.toString());
+				if (node.songstyle)
+					song.style = node.songstyle.toString();
+				if (node.songlength)
+					song.time = node.songlength.toString();
+				if (node.level)
+					song.level = node.level.toString();
+				if (node.order)
+					song.order = int(node.order.toString());
+				if (node.arrows)
+					song.arrows = int(node.arrows.toString());
+				if (node.songauthor)
+					song.author = node.songauthor.toString();
+				if (node.songauthorURL)
+					song.authorURL = node.songauthorURL.toString();
+				if (node.songstepauthor)
+					song.stepauthor = node.songstepauthor.toString();
+				if (node.songstepauthorurl)
+					song.stepauthorURL = node.songstepauthorurl.toString();
+				if (node.secretcredits)
+					song.credits = int(node.secretcredits.toString());
+				if (node.price)
+					song.price = int(node.price.toString());
+				
+				// Optional
 				if (node.min_nps)
 					song.min_nps = int(node.min_nps.toString());
 				if (node.max_nps)
