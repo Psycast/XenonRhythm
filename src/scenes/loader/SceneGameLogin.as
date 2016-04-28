@@ -8,7 +8,9 @@ package scenes.loader
 	import classes.ui.BoxCheck;
 	import classes.ui.BoxInput;
 	import classes.ui.Label;
+	import classes.ui.UIAnchor;
 	import classes.ui.UICore;
+	import classes.ui.UISprite;
 	import classes.user.User;
 	import com.greensock.easing.Power2;
 	import com.greensock.TweenLite;
@@ -39,24 +41,21 @@ package scenes.loader
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
 			
 			// FFR Dude
-			var ffrlogo:FFRDudeCenter = new FFRDudeCenter();
-			ffrlogo.x = Constant.GAME_WIDTH_CENTER - 125;
-			ffrlogo.y = Constant.GAME_HEIGHT_CENTER - 150;
+			var ffrlogo:UISprite = new UISprite(this, new FFRDudeCenter(), -125, -150);
+			ffrlogo.anchor = UIAnchor.MIDDLE_CENTER;
 			ffrlogo.scaleX = ffrlogo.scaleY = 1.5;
 			ffrlogo.alpha = 0.85;
-			addChild(ffrlogo);
 			
 			// FFR Name
-			var ffrname:FFRName = new FFRName();
-			ffrname.x = Constant.GAME_WIDTH_CENTER - 75;
-			ffrname.y = Constant.GAME_HEIGHT_CENTER - 150;
+			var ffrname:UISprite = new UISprite(this, new FFRName(), -75, -150);
+			ffrname.anchor = UIAnchor.MIDDLE_CENTER;
 			ffrname.alpha = 0.85;
-			addChild(ffrname);
 			
 			// Login Box
-			loginBox = new Box(this, Constant.GAME_WIDTH_CENTER - 75, Constant.GAME_HEIGHT_CENTER - 70);
+			loginBox = new Box(this, -75, -70);
 			loginBox.setSize(300, 140);
 			loginBox.alpha = 0;
+			loginBox.anchor = UIAnchor.MIDDLE_CENTER;
 			
 			//- Text
 			// Username
@@ -164,7 +163,7 @@ package scenes.loader
 		 */
 		private function _loginUser(username:String = "", password:String = ""):void
 		{
-			Logger.log(this, Logger.INFO, "Attepting Login: " + username);
+			Logger.log(this, Logger.INFO, "Attempting Login: " + username);
 			_setFields(false);
 			
 			// Login User
@@ -214,7 +213,7 @@ package scenes.loader
 			if (saveLogin)
 			{
 				gameSave.data.uUsername = username;
-				gameSave.data.uPassword = password; // TODO: Something About this...
+				//gameSave.data.uPassword = password; // TODO: Something About this...
 			}
 			else
 			{
