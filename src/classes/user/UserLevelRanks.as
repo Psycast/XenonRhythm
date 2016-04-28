@@ -3,6 +3,7 @@ package classes.user
 	import classes.engine.EngineLevel;
 	import classes.engine.EngineLoader;
 	import classes.engine.EngineRanks;
+	import classes.engine.EngineRanksLevel;
 	import com.flashfla.utils.ArrayUtil;
 	
 	/**
@@ -47,20 +48,27 @@ package classes.user
 			var public_songs:Array = engine.playlist.index_list;
 			
 			// Filter Out Non-public Genres
-			var nonpublic_genres:Array = engine.info.getData("game_nonpublic_genres");
-			if (nonpublic_genres != null)
+			if (engine.info != null)
 			{
-				public_songs = public_songs.filter(function(item:EngineLevel, index:int, array:Array):Boolean
+				var nonpublic_genres:Array = engine.info.getData("game_nonpublic_genres");
+				if (nonpublic_genres != null)
 				{
-					return !ArrayUtil.in_array([item.genre], nonpublic_genres)
-				})
+					public_songs = public_songs.filter(function(item:EngineLevel, index:int, array:Array):Boolean
+					{
+						return !ArrayUtil.in_array([item.genre], nonpublic_genres)
+					})
+				}
 			}
 			
 			// Total Ranks
+			var levelRank:EngineRanksLevel;
 			var totalRanks:Number = 0;
 			for (var i:int = 0; i < public_songs.length; i++) 
 			{
-				totalRanks += engineRanks.getRank(public_songs[i].id).rank;
+				levelRank = engineRanks.getRank(public_songs[i].id);
+				
+				if(levelRank)
+					totalRanks += engineRanks.getRank(public_songs[i].id).rank;
 			}
 			
 			return totalRanks / engine.playlist.total_public_songs;
