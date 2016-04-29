@@ -11,6 +11,8 @@ package classes.user
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.net.URLRequest;
 	
 	/**
@@ -115,8 +117,14 @@ package classes.user
 			this.id = _data["id"];
 			
 			// Load Avatar
-			this.avatar = new Loader();
-			this.avatar.load(new URLRequest(Constant.USER_AVATAR_URL + "?uid=" + this.id + "&cHeight=99&cWidth=99"));
+			if (_data["avatar"] && _data["avatar"] != "")
+			{
+				this.avatar = new Loader();
+				this.avatar.load(new URLRequest(_data["avatar"]));
+				this.avatar.contentLoaderInfo.addEventListener(Event.COMPLETE, e_avatarLoadComplete);
+				this.avatar.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, e_avatarLoadError);
+				this.avatar.contentLoaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, e_avatarLoadError);
+			}
 			
 			// Setup Class Data
 			this.info.setup(_data);
@@ -127,6 +135,23 @@ package classes.user
 			{
 				this.settings.setup(JSONManager.decode(_data["settings"]));
 			}
+		}
+		
+		private function e_avatarLoadComplete(e:Event):void 
+		{
+			Logger.log(this, Logger.INFO, "Avatar Load Complete");
+			this.avatar.contentLoaderInfo.removeEventListener(Event.COMPLETE, e_avatarLoadComplete);
+			this.avatar.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, e_avatarLoadError);
+			this.avatar.contentLoaderInfo.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, e_avatarLoadError);
+		}
+		
+		private function e_avatarLoadError(e:Event):void 
+		{
+			Logger.log(this, Logger.ERROR, "Avatar Load Error");
+			this.avatar.contentLoaderInfo.removeEventListener(Event.COMPLETE, e_avatarLoadComplete);
+			this.avatar.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, e_avatarLoadError);
+			this.avatar.contentLoaderInfo.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, e_avatarLoadError);
+			this.avatar = null;
 		}
 		
 		/**
