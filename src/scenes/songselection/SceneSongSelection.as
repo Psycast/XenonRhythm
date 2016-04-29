@@ -15,6 +15,7 @@ package scenes.songselection
 	import classes.ui.UIStyle;
 	import com.flashfla.utils.ArrayUtil;
 	import com.flashfla.utils.NumberUtil;
+	import com.flashfla.utils.SpriteUtil;
 	import com.flashfla.utils.StringUtil;
 	import com.flashfla.utils.sprintf;
 	import com.greensock.TweenLite;
@@ -80,15 +81,22 @@ package scenes.songselection
 			super(core);
 		}
 		
+		override public function init():void 
+		{
+			super.init();
+			INPUT_DISABLED = true;
+		}
+		
 		override public function onStage():void
 		{
+			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
 			core.addEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
 			
 			// Overall Background
 			shift_plane = new UISprite(this);
 			shift_plane.alpha = 0;
-			TweenLite.to(shift_plane, 0.5, {"delay": 0.5, "alpha": 1});
+			TweenLite.to(shift_plane, 0.5, { "delay": 0.5, "alpha": 1, "onComplete":function():void { INPUT_DISABLED = false;} } );
 			
 			// Game Logo
 			ffr_logo = new UISprite(shift_plane, new FFRDude(), 22, 12);
