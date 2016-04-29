@@ -1,4 +1,5 @@
 package com.flashfla.utils {
+	import flash.geom.ColorTransform;
 	import flash.utils.ByteArray;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
@@ -118,6 +119,80 @@ package com.flashfla.utils {
 				}
 			}
 			return output;
+		}
+		
+		/**
+		 * Return a gradient given a colour.
+		 *
+		 * @param color      Base color of the gradient.
+		 * @param intensity  Amount to shift secondary color.
+		 * @return An array with a length of two colors.
+		 */
+		public static function fadeColour(color:uint, intensity:int = 20):Array
+		{
+			var c:Object = hexToRGB(color);
+			for (var key:String in c)
+			{
+				c[key] = Math.max(Math.min(c[key] + intensity, 255), 0);
+			}
+			return [color, RGBToHex(c)];
+		}
+		
+		/**
+		 * Interpolates between 2 given colours based on the percentage.
+		 * @param	fromColor
+		 * @param	toColor
+		 * @param	progress
+		 * @return
+		 */
+		public static function interpolateColour(fromColour:uint, toColour:uint, progress:Number):uint
+		{
+			var q:Number = 1 - progress;
+			var fromA:uint = (fromColour >> 24) & 0xFF;
+			var fromR:uint = (fromColour >> 16) & 0xFF;
+			var fromG:uint = (fromColour >> 8) & 0xFF;
+			var fromB:uint = fromColour & 0xFF;
+			
+			var toA:uint = (toColour >> 24) & 0xFF;
+			var toR:uint = (toColour >> 16) & 0xFF;
+			var toG:uint = (toColour >> 8) & 0xFF;
+			var toB:uint = toColour & 0xFF;
+			
+			var resultA:uint = fromA * q + toA * progress;
+			var resultR:uint = fromR * q + toR * progress;
+			var resultG:uint = fromG * q + toG * progress;
+			var resultB:uint = fromB * q + toB * progress;
+			return (resultA << 24 | resultR << 16 | resultG << 8 | resultB);
+		}
+		
+		/**
+		 * Convert a uint (0x000000) to a colour object.
+		 *
+		 * @param hex  Colour.
+		 * @return Converted object {r:, g:, b:}
+		 */
+		public static function hexToRGB(hex:uint):Object
+		{
+			var c:Object = {};
+			
+			c.a = hex >> 24 & 0xFF;
+			c.r = hex >> 16 & 0xFF;
+			c.g = hex >> 8 & 0xFF;
+			c.b = hex & 0xFF;
+			
+			return c;
+		}
+		
+		/**
+		 * Convert a colour object to uint octal (0x000000).
+		 *
+		 * @param c  Colour object {r:, g:, b:}.
+		 * @return Converted colour uint (0x000000).
+		 */
+		public static function RGBToHex(c:Object):uint
+		{
+			var ct:ColorTransform = new ColorTransform(0, 0, 0, 0, c.r, c.g, c.b, 100);
+			return ct.color as uint
 		}
 	
 	}
