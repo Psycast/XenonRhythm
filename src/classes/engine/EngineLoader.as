@@ -28,6 +28,8 @@ package classes.engine
 		
 		private var _requestParams:Object;
 		
+		private var configURL:String = "";
+		
 		public var isCanon:Boolean = false;
 		public var isLegacy:Boolean = false;
 		
@@ -103,6 +105,7 @@ package classes.engine
 		{
 			if (url != "")
 			{
+				configURL = url;
 				_requestParams = params;
 				url = prepareURL(url);
 				var wr:WebRequest = new WebRequest(url, e_configLoad);
@@ -352,6 +355,15 @@ package classes.engine
 			if (!loaded_info || !loaded_language || !loaded_playlist || !_playlist)
 				return;
 			
+			// Check Playlist is Valid and contains atleast one song.
+			if (!_playlist.valid || _playlist.index_list.length <= 0)
+			{
+				Logger.log(this, Logger.ERROR, "\"" + id + "\" - Load Init Failure - Playlist Invalid");
+				_core.removeLoader(this);
+				
+				return;
+			}
+			
 			// Playlist
 			_playlist.total_songs = _playlist.total_public_songs = _playlist.index_list.length;
 			_playlist.total_genres = ArrayUtil.count(_playlist.genre_list);
@@ -374,7 +386,7 @@ package classes.engine
 			// Language
 			
 			// Finished
-			Logger.log(this, Logger.NOTICE, "Load Init: " + name);
+			Logger.log(this, Logger.NOTICE, "Load Init: " + name + " (" + (playlist ? "P" : "-") + (info ? "I" : "-") + (language ? "L" : "-") + ")");
 			Logger.log(this, Logger.NOTICE, "Total Songs: " + _playlist.total_songs);
 			Logger.log(this, Logger.NOTICE, "Total Public Songs: " + _playlist.total_public_songs);
 			Logger.log(this, Logger.NOTICE, "Total Genres: " + _playlist.total_genres);

@@ -104,7 +104,9 @@ package classes.engine
 			
 			_loaderCount = ObjectUtil.count(_loaders);
 			
-			dispatchEvent(new Event(LOADERS_UPDATE));
+			if(loader.loaded)
+				dispatchEvent(new Event(LOADERS_UPDATE));
+				
 			Logger.log(this, Logger.INFO, "Removed EngineLoader: " + loader.id);
 		}
 		
