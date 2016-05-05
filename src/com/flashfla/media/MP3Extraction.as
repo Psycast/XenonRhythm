@@ -4,7 +4,7 @@ package com.flashfla.media {
 	
 	public class MP3Extraction {
 		public static function extractSound(data:ByteArray, metadata:Object = null):ByteArray {
-			var header:Object = SwfParser.readHeader(data);
+			var header:Object = SWFParser.readHeader(data);
 
 			var mp3:ByteArray = new ByteArray();
 			var frame:int = 0;
@@ -16,15 +16,15 @@ package com.flashfla.media {
 			var mp3Stream:Boolean = false;
 			var done:Boolean = false;
 			while (data.bytesAvailable > 0 && !done) {
-				var tag:Object = SwfParser.readTag(data);
+				var tag:Object = SWFParser.readTag(data);
 				switch (tag.tag) {
-					case SwfParser.SWF_TAG_END:
+					case SWFParser.SWF_TAG_END:
 						done = true;
 						break;
-					case SwfParser.SWF_TAG_SHOWFRAME:
+					case SWFParser.SWF_TAG_SHOWFRAME:
 						frame++;
 						break;
-					case SwfParser.SWF_TAG_STREAMBLOCK:
+					case SWFParser.SWF_TAG_STREAMBLOCK:
 						if (!mp3Stream)
 							break;
 						if (!mp3Frame)
@@ -33,20 +33,20 @@ package com.flashfla.media {
 						data.readUnsignedShort(); // seek samples
 						mp3.writeBytes(data, data.position, tag.length - 4);
 						break;
-					case SwfParser.SWF_TAG_STREAMHEAD:
-					case SwfParser.SWF_TAG_STREAMHEAD2:
+					case SWFParser.SWF_TAG_STREAMHEAD:
+					case SWFParser.SWF_TAG_STREAMHEAD2:
 						data.readUnsignedByte();
 						mp3Format = data.readUnsignedByte();
 						data.readUnsignedShort(); // average frame samples
 						mp3Seek = data.readUnsignedShort();
-						if (((mp3Format >>> 4) & 0xf) == SwfParser.SWF_CODEC_MP3)
+						if (((mp3Format >>> 4) & 0xf) == SWFParser.SWF_CODEC_MP3)
 							mp3Stream = true;
 						break;
-					case SwfParser.SWF_TAG_DEFINESOUND:
+					case SWFParser.SWF_TAG_DEFINESOUND:
 						if (!mp3Stream) {
 							var id:int = data.readUnsignedShort();
 							var format:int = data.readUnsignedByte();
-							if (((format >>> 4) & 0xf) == SwfParser.SWF_CODEC_MP3) {
+							if (((format >>> 4) & 0xf) == SWFParser.SWF_CODEC_MP3) {
 								mp3Id = id;
 								mp3Format = format;
 								mp3Samples = data.readInt();
