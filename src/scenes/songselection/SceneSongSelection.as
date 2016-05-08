@@ -367,7 +367,7 @@ package scenes.songselection
 			_changeSelectedSong(ss_songButtons[0]);
 			
 			// Reset Scroll
-			ss_scrollpane.scrollReset();
+			ss_scrollpane.verticalBar.scroll = 0;
 		}
 		
 		//------------------------------------------------------------------------------------------------//

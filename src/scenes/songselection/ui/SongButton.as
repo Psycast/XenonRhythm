@@ -88,6 +88,7 @@ package scenes.songselection.ui
 			{
 				_lblSongDifficulty.x = width - 25;
 				_lblSongDifficulty.setSize(20, height - 3);
+				_lblSongFlag.visible = core.user.settings.display_song_flags;
 				_lblSongFlag.x = _lblSongDifficulty.x - 95;
 				_lblSongFlag.setSize(90, height - 3);
 				if (width >= 650)
@@ -100,7 +101,7 @@ package scenes.songselection.ui
 				else
 				{
 					_lblSongStyle.visible = false;
-					_lblSongName.setSize(_lblSongFlag.x - 10, height - 3);
+					_lblSongName.setSize((_lblSongFlag.visible ? _lblSongFlag.x : _lblSongDifficulty.x) - 10, height - 3);
 				}
 			}
 		}

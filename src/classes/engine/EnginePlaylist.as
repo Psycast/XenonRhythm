@@ -53,6 +53,7 @@ package classes.engine
 			catch (e:Error)
 			{
 				Logger.log(this, Logger.ERROR, "\"" + id + "\" - Malformed Playlist Format");
+				Logger.log(this, Logger.ERROR, e.name, " (" + e.errorID + "): " + e.errorID); 
 				return;
 			}
 			
@@ -198,7 +199,13 @@ package classes.engine
 		
 		public function getLevelPath(level:EngineLevel):String
 		{
-			return sprintf(this.load_path, level);
+			var path:String = sprintf(load_path, level);
+			
+			// Append Legacy URLs if URL didn't change with song details.
+			if (path == load_path)
+				path = sprintf(load_path + "level_%(id)s.swf", level);
+				
+			return path;
 		}
 	}
 

@@ -22,7 +22,7 @@
     <option accessible="False" />
     <option advancedTelemetry="False" />
     <option allowSourcePathOverlap="False" />
-    <option benchmark="True" />
+    <option benchmark="False" />
     <option es="False" />
     <option inline="False" />
     <option locale="" />
@@ -38,7 +38,7 @@
     <option useNetwork="True" />
     <option useResourceBundleMetadata="True" />
     <option warnings="True" />
-    <option verboseStackTraces="True" />
+    <option verboseStackTraces="False" />
     <option linkReport="" />
     <option loadExterns="" />
     <option staticLinkRSL="True" />

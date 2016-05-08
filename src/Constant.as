@@ -33,14 +33,14 @@ package
 		public static const GAME_ENGINE:String = "ffr";
 		public static const GAME_NAME:String = "FlashFlashRevolution";
 		public static var GAME_WIDTH:int = 800;
-		public static var GAME_WIDTH_CENTER:int = GAME_WIDTH >> 1;
+		public static var GAME_WIDTH_CENTER:int = GAME_WIDTH / 2;
 		public static var GAME_HEIGHT:int = 600;
-		public static var GAME_HEIGHT_CENTER:int = GAME_HEIGHT >> 1;
+		public static var GAME_HEIGHT_CENTER:int = GAME_HEIGHT / 2;
 	
 		//- Functions
 		public static function getSongIconIndex(song:EngineLevel, rank:EngineRanksLevel):int {
 			var songIcon:int = 0;
-			if (rank) {
+			if (song && rank) {
 				// No Score
 				if (rank.score == 0)
 					songIcon = 0;
