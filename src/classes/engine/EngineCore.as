@@ -35,11 +35,14 @@ package classes.engine
 		public var flags:Array = [];
 		
 		/** Engine Variables */
-		public var variables:EngineVariables = new EngineVariables();
+		public var variables:EngineVariables;
+		public var song_loader:EngineLevelLoader;
 		
 		public function EngineCore()
 		{
 			this._source = Constant.GAME_ENGINE;
+			variables = new EngineVariables();
+			song_loader = new EngineLevelLoader(this);
 		}
 		
 		///- Engine Content Source
