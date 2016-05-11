@@ -34,7 +34,8 @@ package
 			if (_scene)
 			{
 				_scene.destroy();
-				this.removeChild(_scene);
+				if(this.contains(_scene))
+					this.removeChild(_scene);
 				_scene = null;
 			}
 			

@@ -137,7 +137,10 @@ package scenes.loader
 					}
 					if (el != null)
 					{
-						ffrstatus.htmlText = "Loading Game Data... (<font face=\"Consolas\">" + (el.loaded_playlist ? "P" : "-") + (el.loaded_info ? "I" : "-") + (el.loaded_language ? "L" : "-") + "</font>)";
+						if (el.playlist == null && el.loaded_playlist)
+							ffrstatus.htmlText = "Loading Game Config...";
+						else
+							ffrstatus.htmlText = "Loading Game Data... (<font face=\"Consolas\">" + (el.loaded_playlist ? "P" : "-") + (el.loaded_info ? "I" : "-") + (el.loaded_language ? "L" : "-") + "</font>)";
 					}
 				}
 			}

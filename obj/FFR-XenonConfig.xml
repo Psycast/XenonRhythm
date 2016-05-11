@@ -16,7 +16,7 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'5/7/2016'</value>
+      <value>'5/11/2016'</value>
     </define>
     <define append="true">
       <name>CONFIG::air</name>
@@ -28,6 +28,10 @@
     </define>
     <define append="true">
       <name>CONFIG::desktop</name>
+      <value>false</value>
+    </define>
+    <define append="true">
+      <name>CONFIG::local_api</name>
       <value>false</value>
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
