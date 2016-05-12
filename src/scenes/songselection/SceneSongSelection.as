@@ -67,9 +67,9 @@ package scenes.songselection
 		private var bottom_user_info:Label;
 		
 		// UI Variables
-		/** Active Genre ID */
 		public var DISPLAY_MODE:String = DM_STANDARD;
 		public var SELECTED_GENRE:int = 1;
+		public var SELECTED_GENRE_TAB:Label;
 		public var SELECTED_SONG:SongButton;
 		public var CURRENT_PAGE:int = 0;
 		public var SEARCH_TEXT:String = "";
@@ -109,6 +109,7 @@ package scenes.songselection
 			top_bar_background = new Box(shift_plane, 145, -1);
 			
 			search_input = new BoxInput(top_bar_background, 5, 5);
+			search_input.textField.tabEnabled = false;
 			search_button = new BoxButton(top_bar_background, 105, 5, core.getString("song_selection_menu_search"), e_searchClick);
 			filters_button = new BoxButton(top_bar_background, 205, 5, core.getString("song_selection_filters"), e_filtersClick);
 			options_button = new BoxButton(top_bar_background, 305, 5);
@@ -264,9 +265,11 @@ package scenes.songselection
 				if (core.source == engineSource[2] && DISPLAY_MODE == DM_ALL)
 				{
 					genreLabel.fontSize = UIStyle.FONT_SIZE + 2;
+					SELECTED_GENRE_TAB = genreLabel;
 					drawPosition = {"y": genreYPosition, "height": genreLabel.height};
 				}
 				genreYPosition += genreLabel.height + 5;
+				genre_songButtons.push(genreLabel);
 				
 				// Genre Labels
 				for (var genre_id:String in core.getPlaylist(engineSource[2]).genre_list)
@@ -280,6 +283,7 @@ package scenes.songselection
 					if (core.source == engineSource[2] && genre_int == SELECTED_GENRE)
 					{
 						genreLabel.fontSize = UIStyle.FONT_SIZE + 2;
+						SELECTED_GENRE_TAB = genreLabel;
 						drawPosition = {"y": genreYPosition, "height": genreLabel.height};
 					}
 					
@@ -353,7 +357,7 @@ package scenes.songselection
 			}
 			
 			// Display
-			if (list != null)
+			if (list != null && list.length > 0)
 			{
 				var songButtonYPosition:int = 0;
 				for (i = 0; i < list.length; i++)
@@ -361,10 +365,10 @@ package scenes.songselection
 					ss_songButtons.push(new SongButton(ss_scrollpane, 0, songButtonYPosition, core, list[i]));
 					songButtonYPosition += ss_songButtons[ss_songButtons.length - 1].height + 5;
 				}
+				
+				// Select First Song
+				_changeSelectedSong(ss_songButtons[0]);
 			}
-			
-			// Select First Song
-			_changeSelectedSong(ss_songButtons[0]);
 			
 			// Reset Scroll
 			ss_scrollpane.verticalBar.scroll = 0;
@@ -375,6 +379,48 @@ package scenes.songselection
 		///////////////////////////////////
 		// private methods
 		///////////////////////////////////
+		
+		/**
+		 * Returns the genre tag for the next genre.
+		 * @param	dir Next index direction. True is previous, False is next.
+		 * @return tag object from Genre label.
+		 */
+		private function _getNextGenreTag(dir:Boolean):Object
+		{
+			if (!genre_songButtons)
+				return null;
+				
+			var index:int = ArrayUtil.index_wrap(genre_songButtons.indexOf(SELECTED_GENRE_TAB) + (dir ? -1 : 1), 0, genre_songButtons.length - 1);
+			var genre:Label = genre_songButtons[index];
+			
+			return genre.tag;
+		}
+		
+		/**
+		 * Changes the current genre using the provided tag for information.
+		 * @param	tag
+		 */
+		private function _changeGenreByTag(tag:Object):void 
+		{
+			if (tag.engine != core.source)
+			{
+				core.source = tag.engine;
+			}
+			
+			// All Genre
+			if (tag.genre == "all")
+			{
+				DISPLAY_MODE = DM_ALL;
+				SELECTED_GENRE = -1;
+			}
+			// Normal Genres
+			else
+			{
+				DISPLAY_MODE = DM_STANDARD;
+				SELECTED_GENRE = parseInt(tag.genre);
+			}
+			drawGameList();
+		}
 		
 		/**
 		 * Changes the selected/highlighted song to the provided song button.
@@ -465,25 +511,7 @@ package scenes.songselection
 			var target:* = e.target;
 			if (target is Label)
 			{
-				var tag:Object = (target as Label).tag;
-				if (tag.engine != core.source)
-				{
-					core.source = tag.engine;
-				}
-				
-				// All Genre
-				if (tag.genre == "all")
-				{
-					DISPLAY_MODE = DM_ALL;
-					SELECTED_GENRE = -1;
-				}
-				// Normal Genres
-				else
-				{
-					DISPLAY_MODE = DM_STANDARD;
-					SELECTED_GENRE = parseInt(tag.genre);
-				}
-				drawGameList();
+				_changeGenreByTag((target as Label).tag);
 			}
 		}
 		
@@ -550,6 +578,13 @@ package scenes.songselection
 			if (INPUT_DISABLED)
 				return;
 			
+			// Genre Navigation
+			if (e.keyCode == Keyboard.TAB)
+			{
+				_changeGenreByTag(_getNextGenreTag(e.shiftKey));
+				genre_scrollpane.scrollChild(SELECTED_GENRE_TAB);
+			}
+			
 			// Focus is Search Input
 			if (stage.focus == search_input.textField)
 			{
@@ -563,49 +598,49 @@ package scenes.songselection
 			// No Stage Focus
 			if (!stage.focus)
 			{
-				// Check for Song Items
-				if (ss_songButtons.length == 0)
-					return;
-				
-				var selectedIndex:int = SELECTED_SONG ? ss_songButtons.indexOf(SELECTED_SONG) : 0;
-				var newIndex:int = selectedIndex;
-				
-				// Select Song
-				if (e.keyCode == Keyboard.ENTER)
+				// Song Navigation
+				if (ss_songButtons.length > 0)
 				{
-					_addSelectedSongToQueue(true);
-				}
-				// Menu Navigation
-				else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.NUMPAD_2)
-				{
-					newIndex++;
-				}
-				else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP || e.keyCode == Keyboard.NUMPAD_8)
-				{
-					newIndex--;
-				}
-				else if (e.keyCode == Keyboard.PAGE_DOWN)
-				{
-					newIndex += 10;
-				}
-				else if (e.keyCode == Keyboard.PAGE_UP)
-				{
-					newIndex -= 10;
-				}
-				
-				// New Index
-				if (newIndex != selectedIndex)
-				{
-					// Find First Menu Item
-					newIndex = ArrayUtil.find_next_index(newIndex < selectedIndex, newIndex, ss_songButtons, function(n:SongButton):Boolean
-					{
-						return !n.songData.is_title_only;
-					});
+					var selectedIndex:int = SELECTED_SONG ? ss_songButtons.indexOf(SELECTED_SONG) : 0;
+					var newIndex:int = selectedIndex;
 					
-					_changeSelectedSong(ss_songButtons[newIndex]);
-					ss_scrollpane.scrollChild(SELECTED_SONG);
+					// Select Song
+					if (e.keyCode == Keyboard.ENTER)
+					{
+						_addSelectedSongToQueue(true);
+					}
+					
+					else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.NUMPAD_2)
+					{
+						newIndex++;
+					}
+					else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP || e.keyCode == Keyboard.NUMPAD_8)
+					{
+						newIndex--;
+					}
+					else if (e.keyCode == Keyboard.PAGE_DOWN)
+					{
+						newIndex += 10;
+					}
+					else if (e.keyCode == Keyboard.PAGE_UP)
+					{
+						newIndex -= 10;
+					}
+					
+					// New Index
+					if (newIndex != selectedIndex)
+					{
+						// Find First Menu Item
+						newIndex = ArrayUtil.find_next_index(newIndex < selectedIndex, newIndex, ss_songButtons, function(n:SongButton):Boolean
+						{
+							return !n.songData.is_title_only;
+						});
+						
+						_changeSelectedSong(ss_songButtons[newIndex]);
+						ss_scrollpane.scrollChild(SELECTED_SONG);
+					}
+					return;
 				}
-				return;
 			}
 		}
 	
