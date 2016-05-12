@@ -65,6 +65,12 @@ package scenes.songselection
 			}
 		}
 		
+		override public function destroy():void 
+		{
+			stage.removeEventListener(Event.ENTER_FRAME, e_enterFrame);
+			super.destroy();
+		}
+		
 		override public function onStage():void
 		{
 			if (!songData)
@@ -335,7 +341,7 @@ package scenes.songselection
 		private function e_songLoadError(e:Event):void
 		{
 			Logger.log(this, Logger.ERROR, "Song Load Failed, returning to Song Selection...");
-			_closeScene(0);
+			_switchScene(0);
 		}
 		
 		private function e_songLoadProgress(e:ProgressEvent):void

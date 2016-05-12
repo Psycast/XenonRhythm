@@ -87,14 +87,19 @@ package classes
 		 */
 		private function _doLoadCompleteInit():void
 		{
-			if (loadFailed)
-			{
-				dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
-			}
 			if (loaded)
 			{
 				Logger.log(this, Logger.INFO, "\"" + details.name + "\" Loaded with " + chart.Notes.length + " notes, at " + TimeUtil.convertToHHMMSS(chart.Notes[chart.Notes.length - 1].time));
 				dispatchEvent(new Event(Event.COMPLETE));
+			}
+		}
+		
+		private function _doLoadFailure():void 
+		{
+			if (!_loadFailed)
+			{
+				_loadFailed = true;
+				dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
 			}
 		}
 		
@@ -142,8 +147,7 @@ package classes
 			if (!loader.getSound(bytes, metadata.seek, metadata.samples, metadata.format))
 			{
 				Logger.log(this, Logger.ERROR, "Unabled to extract sound.");
-				_loadFailed = true;
-				_doLoadCompleteInit();
+				_doLoadFailure();
 				return;
 			}
 			mp3Frame = metadata.frame - 2;
@@ -156,8 +160,7 @@ package classes
 			if (!mbytes)
 			{
 				Logger.log(this, Logger.ERROR, "Unabled to extract background.");
-				_loadFailed = true;
-				_doLoadCompleteInit();
+				_doLoadFailure();
 				return;
 			}
 			mloader.loadBytes(mbytes);
@@ -176,7 +179,7 @@ package classes
 		private function e_musicLoadError(e:Event):void
 		{
 			Logger.log(this, Logger.ERROR, "Music Load Error for \"" + details.name + "\"");
-			_loadFailed = true;
+			_doLoadFailure();
 		}
 		
 		/**
@@ -227,13 +230,18 @@ package classes
 		 * @param	e Complete Event
 		 */
 		private function e_chartLoadComplete(e:Event):void {
-			isChartLoaded = true;
-			
-			Logger.log(this, Logger.INFO, "Chart Load Complete for \"" + details.name + "\"");
-			
-			_doLoadCompleteInit();
+			if (chart.Notes.length > 0)
+			{
+				isChartLoaded = true;
+				Logger.log(this, Logger.INFO, "Chart Load Complete for \"" + details.name + "\"");
+				_doLoadCompleteInit();
+			}
+			else
+			{
+				Logger.log(this, Logger.ERROR, "Chart Load Failure for \"" + details.name + "\"");
+				_doLoadFailure();
+			}
 		}
-		
 		
 		private function onRateSound(e:*):void
 		{

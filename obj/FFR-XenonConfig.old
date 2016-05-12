@@ -32,7 +32,7 @@
     </define>
     <define append="true">
       <name>CONFIG::local_api</name>
-      <value>true</value>
+      <value>false</value>
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
