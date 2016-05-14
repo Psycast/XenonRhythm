@@ -3,62 +3,62 @@ package com.flashfla.media {
 
 	public class Beatbox {
 		public static function parseBeatbox(data:ByteArray):Array {
-			var header:Object = SWFParser.readHeader(data);
+			var header:Object = SwfParser.readHeader(data);
 
 			var done:Boolean = false;
 			while (data.bytesAvailable > 0 && !done) {
-				var tag:Object = SWFParser.readTag(data);
+				var tag:Object = SwfParser.readTag(data);
 				switch (tag.tag) {
-					case SWFParser.SWF_TAG_DOACTION:
+					case SwfParser.SWF_TAG_DOACTION:
 						try {
 							var actionStack:Array = new Array();
 							var actionVariables:Object = new Object();
 							var actionRegisters:Array = new Array(4);
 							var constantPool:Array = [];
 							while (!done) {
-								var action:Object = SWFParser.readAction(data);
+								var action:Object = SwfParser.readAction(data);
 								switch (action.action) {
-									case SWFParser.SWF_ACTION_END:
+									case SwfParser.SWF_ACTION_END:
 										done = true;
 										break;
-									case SWFParser.SWF_ACTION_CONSTANTPOOL:
+									case SwfParser.SWF_ACTION_CONSTANTPOOL:
 										constantPool = new Array();
 										var constantCount:int = data.readUnsignedShort();
 										for (var i:int = 0; i < constantCount; i++)
-											constantPool.push(SWFParser.readString(data));
+											constantPool.push(SwfParser.readString(data));
 										break;
-									case SWFParser.SWF_ACTION_PUSH:
+									case SwfParser.SWF_ACTION_PUSH:
 										while (data.position < action.position + action.length) {
 											var pushValue:Object;
 											switch (data.readUnsignedByte()) {
-												case SWFParser.SWF_TYPE_STRING_LITERAL:
-													pushValue = SWFParser.readString(data);
+												case SwfParser.SWF_TYPE_STRING_LITERAL:
+													pushValue = SwfParser.readString(data);
 													break;
-												case SWFParser.SWF_TYPE_FLOAT_LITERAL:
+												case SwfParser.SWF_TYPE_FLOAT_LITERAL:
 													pushValue = data.readFloat();
 													break;
-												case SWFParser.SWF_TYPE_NULL:
+												case SwfParser.SWF_TYPE_NULL:
 													pushValue = null;
 													break;
-												case SWFParser.SWF_TYPE_UNDEFINED:
+												case SwfParser.SWF_TYPE_UNDEFINED:
 													pushValue = undefined;
 													break;
-												case SWFParser.SWF_TYPE_REGISTER:
+												case SwfParser.SWF_TYPE_REGISTER:
 													pushValue = actionRegisters[data.readUnsignedByte()];
 													break;
-												case SWFParser.SWF_TYPE_BOOLEAN:
+												case SwfParser.SWF_TYPE_BOOLEAN:
 													pushValue = Boolean(data.readUnsignedByte());
 													break;
-												case SWFParser.SWF_TYPE_DOUBLE:
+												case SwfParser.SWF_TYPE_DOUBLE:
 													pushValue = data.readDouble();
 													break;
-												case SWFParser.SWF_TYPE_INTEGER:
+												case SwfParser.SWF_TYPE_INTEGER:
 													pushValue = data.readInt();
 													break;
-												case SWFParser.SWF_TYPE_CONSTANT8:
+												case SwfParser.SWF_TYPE_CONSTANT8:
 													pushValue = constantPool[data.readUnsignedByte()];
 													break;
-												case SWFParser.SWF_TYPE_CONSTANT16:
+												case SwfParser.SWF_TYPE_CONSTANT16:
 													pushValue = constantPool[data.readUnsignedShort()];
 													break;
 												default:
@@ -67,40 +67,40 @@ package com.flashfla.media {
 											actionStack.push(pushValue);
 										}
 										break;
-									case SWFParser.SWF_ACTION_POP:
+									case SwfParser.SWF_ACTION_POP:
 										actionStack.pop();
 										break;
-									case SWFParser.SWF_ACTION_DUPLICATE:
+									case SwfParser.SWF_ACTION_DUPLICATE:
 										actionStack.push(actionStack[actionStack.length - 1]);
 										break;
-									case SWFParser.SWF_ACTION_STORE_REGISTER:
+									case SwfParser.SWF_ACTION_STORE_REGISTER:
 										actionRegisters[data.readUnsignedByte()] = actionStack[actionStack.length - 1];
 										break;
-									case SWFParser.SWF_ACTION_GET_VARIABLE:
+									case SwfParser.SWF_ACTION_GET_VARIABLE:
 										var gvName:String = actionStack.pop();
 										if (!(gvName in actionVariables))
 											actionVariables[gvName] = new Object();
 										actionStack.push(actionVariables[gvName]);
 										break;
-									case SWFParser.SWF_ACTION_SET_VARIABLE:
+									case SwfParser.SWF_ACTION_SET_VARIABLE:
 										var svValue:Object = actionStack.pop();
 										actionVariables[actionStack.pop()] = svValue;
 										break;
-									case SWFParser.SWF_ACTION_INIT_ARRAY:
+									case SwfParser.SWF_ACTION_INIT_ARRAY:
 										var arraySize:int = actionStack.pop();
 										var array:Array = new Array();
 										for (i = 0; i < arraySize; i++)
 											array.push(actionStack.pop());
 										actionStack.push(array);
 										break;
-									case SWFParser.SWF_ACTION_GET_MEMBER:
+									case SwfParser.SWF_ACTION_GET_MEMBER:
 										var gmName:String = actionStack.pop();
 										var gmObject:Object = actionStack.pop();
 										if (!(gmName in gmObject))
 											gmObject[gmName] = new Object();
 										actionStack.push(gmObject[gmName]);
 										break;
-									case SWFParser.SWF_ACTION_SET_MEMBER:
+									case SwfParser.SWF_ACTION_SET_MEMBER:
 										var smValue:Object = actionStack.pop();
 										var smName:String = actionStack.pop();
 										actionStack.pop()[smName] = smValue;

@@ -2,7 +2,7 @@ package com.flashfla.media {
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	
-	public class SWFParser {
+	public class SwfParser {
 		public static const SWF_TAG_END:int = 0;
 		public static const SWF_TAG_SHOWFRAME:int = 1;
 		public static const SWF_TAG_DOACTION:int = 12;
