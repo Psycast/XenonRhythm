@@ -25,6 +25,7 @@ package classes.engine
 		public var scroll_speed:Number = 1.5;
 		public var receptor_spacing:int = 80;
 		public var screencut_position:Number = 0.5;
+		public var playback_speed:Number = 1;
 		
 		// Judge
 		public var offset_global:Number = 0;

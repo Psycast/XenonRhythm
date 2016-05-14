@@ -16,6 +16,7 @@ package classes
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.media.Sound;
+	import flash.media.SoundChannel;
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
@@ -34,22 +35,31 @@ package classes
 		
 		private var _loadFailed:Boolean = false;
 		private var _musicLoader:URLLoader;
+		private var _loadedMusic:Sound;
+		private var _musicChannel:SoundChannel;
 		
 		public var isMusicLoaded:Boolean = false;
 		public var isChartLoaded:Boolean = false;
 		
 		// Music Variables
+		public var musicDelay:Number = 0;
+		public var musicPausePosition:Number = 0;
+		public var musicIsPlaying:Boolean = false;
 		public var mp3Frame:int = 0;
 		public var mp3Rate:Number = 1;
 		
 		// Music Rate Variables
-		private var rateReverse:Boolean = false;
 		private var rateRate:Number = 1;
-		private var rateSound:Sound;
 		private var rateSample:int = 0;
 		private var rateSampleCount:int = 0;
 		private var rateSamples:ByteArray = new ByteArray();
 		
+		/**
+		 * This is the core song class that contains most the songs logic required for playing.
+		 * It handles the playback of music, loading of song and charts, and other small things.
+		 * @param	core Engine Core
+		 * @param	songDetails Song Details to create the song for
+		 */
 		public function Song(core:EngineCore, songDetails:EngineLevel)
 		{
 			this.core = core;
@@ -62,6 +72,9 @@ package classes
 		// public methods
 		///////////////////////////////////
 		
+		/**
+		 * Loads the level data from the server.
+		 */
 		public function load():void
 		{
 			var url:String = core.getPlaylist(details.source).getLevelPath(details);
@@ -75,6 +88,30 @@ package classes
 			_musicLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, e_musicLoadError);
 			_musicLoader.addEventListener(ProgressEvent.PROGRESS, e_musicLoadProgress);
 		}
+		
+		/**
+		 * Beings playback of the music.
+		 * @param	seek Time of when to start playing.
+		 */
+		public function start(seek:Number = 0):void {
+			_musicChannel = music.play(seek);
+			_musicChannel.addEventListener(Event.SOUND_COMPLETE, e_soundFinished);
+			musicIsPlaying = true;
+		}
+		
+		/**
+		 * Stops playback of the music.
+		 */
+		public function stop():void {
+			if (_musicChannel) {
+				_musicChannel.removeEventListener(Event.SOUND_COMPLETE, e_soundFinished);
+				_musicChannel.stop();
+				musicPausePosition = 0;
+				_musicChannel = null;
+			}
+			musicIsPlaying = false;
+		}
+		
 		
 		//------------------------------------------------------------------------------------------------//
 		
@@ -94,7 +131,10 @@ package classes
 			}
 		}
 		
-		private function _doLoadFailure():void 
+		/**
+		 * Called when a failure has happened during the loading of the file or notechart.
+		 */
+		private function _doLoadFailure():void
 		{
 			if (!_loadFailed)
 			{
@@ -122,7 +162,45 @@ package classes
 		 */
 		public function get loaded():Boolean
 		{
-			return (!loadFailed && details && music && isMusicLoaded && chart && isChartLoaded);
+			return (!loadFailed && details && _loadedMusic && isMusicLoaded && chart && isChartLoaded);
+		}
+		
+		/**
+		 * True when the rate is less then 0, False when not.
+		 */
+		public function get rateReversed():Boolean
+		{
+			return rateRate < 0;
+		}
+		
+		/**
+		 * Gets the current music playback speed.
+		 */
+		public function get playbackSpeed():Number
+		{
+			return rateRate;
+		}
+		
+		/**
+		 * Sets the playback speed and music source.
+		 */
+		public function set playbackSpeed(rate:Number):void
+		{
+			rateRate = rate;
+			if (rateRate != 1)
+			{
+				music = new Sound();
+				if (rateReversed)
+					music.addEventListener("sampleData", e_onReverseSound);
+				else
+					music.addEventListener("sampleData", e_onRateSound);
+			}
+			else
+			{
+				music = _loadedMusic;
+				music.removeEventListener("sampleData", e_onRateSound);
+				music.removeEventListener("sampleData", e_onReverseSound);
+			}
 		}
 		
 		//------------------------------------------------------------------------------------------------//
@@ -197,17 +275,7 @@ package classes
 		 */
 		private function e_mp3ExtractComplete(e:MP3SoundEvent):void
 		{
-			music = e.sound as Sound;
-			
-			if (rateRate != 1 || rateReverse)
-			{
-				rateSound = music;
-				music = new Sound();
-				if (rateReverse)
-					music.addEventListener("sampleData", onReverseSound);
-				else
-					music.addEventListener("sampleData", onRateSound);
-			}
+			music = _loadedMusic = e.sound as Sound;
 			
 			isMusicLoaded = true;
 			_doLoadCompleteInit();
@@ -229,7 +297,8 @@ package classes
 		 * Handles the load completion of the chart data.
 		 * @param	e Complete Event
 		 */
-		private function e_chartLoadComplete(e:Event):void {
+		private function e_chartLoadComplete(e:Event):void
+		{
 			if (chart.Notes.length > 0)
 			{
 				isChartLoaded = true;
@@ -243,7 +312,18 @@ package classes
 			}
 		}
 		
-		private function onRateSound(e:*):void
+		/**
+		 * Called when the song has finished playing.
+		 */
+		private function e_soundFinished(e:Event):void 
+		{
+			musicIsPlaying = false;
+		}
+		
+		/**
+		 * Called every 4096 samples to get the next batch for playback.
+		 */
+		private function e_onRateSound(e:*):void
 		{
 			var osamples:int = 0;
 			while (osamples < 4096)
@@ -256,7 +336,7 @@ package classes
 					rateSamples.position = 0;
 					sampleDiff = sample - rateSample;
 					var seekExtract:Boolean = (sampleDiff < 0 || sampleDiff > 8192);
-					rateSampleCount = (rateSound as Object).extract(rateSamples, 4096, seekExtract ? sample * mp3Rate : -1);
+					rateSampleCount = (_loadedMusic as Object).extract(rateSamples, 4096, seekExtract ? sample * mp3Rate : -1);
 					if (seekExtract)
 					{
 						rateSample = sample;
@@ -273,15 +353,21 @@ package classes
 			}
 		}
 		
-		private function onReverseSound(e:*):void
+		/**
+		 * Called every 4096 samples to get the next batch for playback when song is played in reverse.
+		 */
+		private function e_onReverseSound(e:*):void
 		{
 			var osamples:int = 0;
 			while (osamples < 4096)
 			{
-				var sample:int = (e.position + osamples) * rateRate;
-				sample = (chart.Notes[chart.Notes.length - 1].getFrame() * 1470) - sample + (63 - mp3Frame) * 1470 / rateRate;
+				var sample:int = (e.position + osamples) * -rateRate;
+				
+				// Start the reverse at the end of the file, as some levels have songs longer then the notecharts.
+				sample = (chart.Notes[chart.Notes.length - 1].time * 44100) - sample + (63 - mp3Frame) * 1470 / -rateRate; // 1470 = Total amount of samples in a single frame at 30fps.
 				if (sample < 0)
 					return;
+					
 				var sampleDiff:int = sample - rateSample;
 				if (sampleDiff < 0 || sampleDiff >= rateSampleCount)
 				{
@@ -289,7 +375,7 @@ package classes
 					rateSamples.position = 0;
 					sampleDiff = sample - rateSample;
 					var seekPosition:int = sample - 4095;
-					rateSampleCount = (rateSound as Object).extract(rateSamples, 4096, seekPosition * mp3Rate);
+					rateSampleCount = (_loadedMusic as Object).extract(rateSamples, 4096, seekPosition * mp3Rate);
 					rateSample = seekPosition;
 					sampleDiff = sample - rateSample;
 					
