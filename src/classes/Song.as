@@ -45,7 +45,7 @@ package classes
 		public var musicDelay:Number = 0;
 		public var musicPausePosition:Number = 0;
 		public var musicIsPlaying:Boolean = false;
-		public var mp3Frame:int = 0;
+		public var mp3FrameSync:Number = 0;
 		public var mp3Rate:Number = 1;
 		
 		// Music Rate Variables
@@ -94,7 +94,7 @@ package classes
 		 * @param	seek Time of when to start playing.
 		 */
 		public function start(seek:Number = 0):void {
-			_musicChannel = music.play(seek);
+			_musicChannel = music.play(seek + musicDelay);
 			_musicChannel.addEventListener(Event.SOUND_COMPLETE, e_soundFinished);
 			musicIsPlaying = true;
 		}
@@ -228,7 +228,7 @@ package classes
 				_doLoadFailure();
 				return;
 			}
-			mp3Frame = metadata.frame - 2;
+			mp3FrameSync = metadata.frame / 30; // FFR SWF Framerate is 30
 			mp3Rate = MP3Extraction.formatRate(metadata.format) / 44100;
 			
 			// Background Extraction from SWF
@@ -363,8 +363,8 @@ package classes
 			{
 				var sample:int = (e.position + osamples) * -rateRate;
 				
-				// Start the reverse at the end of the file, as some levels have songs longer then the notecharts.
-				sample = (chart.Notes[chart.Notes.length - 1].time * 44100) - sample + (63 - mp3Frame) * 1470 / -rateRate; // 1470 = Total amount of samples in a single frame at 30fps.
+				// Start reversing at the final note, as some levels have songs longer then the notecharts.
+				sample = (chart.Notes[chart.Notes.length - 1].time * 44100) - sample + (2 - mp3FrameSync) * 44100 / -rateRate;
 				if (sample < 0)
 					return;
 					
