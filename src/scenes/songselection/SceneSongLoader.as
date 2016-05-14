@@ -37,6 +37,7 @@ package scenes.songselection
 		
 		private var loadedRatio:Number = 0;
 		private var tweenRatio:Number = 0;
+		private var fadeInDone:Boolean = false;
 		
 		//------------------------------------------------------------------------------------------------//
 		
@@ -51,7 +52,7 @@ package scenes.songselection
 			
 			if (core.variables.song_queue.length > 0)
 			{
-				songData = core.variables.song_queue.shift();
+				songData = core.variables.song_queue[0];
 			}
 			
 			if (songData)
@@ -82,7 +83,7 @@ package scenes.songselection
 			loaderBackground = new UISprite(this, null, 0, 0);
 			loaderBackground.anchor = UIAnchor.MIDDLE_LEFT;
 			loaderBackground.alpha = 0;
-			TweenLite.to(loaderBackground, 1, {"delay": 1, "alpha": 1});
+			TweenLite.to(loaderBackground, 1, { "delay": 1, "alpha": 1, "onComplete":function():void { fadeInDone = true;} } );
 			
 			// Create Song Data Background Plate
 			queueBox = new UISprite(this, null, 0, -35);
@@ -324,7 +325,7 @@ package scenes.songselection
 		///////////////////////////////////
 		private function e_enterFrame(e:Event):void
 		{
-			if (tweenRatio < 0.999 && !song.loaded)
+			if ((tweenRatio < 0.999 && !song.loaded) || !fadeInDone)
 			{
 				tweenRatio += (loadedRatio - tweenRatio) * 0.05;
 				drawSongLoadingBar();
