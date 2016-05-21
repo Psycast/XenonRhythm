@@ -16,7 +16,7 @@ package classes.engine
 		public function getSong(songData:EngineLevel):Song
 		{
 			var key:String = songData.source + "_" + songData.id;
-			if (loaded_levels[key] != null && !loaded_levels[key].loadFailed)
+			if (loaded_levels[key] != null && !loaded_levels[key].load_failed)
 			{
 				return loaded_levels[key];
 			}

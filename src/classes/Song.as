@@ -152,7 +152,7 @@ package classes
 		/**
 		 * Used to determine if a section of the song failed to load or some other error has occured.
 		 */
-		public function get loadFailed():Boolean
+		public function get load_failed():Boolean
 		{
 			return _loadFailed;
 		}
@@ -162,13 +162,13 @@ package classes
 		 */
 		public function get loaded():Boolean
 		{
-			return (!loadFailed && details && _loadedMusic && isMusicLoaded && chart && isChartLoaded);
+			return (!load_failed && details && _loadedMusic && isMusicLoaded && chart && isChartLoaded);
 		}
 		
 		/**
 		 * True when the rate is less then 0, False when not.
 		 */
-		public function get rateReversed():Boolean
+		public function get rate_reversed():Boolean
 		{
 			return rateRate < 0;
 		}
@@ -176,7 +176,7 @@ package classes
 		/**
 		 * Gets the current music playback speed.
 		 */
-		public function get playbackSpeed():Number
+		public function get playback_speed():Number
 		{
 			return rateRate;
 		}
@@ -184,13 +184,13 @@ package classes
 		/**
 		 * Sets the playback speed and music source.
 		 */
-		public function set playbackSpeed(rate:Number):void
+		public function set playback_speed(rate:Number):void
 		{
 			rateRate = rate;
 			if (rateRate != 1)
 			{
 				music = new Sound();
-				if (rateReversed)
+				if (rate_reversed)
 					music.addEventListener("sampleData", e_onReverseSound);
 				else
 					music.addEventListener("sampleData", e_onRateSound);
