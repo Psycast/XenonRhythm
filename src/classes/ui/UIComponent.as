@@ -13,7 +13,7 @@ package classes.ui
 		protected var _height:Number = 0;
 		protected var _tag:* = -1;
 		protected var _enabled:Boolean = true;
-		protected var _anchor:String = UIAnchor.NONE;
+		protected var _anchor:int = UIAnchor.NONE;
 		
 		/**
 		 * Constructor
@@ -175,26 +175,13 @@ package classes.ui
 		override public function set x(value:Number):void
 		{
 			_x = Math.round(value);
-			switch (anchor)
-			{
-				default: 
-				case UIAnchor.NONE: 
-				case UIAnchor.TOP_LEFT: 
-				case UIAnchor.MIDDLE_LEFT: 
-				case UIAnchor.BOTTOM_LEFT: 
-					super.x = _x;
-					break;
-				case UIAnchor.TOP_CENTER: 
-				case UIAnchor.MIDDLE_CENTER: 
-				case UIAnchor.BOTTOM_CENTER: 
-					super.x = Constant.GAME_WIDTH_CENTER + _x;
-					break;
-				case UIAnchor.TOP_RIGHT: 
-				case UIAnchor.MIDDLE_RIGHT: 
-				case UIAnchor.BOTTOM_RIGHT: 
-					super.x = Constant.GAME_WIDTH + _x;
-					break;
-			}
+			
+			if ((anchor & UIAnchor.CENTER) != 0)
+				super.x = Constant.GAME_WIDTH_CENTER + _x;
+			else if ((anchor & UIAnchor.RIGHT) != 0)
+				super.x = Constant.GAME_WIDTH + _x;
+			else
+				super.x = _x;
 		}
 		
 		/**
@@ -219,26 +206,13 @@ package classes.ui
 		override public function set y(value:Number):void
 		{
 			_y = Math.round(value);
-			switch (anchor)
-			{
-				default: 
-				case UIAnchor.NONE: 
-				case UIAnchor.TOP_LEFT: 
-				case UIAnchor.TOP_CENTER: 
-				case UIAnchor.TOP_RIGHT: 
-					super.y = _y;
-					break;
-				case UIAnchor.MIDDLE_LEFT: 
-				case UIAnchor.MIDDLE_CENTER: 
-				case UIAnchor.MIDDLE_RIGHT: 
-					super.y = Constant.GAME_HEIGHT_CENTER + _y;
-					break;
-				case UIAnchor.BOTTOM_LEFT: 
-				case UIAnchor.BOTTOM_CENTER: 
-				case UIAnchor.BOTTOM_RIGHT: 
-					super.y = Constant.GAME_HEIGHT + _y;
-					break;
-			}
+			
+			if ((anchor & UIAnchor.MIDDLE) != 0)
+				super.y = Constant.GAME_HEIGHT_CENTER + _y;
+			else if ((anchor & UIAnchor.BOTTOM) != 0)
+				super.y = Constant.GAME_HEIGHT + _y;
+			else
+				super.y = _y;
 		}
 		
 		/**
@@ -278,7 +252,7 @@ package classes.ui
 		/**
 		 * Gets the currently set anchor point.
 		 */
-		public function get anchor():String
+		public function get anchor():int
 		{
 			return _anchor;
 		}
@@ -288,7 +262,7 @@ package classes.ui
 		 * Positioning is relative to the anchor points provided in the UIAnchor class.
 		 * Thus being, (0,0) is the anchor point on the stage and not it's real coordinates on stage.
 		 */
-		public function set anchor(value:String):void
+		public function set anchor(value:int):void
 		{
 			_anchor = value;
 			(_anchor == UIAnchor.NONE ? ResizeListener.removeObject(this) : ResizeListener.addObject(this));

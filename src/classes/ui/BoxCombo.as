@@ -11,7 +11,7 @@ package classes.ui
 		private var handler:Function;
 		private var _selectedIndex:int = 0;
 		public var _options:Array;
-		public var overlayPosition:String = UIAnchor.TOP_CENTER;
+		public var overlayPosition:int = UIAnchor.TOP_CENTER;
 		public var title:String = "";
 		
 		public function BoxCombo(core:EngineCore, parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, label:String = "", defaultHandler:Function = null)

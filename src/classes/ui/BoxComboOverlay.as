@@ -21,9 +21,9 @@ package classes.ui
 		private var _options:Array = [];
 		private var _optionButtons:Array = [];
 		private var _defaultHandler:Function;
-		private var _listPostion:String;
+		private var _listPostion:int;
 		
-		public function BoxComboOverlay(title:String = null, options:Array = null, defaultHandler:Function = null, postion:String = UIAnchor.TOP_CENTER)
+		public function BoxComboOverlay(title:String = null, options:Array = null, defaultHandler:Function = null, postion:int = UIAnchor.CENTER)
 		{
 			_title = title;
 			_options = options;
@@ -72,19 +72,13 @@ package classes.ui
 			super.onResize();
 			
 			// Box Holder
-			switch (_listPostion)
-			{
-				case UIAnchor.TOP_LEFT: 
-					_holder.x = 15;
-					break;
-				default: 
-				case UIAnchor.TOP_CENTER: 
-					_holder.x = Constant.GAME_WIDTH_CENTER - (_holder.width / 2);
-					break;
-				case UIAnchor.TOP_RIGHT: 
-					_holder.x = Constant.GAME_WIDTH - _holder.width - 15;
-					break;
-			}
+			if ((_listPostion & UIAnchor.LEFT) != 0)
+				_holder.x = 15;
+			else if ((_listPostion & UIAnchor.RIGHT) != 0)
+				_holder.x = Constant.GAME_WIDTH - _holder.width - 15;
+			else
+				_holder.x = Constant.GAME_WIDTH_CENTER - (_holder.width / 2);
+			
 			_holder.setSize(250, Constant.GAME_HEIGHT + 2);
 			
 			// Scroll Pane Position / size
@@ -165,16 +159,16 @@ package classes.ui
 		 * Gets the list postion on screen.
 		 * Either: TOP_LEFT, TOP_CENTER, TOP_RIGHT
 		 */
-		public function get listPostion():String
+		public function get listPostion():int
 		{
 			return _listPostion;
 		}
 		
 		/**
-		 * Sets the list postion on screen using UIAnchor TOP points.
-		 * Either: TOP_LEFT, TOP_CENTER, TOP_RIGHT
+		 * Sets the list postion on screen using UIAnchor points.
+		 * Either: LEFT, CENTER, RIGHT
 		 */
-		public function set listPostion(postion:String):void
+		public function set listPostion(postion:int):void
 		{
 			_listPostion = postion;
 			onResize();
