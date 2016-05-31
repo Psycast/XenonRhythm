@@ -105,6 +105,27 @@ package classes.ui
 				removeChildAt(0);
 			}
 		}
+		/**
+		 * Update Anchored X/Y after a drag.
+		 */
+		override public function stopDrag():void 
+		{
+			if (anchor & UIAnchor.CENTER)
+				_x = super.x - Constant.GAME_WIDTH_CENTER;
+			else if (anchor & UIAnchor.RIGHT)
+				_x = super.x - Constant.GAME_WIDTH;
+			else
+				_x = super.x;
+			
+			if (anchor & UIAnchor.MIDDLE)
+				_y = super.y - Constant.GAME_HEIGHT_CENTER;
+			else if (anchor & UIAnchor.BOTTOM)
+				_y = super.y - Constant.GAME_HEIGHT;
+			else
+				_y = super.y;
+				
+			super.stopDrag();
+		}
 		
 		///////////////////////////////////
 		// getter/setters
@@ -176,9 +197,9 @@ package classes.ui
 		{
 			_x = Math.round(value);
 			
-			if ((anchor & UIAnchor.CENTER) != 0)
+			if (anchor & UIAnchor.CENTER)
 				super.x = Constant.GAME_WIDTH_CENTER + _x;
-			else if ((anchor & UIAnchor.RIGHT) != 0)
+			else if (anchor & UIAnchor.RIGHT)
 				super.x = Constant.GAME_WIDTH + _x;
 			else
 				super.x = _x;
@@ -207,9 +228,9 @@ package classes.ui
 		{
 			_y = Math.round(value);
 			
-			if ((anchor & UIAnchor.MIDDLE) != 0)
+			if (anchor & UIAnchor.MIDDLE)
 				super.y = Constant.GAME_HEIGHT_CENTER + _y;
-			else if ((anchor & UIAnchor.BOTTOM) != 0)
+			else if (anchor & UIAnchor.BOTTOM)
 				super.y = Constant.GAME_HEIGHT + _y;
 			else
 				super.y = _y;
@@ -225,7 +246,6 @@ package classes.ui
 			mouseEnabled = mouseChildren = tabEnabled = _enabled;
 			alpha = ta;
 			draw();
-			//alpha = _enabled ? 1.0 : 0.5;
 		}
 		
 		public function get enabled():Boolean

@@ -1,5 +1,6 @@
 package classes.ui
 {
+	import flash.text.TextFieldAutoSize;
 	
 	public class UIAnchor
 	{
@@ -24,6 +25,50 @@ package classes.ui
 		public static const ALIGNMENTS_A:Array = [TOP_LEFT, TOP_CENTER, TOP_RIGHT, MIDDLE_LEFT, MIDDLE_CENTER, MIDDLE_RIGHT, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT];
 		public static const ALIGNMENTS_V:Array = [TOP, MIDDLE, BOTTOM];
 		public static const ALIGNMENTS_H:Array = [LEFT, CENTER, RIGHT];
+		
+		/**
+		 * Returns a value based on the alignment. [0, (value/2), value]
+		 * @param	alignment Anchor value of TOP,MIDDLE,BOTTOM
+		 * @param	value Value to use for MIDDLE and BOTTOM alignments.
+		 * @return int
+		 */
+		public static function getOffsetV(alignment:int, value:Number):Number
+		{
+			if (alignment & MIDDLE)
+				return -(value / 2);
+			else if (alignment & BOTTOM)
+				return -(value);
+			return 0;
+		}
+		
+		/**
+		 * Returns a value based on the alignment. [0, (value/2), value]
+		 * @param	alignment Anchor value of LEFT,CENTER,RIGHT
+		 * @param	value Value to use for CENTER and RIGHT alignments.
+		 * @return int
+		 */
+		public static function getOffsetH(alignment:int, value:Number):Number
+		{
+			if (alignment & CENTER)
+				return -(value / 2);
+			else if (alignment & RIGHT)
+				return -(value);
+			return 0;
+		}
+		/**
+		 * Returns text alignment based on anchor point.
+		 * @param	alignment Anchor value of LEFT,CENTER,RIGHT
+		 * @param	value Value to use for CENTER and RIGHT alignments.
+		 * @return int
+		 */
+		public static function getTextAutoSize(alignment:int):String
+		{
+			if (alignment & CENTER)
+				return TextFieldAutoSize.CENTER;
+			else if (alignment & RIGHT)
+				return TextFieldAutoSize.RIGHT;
+			return TextFieldAutoSize.LEFT;
+		}
 	}
 
 }
