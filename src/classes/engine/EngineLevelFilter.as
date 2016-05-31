@@ -274,7 +274,8 @@ package classes.engine
 			switch (type)
 			{
 				case FILTER_STATS: 
-					comparison = FILTERS_STAT[0];
+					input_stat = FILTERS_STAT[0];
+					comparison = FILTERS_NUMBER[0];
 					break;
 				
 				case FILTER_ARROWCOUNT: 
