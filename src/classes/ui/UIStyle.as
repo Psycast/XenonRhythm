@@ -18,6 +18,9 @@ package classes.ui
 		public static var TEXT_FORMAT_U:TextFormat = new TextFormat(FONT_NAME_U, FONT_SIZE, FONT_COLOR, true);
 		public static var TEXT_FORMAT_U_CENTER:TextFormat = new TextFormat(FONT_NAME_U, FONT_SIZE, FONT_COLOR, true, null, null, null, null, TextFormatAlign.CENTER);
 		
+		public static var BG_DARK:int = 0x033242;
+		public static var BG_LIGHT:int = 0x1495BD;
+		
 		public static function getTextFormat(unicode:Boolean = false):TextFormat
 		{
 			return unicode ? TEXT_FORMAT_U : TEXT_FORMAT;

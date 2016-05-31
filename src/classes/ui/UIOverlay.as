@@ -26,7 +26,7 @@ package classes.ui
 			super.draw();
 			
 			this.graphics.clear();
-			this.graphics.beginFill(sGameBackground.BG_DARK, 0.90);
+			this.graphics.beginFill(UIStyle.BG_DARK, 0.90);
 			this.graphics.drawRect(0, 0, width, height);
 			this.graphics.endFill();
 		}
@@ -42,7 +42,7 @@ package classes.ui
 			super.onResize();
 			
 			this.graphics.clear();
-			this.graphics.beginFill(sGameBackground.BG_DARK, 0.90);
+			this.graphics.beginFill(UIStyle.BG_DARK, 0.90);
 			this.graphics.drawRect(0, 0, width, height);
 			this.graphics.endFill();
 		}

@@ -5,6 +5,7 @@ package assets
 	import classes.ui.UIAnchor;
 	import classes.ui.UIComponent;
 	import classes.ui.UICore;
+	import classes.ui.UIStyle;
 	import flash.display.BitmapData;
 	import flash.display.GradientType;
 	import flash.display.Sprite;
@@ -14,9 +15,6 @@ package assets
 	
 	public class sGameBackground extends UIComponent
 	{
-		public static var BG_DARK:int = 0x033242;
-		public static var BG_LIGHT:int = 0x1495BD;
-		
 		private static var _lineBMD:BitmapData;
 		private var _matrix:Matrix = new Matrix();
 		private var _text:String;
@@ -94,7 +92,7 @@ package assets
 			// Create Background
 			_matrix.createGradientBox(Constant.GAME_WIDTH, Constant.GAME_HEIGHT, 5.75);
 			this.graphics.clear();
-			this.graphics.beginGradientFill(GradientType.LINEAR, [BG_LIGHT, BG_DARK], [1, 1], [0x00, 0xFF], _matrix);
+			this.graphics.beginGradientFill(GradientType.LINEAR, [UIStyle.BG_LIGHT, UIStyle.BG_DARK], [1, 1], [0x00, 0xFF], _matrix);
 			this.graphics.drawRect(0, 0, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 			this.graphics.endFill();
 			
