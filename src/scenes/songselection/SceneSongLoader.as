@@ -141,7 +141,7 @@ package scenes.songselection
 						if (offset & 1)
 						{
 							songStats.graphics.beginFill(0x000000, 0.10);
-							songStats.graphics.drawRect(0, offset * gap + 1, 190, gap);
+							songStats.graphics.drawRect(0, offset * gap + 1, 200, gap);
 							songStats.graphics.endFill();
 						}
 						offset++;
@@ -188,7 +188,7 @@ package scenes.songselection
 				// No Level Ranks, Just Display User
 				else
 				{
-					songStats = new UISprite(this, null, -125, -114);
+					songStats = new UISprite(this, null, -125, -139);
 					songStats.anchor = UIAnchor.BOTTOM_CENTER;
 					songStats.alpha = 0;
 					TweenLite.to(songStats, 1, {"delay": 1, "alpha": 1});
