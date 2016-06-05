@@ -14,6 +14,16 @@ package classes.ui
 		public var overlayPosition:int = UIAnchor.TOP_CENTER;
 		public var title:String = "";
 		
+		/**
+		 * User selectable combo box containing a set of options.
+		 * @param	core Engine core to use.
+		 * @param	parent Display parent to use.
+		 * @param	xpos X Position
+		 * @param	ypos Y Position
+		 * @param	label Default Label for box.
+		 * @param	defaultHandler Function handler for for value change events.
+		 * @tiptext
+		 */
 		public function BoxCombo(core:EngineCore, parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, label:String = "", defaultHandler:Function = null)
 		{
 			this.core = core;
@@ -33,13 +43,8 @@ package classes.ui
 		}
 		
 		/**
-		 * Draws the visual ui of the component.
+		 * Draws the box background.
 		 */
-		override public function draw():void
-		{
-			super.draw();
-		}
-		
 		override public function drawBox():void 
 		{
 			super.drawBox();
@@ -60,6 +65,10 @@ package classes.ui
 		// event handlers
 		///////////////////////////////////
 		
+		/**
+		 * Event: Mouse Down
+		 * @param	e
+		 */
 		private function e_clickDown(e:MouseEvent):void
 		{
 			if (options != null && options.length > 0)
@@ -68,6 +77,10 @@ package classes.ui
 			}
 		}
 		
+		/**
+		 * Event: Overlay Closed
+		 * @param	e Object containing selected value.
+		 */
 		private function e_overlayReturn(e:Object):void
 		{
 			selectedIndex = e["value"];
@@ -80,11 +93,17 @@ package classes.ui
 		///////////////////////////////////
 		// getter/setters
 		///////////////////////////////////
+		/**
+		 * Gets the currently selected index.
+		 */
 		public function get selectedIndex():int
 		{
 			return _selectedIndex;
 		}
 		
+		/**
+		 * Sets the current index to the provided number or matching string.
+		 */
 		public function set selectedIndex(i:*):void
 		{
 			if (!options || options.length == 0)
@@ -117,11 +136,17 @@ package classes.ui
 			_selectedIndex = 0;
 		}
 		
+		/**
+		 * Gets the current options.
+		 */
 		public function get options():Array
 		{
 			return _options;
 		}
 		
+		/**
+		 * Sets the combo box options.
+		 */
 		public function set options(newOptions:Array):void
 		{
 			_options = [];

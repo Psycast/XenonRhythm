@@ -72,9 +72,9 @@ package classes.ui
 			super.onResize();
 			
 			// Box Holder
-			if ((_listPostion & UIAnchor.LEFT) != 0)
+			if (_listPostion & UIAnchor.LEFT)
 				_holder.x = 15;
-			else if ((_listPostion & UIAnchor.RIGHT) != 0)
+			else if (_listPostion & UIAnchor.RIGHT)
 				_holder.x = Constant.GAME_WIDTH - _holder.width - 15;
 			else
 				_holder.x = Constant.GAME_WIDTH_CENTER - (_holder.width / 2);
@@ -125,8 +125,8 @@ package classes.ui
 					dat = _options[i]["value"];
 				}
 				
-				btn = new BoxButton(_pane, 0, i * 40, lbl, e_buttonHandler);
-				btn.setSize(200, 35);
+				btn = new BoxButton(_pane, 0, i * 37, lbl, e_buttonHandler);
+				btn.setSize(200, 32);
 				btn.tag = { "label": lbl, "value": dat };
 				_optionButtons.push(btn);
 			}
