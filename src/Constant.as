@@ -1,6 +1,8 @@
 package
 {
+	import classes.engine.EngineCore;
 	import classes.engine.EngineLevel;
+	import classes.engine.EngineRanks;
 	import classes.engine.EngineRanksLevel;
 	
 	public class Constant
@@ -76,9 +78,19 @@ package
 		public static const SONG_ICON_TEXT:Array = ["<font color=\"#C6C6C6\">UNPLAYED</font>", "", "<font color=\"#00FF00\">FC</font>",
 					"<font color=\"#f2a254\">SDG</font>", "<font color=\"#2C2C2C\">BLACKFLAG</font>",
 					"<font color=\"#473218\">BOOFLAG</font>", "<font color=\"#FFFF38\">AAA</font>"];
-					
-		public static function getSongIcon(song:EngineLevel, rank:EngineRanksLevel):String {
-			return SONG_ICON_TEXT[getSongIconIndex(song, rank)];
+		
+		public static function getSongIcon(core:EngineCore, song:EngineLevel):String {
+			return SONG_ICON_TEXT[getSongIconIndex(song, getSongRank(core, song))];
+		}
+		
+		public static function getSongRank(core:EngineCore, song:EngineLevel):EngineRanksLevel 
+		{
+			var eng_ranks:EngineRanks = core.user.levelranks.getEngineRanks(song.source);
+			if (eng_ranks)
+			{
+				return eng_ranks.getRank(song.id);
+			}
+			return null;
 		}
 	}
 }
