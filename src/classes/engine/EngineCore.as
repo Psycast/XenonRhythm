@@ -56,6 +56,7 @@ package classes.engine
 			}
 		}
 		
+		/** Gets the current engines source. */
 		public function get source():String
 		{
 			return _source;

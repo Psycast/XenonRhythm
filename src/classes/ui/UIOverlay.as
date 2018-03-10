@@ -1,13 +1,18 @@
 package classes.ui 
 {
 	import assets.sGameBackground;
+	import classes.engine.EngineCore;
 	import flash.display.DisplayObjectContainer;
+	import flash.events.Event;
 	
 	public class UIOverlay extends UIComponent 
 	{
+		public var core:EngineCore;
+		private var _INPUT_DISABLED:Boolean = false;
 		
-		public function UIOverlay(parent:DisplayObjectContainer=null, xpos:Number=0, ypos:Number=0) 
+		public function UIOverlay(core:EngineCore, parent:DisplayObjectContainer=null, xpos:Number=0, ypos:Number=0) 
 		{
+			this.core = core;
 			super(parent, xpos, ypos);
 		}
 		
@@ -16,6 +21,12 @@ package classes.ui
 			super.init();
 			setSize(Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 			ResizeListener.addObject(this);
+			
+			// Stage Listener
+			if (stage)
+				onStage();
+			else
+				addEventListener(Event.ADDED_TO_STAGE, onStage);
 		}
 		
 		/**
@@ -46,6 +57,37 @@ package classes.ui
 			this.graphics.drawRect(0, 0, width, height);
 			this.graphics.endFill();
 		}
+		
+		/**
+		 * Abstract function to handle action based input.
+		 * @param	action String: Action to preform.
+		 * @param	index Number: Differs depending on the action. For actions left, right, up, down: Used as the index to determine the the next item to highlight. Where index 0 is the closest.
+		 */
+		public function doInputNavigation(action:String, index:Number = 0):void 
+		{
+			FormManager.handleAction(action, index);
+		}
+		
+		/**
+		 * Called when added to stage. Use to hookup stage listeners.
+		 * @param	e
+		 */
+		public function onStage(e:Event = null):void 
+		{
+			if (e)
+				removeEventListener(Event.ADDED_TO_STAGE, onStage);
+		}
+		
+		public function get INPUT_DISABLED():Boolean
+		{
+			return _INPUT_DISABLED;
+		}
+		
+		public function set INPUT_DISABLED(val:Boolean):void
+		{
+			_INPUT_DISABLED = val;
+		}
+		
 		
 	}
 

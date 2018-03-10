@@ -4,6 +4,7 @@ package scenes.songselection
 	import classes.engine.EngineCore;
 	import classes.engine.EngineLevel;
 	import classes.engine.EngineRanksLevel;
+	import classes.ui.BoxButton;
 	import classes.ui.Label;
 	import classes.ui.UIAnchor;
 	import classes.ui.UICore;
@@ -34,6 +35,7 @@ package scenes.songselection
 		private var songName:Label;
 		private var songAuthor:Label;
 		private var songStats:UISprite;
+		private var cancelLoadButton:BoxButton;
 		
 		private var loadedRatio:Number = 0;
 		private var tweenRatio:Number = 0;
@@ -68,8 +70,13 @@ package scenes.songselection
 		
 		override public function destroy():void 
 		{
-			stage.removeEventListener(Event.ENTER_FRAME, e_enterFrame);
 			super.destroy();
+			stage.removeEventListener(Event.ENTER_FRAME, e_enterFrame);
+			if (song)
+			{
+				song.removeEventListener(ProgressEvent.PROGRESS, e_songLoadProgress);
+				song.removeEventListener(ErrorEvent.ERROR, e_songLoadError);
+			}
 		}
 		
 		override public function onStage():void
@@ -219,6 +226,12 @@ package scenes.songselection
 					songStats.graphics.endFill();
 				}
 			}
+			
+			// Cancel Button
+			cancelLoadButton = new BoxButton(this, -75, -30, "CANCEL", e_cancelSongLoad);
+			cancelLoadButton.setSize(70, 25);
+			cancelLoadButton.anchor = UIAnchor.BOTTOM_RIGHT;
+			cancelLoadButton.group = "buttons";
 			super.onStage();
 		}
 		
@@ -233,7 +246,7 @@ package scenes.songselection
 			queueBox.graphics.endFill();
 			
 			// Update Loader Bar
-			drawSongLoadingBar();
+			_drawSongLoadingBar();
 		}
 		
 		override public function position():void
@@ -256,7 +269,7 @@ package scenes.songselection
 		// private methods
 		///////////////////////////////////
 		
-		private function drawSongLoadingBar():void
+		private function _drawSongLoadingBar():void
 		{
 			var LOAD_BAR_X:Number = Constant.GAME_WIDTH * tweenRatio;
 			
@@ -278,6 +291,15 @@ package scenes.songselection
 			loaderBackground.graphics.endFill();
 		}
 		
+		private function _cancelBackToMenu():void 
+		{
+			if (song && !song.load_failed)
+			{
+				song.markAsFailed();
+			}
+			_switchScene(0);
+		}
+		
 		/**
 		 * Does the scene closing animation before switching scene.
 		 * @param	sceneIndex Scene Index to jump to.
@@ -286,7 +308,9 @@ package scenes.songselection
 		{
 			INPUT_DISABLED = true;
 			
-			TweenLite.to(songStats, 1, {"alpha": 0, "y": "25"});
+			if(songStats)
+				TweenLite.to(songStats, 1, {"alpha": 0, "y": "25"});
+				
 			TweenLite.to([queueBox, loaderBackground], 1, {"alpha": 0, "y": "-25"});
 			TweenLite.to(getChildAt(0), 1, {"delay": 0.5, "alpha": 0, "onComplete": function():void
 			{
@@ -300,15 +324,19 @@ package scenes.songselection
 		 */
 		private function _switchScene(sceneIndex:int):void
 		{
-			// Switch to Intended UI scene
-			switch (sceneIndex)
-			{
-				case 0: 
-					core.scene = new SceneSongSelection(core);
-					break;
-					
-				case 1:
-					core.scene = new SceneGamePlay(core);
+			if(!SCENE_SWITCHING) {
+				SCENE_SWITCHING = true;
+				
+				// Switch to Intended UI scene
+				switch (sceneIndex)
+				{
+					case 0: 
+						core.scene = new SceneSongSelection(core);
+						break;
+						
+					case 1:
+						core.scene = new SceneGamePlay(core);
+				}
 			}
 		}
 		
@@ -323,18 +351,24 @@ package scenes.songselection
 		///////////////////////////////////
 		// event handlers
 		///////////////////////////////////
+		
+		private function e_cancelSongLoad(e:Event):void 
+		{
+			_cancelBackToMenu();
+		}
+		
 		private function e_enterFrame(e:Event):void
 		{
 			if ((tweenRatio < 0.999 && !song.loaded) || !fadeInDone)
 			{
 				tweenRatio += (loadedRatio - tweenRatio) * 0.05;
-				drawSongLoadingBar();
+				_drawSongLoadingBar();
 			}
 			else
 			{
-				tweenRatio = 1;
-				drawSongLoadingBar();
 				stage.removeEventListener(Event.ENTER_FRAME, e_enterFrame);
+				tweenRatio = 1;
+				_drawSongLoadingBar();
 				_closeScene(1);
 			}
 		}
@@ -342,7 +376,7 @@ package scenes.songselection
 		private function e_songLoadError(e:Event):void
 		{
 			Logger.log(this, Logger.ERROR, "Song Load Failed, returning to Song Selection...");
-			_switchScene(0);
+			_cancelBackToMenu();
 		}
 		
 		private function e_songLoadProgress(e:ProgressEvent):void

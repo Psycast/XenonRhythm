@@ -3,6 +3,7 @@ package classes.ui
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	
 	[Event(name = "resize", type = "flash.events.Event")]
 	public class UIComponent extends Sprite
@@ -14,6 +15,9 @@ package classes.ui
 		protected var _tag:* = -1;
 		protected var _enabled:Boolean = true;
 		protected var _anchor:int = UIAnchor.NONE;
+		protected var _over:Boolean = false;
+		protected var _highlight:Boolean = false;
+		protected var _group:FormItems;
 		
 		/**
 		 * Constructor
@@ -23,6 +27,8 @@ package classes.ui
 		 */
 		public function UIComponent(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0)
 		{
+			tabChildren = tabEnabled = false;
+			
 			move(xpos, ypos);
 			init();
 			if (parent != null)
@@ -91,20 +97,18 @@ package classes.ui
 			move(_x, _y);
 		}
 		
+		/**
+		 * Abstract function to simulate mouse click.
+		 */
+		public function doClickEvent():void
+		{
+			dispatchEvent(new MouseEvent(MouseEvent.CLICK, true, false, 0, 0));
+		}
+		
 		///////////////////////////////////
 		// public methods
 		///////////////////////////////////
 		
-		/**
-		 * Remove All Children for this UI component.
-		 */
-		public function removeChildren():void
-		{
-			while (numChildren > 0)
-			{
-				removeChildAt(0);
-			}
-		}
 		/**
 		 * Update Anchored X/Y after a drag.
 		 */
@@ -270,6 +274,22 @@ package classes.ui
 		}
 		
 		/**
+		 * Gets the highlight status of the box.
+		 */
+		public function get highlight():Boolean
+		{
+			return enabled && (_highlight || _over);
+		}
+		
+		/**
+		 * Sets the highlight status of the box.
+		 */
+		public function set highlight(val:Boolean):void
+		{
+			_highlight = val;
+		}
+		
+		/**
 		 * Gets the currently set anchor point.
 		 */
 		public function get anchor():int
@@ -287,6 +307,23 @@ package classes.ui
 			_anchor = value;
 			(_anchor == UIAnchor.NONE ? ResizeListener.removeObject(this) : ResizeListener.addObject(this));
 			onResize();
+		}
+		
+		/**
+		 * Sets the group used for the FormManager.
+		 * @param name Group Name
+		 */
+		public function set group(name:String):void
+		{
+			_group = FormManager.addToGroup(this, name);
+		}
+		
+		/**
+		 * Gets the FormItems group this component is part of.
+		 */
+		public function get group():String
+		{
+			return _group.group_name;
 		}
 	
 	}

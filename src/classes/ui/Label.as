@@ -2,6 +2,7 @@ package classes.ui
 {
 	import com.flashfla.utils.StringUtil;
 	import flash.display.DisplayObjectContainer;
+	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -13,7 +14,7 @@ package classes.ui
 		protected var _useHtml:Boolean = false;
 		protected var _useArea:Boolean = false;
 		protected var _autoSize:String = TextFieldAutoSize.LEFT;
-		protected var _fontSize:int = 14;
+		protected var _fontSize:int = 12;
 		protected var _text:String = "";
 		protected var _tf:TextField;
 		
@@ -49,6 +50,7 @@ package classes.ui
 			_tf.mouseEnabled = false;
 			_tf.defaultTextFormat = _textformat;
 			_tf.autoSize = TextFieldAutoSize.LEFT;
+			_tf.antiAliasType = AntiAliasType.ADVANCED;
 			//_tf.border = true;
 			addChild(_tf);
 			draw();
@@ -170,7 +172,7 @@ package classes.ui
 		
 		public function get formatted_text():String
 		{
-			return (_fontSize != DEFAULT_FONT_SIZE ? "<FONT SIZE=\"" + _fontSize + "px\">" : "") + (_useHtml ? text : StringUtil.htmlEscape(text)) + (_fontSize != DEFAULT_FONT_SIZE ? "</font>" : "");
+			return (_fontSize != _tf.defaultTextFormat.size ? "<FONT SIZE=\"" + _fontSize + "px\">" : "") + (_useHtml ? text : StringUtil.htmlEscape(text)) + (_fontSize != DEFAULT_FONT_SIZE ? "</font>" : "");
 		}
 		
 		/**

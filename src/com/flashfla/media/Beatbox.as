@@ -2,12 +2,13 @@ package com.flashfla.media {
 	import flash.utils.ByteArray;
 
 	public class Beatbox {
+		
 		public static function parseBeatbox(data:ByteArray):Array {
 			var header:Object = SwfParser.readHeader(data);
-
 			var done:Boolean = false;
 			while (data.bytesAvailable > 0 && !done) {
 				var tag:Object = SwfParser.readTag(data);
+				//trace(tag.oldposition + ' - ' + tag.position + ' - ' + tag.tag + ' - ' + tag.length + ' - ' + SwfParser.getTagName(tag.tag));
 				switch (tag.tag) {
 					case SwfParser.SWF_TAG_DOACTION:
 						try {
@@ -17,6 +18,7 @@ package com.flashfla.media {
 							var constantPool:Array = [];
 							while (!done) {
 								var action:Object = SwfParser.readAction(data);
+								//trace(action.oldposition + ' - ' + action.action + ' - ' + action.length + ' - ' + SwfParser.getActionName(action.action));
 								switch (action.action) {
 									case SwfParser.SWF_ACTION_END:
 										done = true;
@@ -120,10 +122,9 @@ package com.flashfla.media {
 					default:
 						break;
 				}
-
 				data.position = tag.position + tag.length;
 			}
-
+			
 			return null;
 		}
 	}

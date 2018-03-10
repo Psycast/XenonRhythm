@@ -23,8 +23,8 @@ package classes.engine
 		public static const FILTER_STATS:String = "stats";
 		public static const FILTER_TIME:String = "time";
 		
-		public static const FILTERS:Array = [FILTER_AND, FILTER_OR, FILTER_STYLE, FILTER_ARTIST, FILTER_STEPARTIST, FILTER_DIFFICULTY, FILTER_ARROWCOUNT, FILTER_ID, FILTER_MIN_NPS, FILTER_MAX_NPS, FILTER_RANK, FILTER_SCORE, FILTER_STATS, FILTER_TIME];
-		public static const FILTERS_STAT:Array = ["amazing", "perfect", "average", "miss", "boo", "combo"];
+		public static const FILTERS:Array = [FILTER_AND, FILTER_OR, FILTER_STYLE, FILTER_ARTIST, FILTER_STEPARTIST, FILTER_DIFFICULTY, FILTER_ARROWCOUNT, FILTER_MIN_NPS, FILTER_MAX_NPS, FILTER_RANK, FILTER_SCORE, FILTER_STATS, FILTER_TIME];
+		public static const FILTERS_STAT:Array = ["amazing", "perfect", "good", "average", "miss", "boo", "combo"];
 		public static const FILTERS_NUMBER:Array = ["=", "!=", "<=", ">=", "<", ">"];
 		public static const FILTERS_STRING:Array = ["equal", "start_with", "end_with", "contains"];
 		
@@ -137,6 +137,9 @@ package classes.engine
 				
 				case FILTER_TIME: 
 					return compareNumber(songData.time_secs, input_number);
+					
+				default:
+					throw new Error("Missing Comparison case for " + type);
 			}
 			return true;
 		}

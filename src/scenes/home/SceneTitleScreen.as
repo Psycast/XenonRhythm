@@ -4,6 +4,7 @@ package scenes.home
 	import assets.menu.FFRName;
 	import classes.engine.EngineCore;
 	import classes.ui.BoxButton;
+	import classes.ui.FormManager;
 	import classes.ui.UIAnchor;
 	import classes.ui.UIComponent;
 	import classes.ui.UICore;
@@ -54,6 +55,7 @@ package scenes.home
 		
 		override public function destroy():void
 		{
+			super.destroy();
 			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyDown);
 		}
 		
@@ -70,6 +72,8 @@ package scenes.home
 		{
 			// Setup Menu Buttons
 			menuButtons = [];
+			FormManager.registerGroup(this, "title-buttons", UIAnchor.WRAP_VERTICAL);
+			
 			var btn:BoxButton;
 			for (var i:int = 0; i < btnsText.length; i++)
 			{
@@ -79,6 +83,7 @@ package scenes.home
 				btn.anchor = UIAnchor.MIDDLE_CENTER;
 				btn.enabled = (i == 0);
 				btn.alpha = 0;
+				btn.group = "title-buttons";
 				menuButtons.push(btn);
 			}
 			selectedIndex = ArrayUtil.find_next_index(false, 0, menuButtons, function(n:BoxButton):Boolean
@@ -139,39 +144,24 @@ package scenes.home
 		{
 			if (INPUT_DISABLED)
 				return;
+			
+			else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN)
+				doInputNavigation("down");
+			else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP)
+				doInputNavigation("up");
 				
-			var newIndex:int = selectedIndex;
+			else if (e.keyCode == Keyboard.PAGE_DOWN)
+				doInputNavigation("down", 9);
+			else if (e.keyCode == Keyboard.PAGE_UP)
+				doInputNavigation("up", 9);
 			
-			// Menu Selection
-			if (e.keyCode == Keyboard.ENTER)
-			{
-				_closeScene(menuButtons[selectedIndex].tag);
-			}
-			
-			// Menu Navigation
-			else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.NUMPAD_2)
-			{
-				newIndex++;
-			}
-			else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP || e.keyCode == Keyboard.NUMPAD_8)
-			{
-				newIndex--;
-			}
-			
-			// New Index
-			if (newIndex != selectedIndex)
-			{
-				// Find First Menu Item
-				newIndex = ArrayUtil.find_next_index(newIndex < selectedIndex, newIndex, menuButtons, function(n:BoxButton):Boolean
-				{
-					return n.enabled;
-				});
-				
-				// Set Highlight
-				menuButtons[selectedIndex].highlight = false;
-				menuButtons[newIndex].highlight = true;
-				selectedIndex = newIndex;
-			}
+			else if (e.keyCode == Keyboard.SPACE)
+				doInputNavigation("click");
+		}
+		
+		override public function doInputNavigation(action:String, index:Number = 0):void 
+		{
+			super.doInputNavigation(action, index);
 		}
 		
 		/**

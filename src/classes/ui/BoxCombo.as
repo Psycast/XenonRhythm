@@ -9,10 +9,12 @@ package classes.ui
 	{
 		private var core:EngineCore;
 		private var handler:Function;
+		private var onClickHandler:Function;
 		private var _selectedIndex:int = 0;
 		public var _options:Array;
 		public var overlayPosition:int = UIAnchor.TOP_CENTER;
 		public var title:String = "";
+		private var _overlay:BoxComboOverlay;
 		
 		/**
 		 * User selectable combo box containing a set of options.
@@ -21,13 +23,15 @@ package classes.ui
 		 * @param	xpos X Position
 		 * @param	ypos Y Position
 		 * @param	label Default Label for box.
-		 * @param	defaultHandler Function handler for for value change events.
+		 * @param	defaultHandler Function handler for value change events.
+		 * @param	onClickHandler Function handler when when the main button is clicked..
 		 * @tiptext
 		 */
-		public function BoxCombo(core:EngineCore, parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, label:String = "", defaultHandler:Function = null)
+		public function BoxCombo(core:EngineCore, parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, label:String = "", defaultHandler:Function = null, onClickHandler:Function = null)
 		{
 			this.core = core;
 			this.handler = defaultHandler;
+			this.onClickHandler = onClickHandler;
 			super(parent, xpos, ypos, label);
 		}
 		
@@ -71,9 +75,13 @@ package classes.ui
 		 */
 		private function e_clickDown(e:MouseEvent):void
 		{
-			if (options != null && options.length > 0)
+			if (onClickHandler != null)
+				onClickHandler(e);
+				
+			if (options != null && options.length > 0 && !_overlay)
 			{
-				core.addOverlay(new BoxComboOverlay(title, options, e_overlayReturn, overlayPosition));
+				_overlay = new BoxComboOverlay(core, title, options, e_overlayReturn, overlayPosition);
+				core.addOverlay(_overlay);
 			}
 		}
 		
@@ -111,7 +119,7 @@ package classes.ui
 			
 			if (i is Number)
 			{
-				if (i > options.length)
+				if (i < 0 || i >= options.length)
 					return;
 				
 				label = options[i]["label"];

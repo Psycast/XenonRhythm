@@ -1,5 +1,6 @@
 package classes.ui
 {
+	import flash.geom.Matrix;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
 	
@@ -20,6 +21,13 @@ package classes.ui
 		
 		public static var BG_DARK:int = 0x033242;
 		public static var BG_LIGHT:int = 0x1495BD;
+		
+		public static var GRADIENT_MATRIX:Matrix = new Matrix();
+		
+		public static function init():void
+		{
+			GRADIENT_MATRIX.createGradientBox(200, 200, (Math.PI / 180) * 225);
+		}
 		
 		public static function getTextFormat(unicode:Boolean = false):TextFormat
 		{

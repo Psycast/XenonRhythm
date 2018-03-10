@@ -7,7 +7,8 @@ package classes.ui
 	public class UICore extends Sprite
 	{
 		protected var core:EngineCore;
-		public var INPUT_DISABLED:Boolean = false;
+		private var _INPUT_DISABLED:Boolean = false;
+		public var SCENE_SWITCHING:Boolean = false;
 		
 		public function UICore(core:EngineCore)
 		{
@@ -29,7 +30,7 @@ package classes.ui
 		 */
 		public function destroy():void
 		{
-		
+			FormManager.unregisterAll(this);
 		}
 		
 		/**
@@ -68,6 +69,29 @@ package classes.ui
 		public function position():void
 		{
 			
+		}
+		
+		/**
+		 * Abstract function to handle action based input.
+		 * @param	action String: Action to preform.
+		 * @param	index Number: Differs depending on the action. For actions left, right, up, down: Used as the index to determine the the next item to highlight. Where index 0 is the closest.
+		 */
+		public function doInputNavigation(action:String, index:Number = 0):void 
+		{
+			if (INPUT_DISABLED)
+				return
+				
+			FormManager.handleAction(action, index);
+		}
+		
+		public function get INPUT_DISABLED():Boolean
+		{
+			return _INPUT_DISABLED || SCENE_SWITCHING;
+		}
+		
+		public function set INPUT_DISABLED(val:Boolean):void
+		{
+			_INPUT_DISABLED = val;
 		}
 		
 		/**

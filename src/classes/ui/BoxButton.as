@@ -7,9 +7,9 @@ package classes.ui
 	
 	public class BoxButton extends Box
 	{
+		private var _clickAction:Function;
 		protected var _label:Label;
 		protected var _label_text:String = "";
-		protected var _over:Boolean = false;
 		protected var _down:Boolean = false;
 		
 		public function BoxButton(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, label:String = "", defaultHandler:Function = null)
@@ -18,6 +18,7 @@ package classes.ui
 			super(parent, xpos, ypos);
 			if (defaultHandler != null)
 			{
+				_clickAction = defaultHandler;
 				addEventListener(MouseEvent.CLICK, defaultHandler);
 			}
 		}
@@ -52,7 +53,7 @@ package classes.ui
 		override public function draw():void
 		{
 			super.draw();
-			_label.setSize(width - 6, height + 1);
+			_label.setSize(width - 6, height);
 		}
 		
 		///////////////////////////////////
@@ -81,6 +82,7 @@ package classes.ui
 			drawBox();
 		}
 		
+		
 		///////////////////////////////////
 		// getter/setters
 		///////////////////////////////////
@@ -92,11 +94,6 @@ package classes.ui
 		public function set label(val:String):void
 		{
 			_label.text = _label_text = val;
-		}
-		
-		override public function get highlight():Boolean
-		{
-			return enabled && (super.highlight || _over);
 		}
 		
 		public function set fontSize(size:int):void

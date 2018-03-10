@@ -7,6 +7,7 @@ package scenes.loader
 	import classes.ui.BoxButton;
 	import classes.ui.BoxCheck;
 	import classes.ui.BoxInput;
+	import classes.ui.FormManager;
 	import classes.ui.Label;
 	import classes.ui.UIAnchor;
 	import classes.ui.UICore;
@@ -17,6 +18,7 @@ package scenes.loader
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.net.SharedObject;
+	import flash.text.TextField;
 	import flash.ui.Keyboard;
 	
 	public class SceneGameLogin extends UICore
@@ -36,9 +38,17 @@ package scenes.loader
 			core.flags[Flag.LOGIN_SCREEN_SHOWN] = true;
 		}
 		
+		override public function destroy():void
+		{
+			super.destroy();
+			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
+		}
+		
 		override public function onStage():void
 		{
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
+			
+			FormManager.registerGroup(this, "login-form", UIAnchor.WRAP_ALL);
 			
 			// FFR Dude
 			var ffrlogo:UISprite = new UISprite(this, new FFRDudeCenter(), -125, -150);
@@ -62,26 +72,31 @@ package scenes.loader
 			new Label(loginBox, 5, 5, core.getString("login_name"));
 			
 			input_user = new BoxInput(loginBox, 5, 25);
-			input_user.setSize(290, 20);
+			input_user.setSize(290, 22);
+			input_user.group = "login-form";
 			
 			// Password
 			new Label(loginBox, 5, 55, core.getString("login_pass"));
 			
 			input_pass = new BoxInput(loginBox, 5, 75);
-			input_pass.setSize(290, 20);
+			input_pass.setSize(290, 22);
 			input_pass.password = true;
+			input_pass.group = "login-form";
 			
 			// Save Login
-			new Label(loginBox, 110, 108, core.getString("login_remember"));
+			new Label(loginBox, 110, 110, core.getString("login_remember"));
 			
 			save_checkbox = new BoxCheck(loginBox, 92, 113);
+			save_checkbox.group = "login-form";
 			
 			//- Buttons
-			guest_btn = new BoxButton(loginBox, 6, loginBox.height - 36, core.getString("login_guest"), e_playAsGuest);
-			guest_btn.setSize(75, 30);
-			
-			login_btn = new BoxButton(loginBox, loginBox.width - 81, loginBox.height - 36, core.getString("login_text"), e_playAsUser);
+			login_btn = new BoxButton(loginBox, 5, loginBox.height - 36, core.getString("login_text"), e_playAsUser);
 			login_btn.setSize(75, 30);
+			login_btn.group = "login-form";
+			
+			guest_btn = new BoxButton(loginBox, loginBox.width - 80, loginBox.height - 36, core.getString("login_guest"), e_playAsGuest);
+			guest_btn.setSize(75, 30);
+			guest_btn.group = "login-form";
 			
 			// Load Saved Login Data
 			var SO:Array = _loadLoginDetails();
@@ -90,10 +105,8 @@ package scenes.loader
 				input_user.text = SO[0];
 				input_pass.text = SO[1];
 				save_checkbox.checked = true;
+				FormManager.setHighlight("login-form", input_pass);
 			}
-			
-			stage.focus = input_user.textField;
-			input_user.textField.setSelection(input_user.text.length, input_user.text.length);
 			
 			_setFields(true);
 			TweenLite.to(loginBox, 1, { "x": "-=75", "alpha": 1, "ease": Power2.easeOut } );
@@ -101,9 +114,21 @@ package scenes.loader
 			super.onStage();
 		}
 		
-		override public function destroy():void
+		override public function doInputNavigation(action:String, index:Number = 0):void 
 		{
-			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
+			if (INPUT_DISABLED)
+				return;
+			
+			if (action == "confirm") {
+				if (input_user.text.length > 0)
+					e_playAsUser();
+				else
+					e_playAsGuest();
+			}
+			else if ((action == "left" || action == "right") && !(stage.focus is TextField))
+				FormManager.handleAction(action, index);
+			else 
+				FormManager.handleAction(action, index);
 		}
 		
 		//------------------------------------------------------------------------------------------------//
@@ -213,7 +238,7 @@ package scenes.loader
 			if (saveLogin)
 			{
 				gameSave.data.uUsername = username;
-				//gameSave.data.uPassword = password; // TODO: Something About this...
+				gameSave.data.uPassword = password; // TODO: Something About this...
 			}
 			else
 			{
@@ -248,7 +273,7 @@ package scenes.loader
 		 * Click Event for "Login" button.
 		 * @param	e
 		 */
-		private function e_playAsUser(e:Event):void
+		private function e_playAsUser(e:Event = null):void
 		{
 			_loginUser(input_user.text, input_pass.text);
 		}
@@ -258,7 +283,7 @@ package scenes.loader
 		 * Click event for "Guest" button.
 		 * @param	e
 		 */
-		private function e_playAsGuest(e:Event):void
+		private function e_playAsGuest(e:Event = null):void
 		{
 			_asGuest();
 		}
@@ -271,12 +296,18 @@ package scenes.loader
 		private function e_keyboardDown(e:KeyboardEvent):void
 		{
 			if (e.keyCode == Keyboard.ENTER)
-			{
-				if (input_user.text.length > 0)
-					e_playAsUser(e);
-				else
-					e_playAsGuest(e);
-			}
+				doInputNavigation("confirm");
+			else if (e.keyCode == Keyboard.DOWN)
+				doInputNavigation("down");
+			else if (e.keyCode == Keyboard.UP)
+				doInputNavigation("up");
+			else if (e.keyCode == Keyboard.LEFT)
+				doInputNavigation("left");
+			else if (e.keyCode == Keyboard.RIGHT)
+				doInputNavigation("right");
+			else if (e.keyCode == Keyboard.SPACE)
+				doInputNavigation("click");
+				
 			e.stopPropagation();
 		}
 		

@@ -14,6 +14,7 @@ package classes.user
 		public var grand_total:uint;
 		public var songs_purchased:Array;
 		public var forum_groups:Array;
+		public var song_ratings:Object;
 		
 		public function UserInfo(obj:Object = null)
 		{
@@ -43,6 +44,7 @@ package classes.user
 			this.game_rank = obj["gameRank"] ? obj["gameRank"] : 0;
 			this.games_played = obj["gamesPlayed"] ? obj["gamesPlayed"] : 0;
 			this.grand_total = obj["grandTotal"] ? obj["grandTotal"] : 0;
+			this.song_ratings = obj["song_ratings"] ? obj["song_ratings"] : {};
 		}
 	}
 

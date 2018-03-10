@@ -1,6 +1,8 @@
 package
 {
 	import classes.engine.EngineCore;
+	import classes.ui.FormManager;
+	import classes.ui.UIStyle;
 	import classes.user.User;
 	import com.adobe.serialization.json.JSONManager;
 	import flash.display.Sprite;
@@ -32,13 +34,13 @@ package
 			
 			// Init Classes
 			JSONManager.init();
+			UIStyle.init();
 			stage.stageFocusRect = false;
 			stage.scaleMode = StageScaleMode.NO_SCALE; 
 			stage.align = StageAlign.TOP_LEFT; 
 			
 			core = new EngineCore();
 			core.ui = new UI();
-			CONFIG::debug { stage.addEventListener(KeyboardEvent.KEY_DOWN, core.ui.e_debugKeyDown); }
 			addChildAt(core.ui, 0);
 			
 			// Load User
@@ -49,8 +51,25 @@ package
 			
 			stage.addEventListener(Event.RESIZE, core.e_stageResize);
 			core.ui.updateStageResize();
+			
+			CONFIG::debug { 
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, core.ui.e_debugKeyDown);
+				//addChild(FormManager.debugFormViewerSprite());
+				//stage.addEventListener(Event.ENTER_FRAME, e_formDebugUpdate);
+			}
 		}
 		
+		CONFIG::debug {
+		public var debugUpdateTick:int = 0;
+		private function e_formDebugUpdate(e:Event):void 
+		{
+			debugUpdateTick++;
+			if(debugUpdateTick % 2 == 0) {
+				FormManager.debugUpdate();
+				debugUpdateTick = 0;
+			}
+		}
+		}
 	}
 
 }

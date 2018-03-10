@@ -5,16 +5,14 @@ package classes.ui
 	
 	public class BoxCheck extends UIComponent
 	{
-		protected var _over:Boolean = false;
 		protected var _checked:Boolean = false;
-		protected var _highlight:Boolean = false;
 		
 		protected var _background_color:uint = 0xFFFFFF;
 		protected var _background_alpha:Number = 0.1;
 		protected var _check_color:uint = 0x51B6FF;
 		protected var _check_alpha:Number = 0.6;
 		
-		protected var _border_alpha:Number = 0.4;
+		protected var _border_alpha:Number = 0.6;
 		protected var _border_color:uint = 0xFFFFFF;
 		
 		public function BoxCheck(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, isChecked:Boolean = false):void
@@ -67,6 +65,14 @@ package classes.ui
 			this.graphics.endFill();
 		}
 		
+		/**
+		 * Method call to react like a mouse click on the component.
+		 */
+		override public function doClickEvent():void
+		{
+			onMouseClick();
+		}
+		
 		///////////////////////////////////
 		// event handler
 		///////////////////////////////////
@@ -75,9 +81,10 @@ package classes.ui
 		 * Internal click handler.
 		 * @param event The MouseEvent passed by the system.
 		 */
-		protected function onMouseClick(e:MouseEvent):void
+		protected function onMouseClick(e:MouseEvent = null):void
 		{
-			checked = !checked;
+			if(enabled)
+				checked = !checked;
 		}
 		
 		/**
@@ -119,14 +126,9 @@ package classes.ui
 			draw();
 		}
 		
-		public function get highlight():Boolean
+		override public function set highlight(val:Boolean):void
 		{
-			return enabled && (_highlight || _over);
-		}
-		
-		public function set highlight(val:Boolean):void
-		{
-			_highlight = val;
+			super.highlight = val;
 			draw();
 		}
 		

@@ -49,7 +49,7 @@ package
 				blurInterface();
 				
 			// Reset Stage Focus
-			if (stage)
+			if (stage && (!stage.focus || stage.focus.parent == null || stage.focus.stage == null))
 				stage.focus = null;
 		}
 		
@@ -101,7 +101,8 @@ package
 			
 			if (oW != Constant.GAME_WIDTH || oH != Constant.GAME_HEIGHT)
 			{
-				scene.onResize();
+				if(scene)
+					scene.onResize();
 				ResizeListener.signal();
 			}
 			if (scale != null && oS != scale)

@@ -4,5 +4,8 @@ package classes.engine
 	{
 		public var active_filter:EngineLevelFilter;
 		public var song_queue:Array = [];
+		
+		// Gameplay
+		public var is_autoplay:Boolean = false;
 	}
 }

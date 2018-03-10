@@ -5,6 +5,7 @@ package classes.ui
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
 	import scenes.songselection.ui.SongButton;
 	
 	public class ScrollPaneBars extends UIComponent
@@ -87,9 +88,9 @@ package classes.ui
 		/**
 		 * Remove All Children for this UI component.
 		 */
-		override public function removeChildren():void
+		override public function removeChildren(beginIndex:int = 0, endIndex:int = 2147483647):void 
 		{
-			_pane.removeChildren();
+			_pane.removeChildren(beginIndex, endIndex);
 		}
 		
 		public function scrollUpdate():void
@@ -163,6 +164,11 @@ package classes.ui
 		public function get content():Sprite
 		{
 			return _pane.content;
+		}
+		
+		public function get pane():ScrollPane
+		{
+			return _pane;
 		}
 		
 		public function get verticalBar():VScrollBar

@@ -4,6 +4,7 @@ package classes.ui
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
 	import flash.events.FocusEvent;
+	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
 	
@@ -29,7 +30,7 @@ package classes.ui
 		 */
 		override protected function init():void
 		{
-			setSize(100, 16, false);
+			setSize(100, 18, false);
 			super.init();
 		}
 		
@@ -43,6 +44,7 @@ package classes.ui
 			_tf.selectable = true;
 			_tf.type = TextFieldType.INPUT;
 			_tf.defaultTextFormat = UIStyle.getTextFormat(true);
+			_tf.antiAliasType = AntiAliasType.ADVANCED;
 			addChild(_tf);
 			_tf.addEventListener(Event.CHANGE, onChange);
 			_tf.addEventListener(FocusEvent.FOCUS_IN, onFocusIn);
@@ -153,6 +155,12 @@ package classes.ui
 		override public function set highlight(value:Boolean):void
 		{
 			super.highlight = value;
+			if (stage) {
+				stage.focus = value ? _tf : null;
+				
+				if (value)
+					_tf.setSelection(_tf.length, _tf.length);
+			}
 		}
 		
 		/**

@@ -37,6 +37,7 @@ package classes.engine
 		public var display_song_flags:Boolean = true;
 		public var display_judge:Boolean = true;
 		public var display_health:Boolean = true;
+		public var display_score:Boolean = true;
 		public var display_combo:Boolean = true;
 		public var display_pacount:Boolean = true;
 		public var display_amazing:Boolean = true;
@@ -45,6 +46,8 @@ package classes.engine
 		public var display_screencut:Boolean = false;
 		public var display_song_progress:Boolean = true;
 		public var display_alt_engines:Boolean = true;
+		public var display_game_top_bar:Boolean = true;
+		public var display_game_bottom_bar:Boolean = true;
 		
 		public var display_mp_mask:Boolean = false;
 		public var display_mp_timestamp:Boolean = false;
@@ -85,6 +88,7 @@ package classes.engine
 			if(obj["viewSongFlag"])			display_song_flags = obj["viewSongFlag"];
 			if(obj["viewJudge"])			display_judge = obj["viewJudge"];
 			if(obj["viewHealth"])			display_health = obj["viewHealth"];
+			if(obj["viewScore"])			display_score = obj["viewScore"];
 			if(obj["viewCombo"])			display_combo = obj["viewCombo"];
 			if(obj["viewPACount"])			display_pacount = obj["viewPACount"];
 			if(obj["viewAmazing"])			display_amazing = obj["viewAmazing"];
@@ -95,7 +99,9 @@ package classes.engine
 			if(obj["viewMPMask"])			display_mp_mask = obj["viewMPMask"];
 			if(obj["viewMPTimestamp"])		display_mp_timestamp = obj["viewMPTimestamp"];
 			if(obj["viewAltEngines"])		display_alt_engines = obj["viewAltEngines"];
-			if (obj["filters"])				filters = doImportFilters(obj["filters"]);
+			if(obj["viewGameTopBar"])		display_game_top_bar = obj["viewGameTopBar"];
+			if(obj["viewGameBottomBar"])	display_game_bottom_bar = obj["viewGameBottomBar"];
+			if(obj["filters"])				filters = doImportFilters(obj["filters"]);
 		}
 		
 		public function export():Object

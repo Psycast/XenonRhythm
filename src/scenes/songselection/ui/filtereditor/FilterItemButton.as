@@ -43,9 +43,6 @@ package scenes.songselection.ui.filtereditor
 			remove_button = new BoxButton(this, width, 0, "X", e_clickRemovefilter);
 			remove_button.setSize(23, height);
 			
-			//filterIcon = new FilterIcon(this, 5, 6, filter.type, false);
-			//filterIcon.setSize(23, 23);
-			
 			switch (filter.type)
 			{
 				case EngineLevelFilter.FILTER_STATS: 

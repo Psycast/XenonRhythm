@@ -1,16 +1,21 @@
 package classes.ui
 {
+	import classes.engine.EngineCore;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.BitmapData;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.filters.BlurFilter;
 	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.ui.Keyboard;
+	import flash.utils.getTimer;
 	
 	public class BoxComboOverlay extends UIOverlay
 	{
@@ -19,17 +24,24 @@ package classes.ui
 		private var _title:String;
 		private var _titletf:TextField;
 		private var _options:Array = [];
-		private var _optionButtons:Array = [];
+		private var _optionButtons:Vector.<BoxButton> = new Vector.<BoxButton>();
 		private var _defaultHandler:Function;
 		private var _listPostion:int;
+		private var _formGroup:String;
 		
-		public function BoxComboOverlay(title:String = null, options:Array = null, defaultHandler:Function = null, postion:int = UIAnchor.CENTER)
+		public function BoxComboOverlay(core:EngineCore, title:String = null, options:Array = null, defaultHandler:Function = null, postion:int = UIAnchor.CENTER)
 		{
 			_title = title;
 			_options = options;
 			_defaultHandler = defaultHandler;
 			_listPostion = postion;
-			super(null, 0, 0);
+			super(core, null, 0, 0);
+		}
+		
+		override public function onStage(e:Event = null):void 
+		{
+			super.onStage(e);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyboardHandler);
 		}
 		
 		override protected function addChildren():void 
@@ -57,8 +69,14 @@ package classes.ui
 				_titletf.defaultTextFormat = UIStyle.getTextFormat();
 				_titletf.autoSize = TextFieldAutoSize.LEFT;
 				_titletf.htmlText = _title;
+				_titletf.antiAliasType = AntiAliasType.ADVANCED;
 				_holder.addChild(_titletf);
 			}
+			
+			// Setup Form Group
+			_formGroup = "BoxComboOverlay-" + getTimer().toString();
+			FormManager.registerGroup(FormManager.active_group.owner, _formGroup, UIAnchor.WRAP_VERTICAL);
+			FormManager.selectGroup(_formGroup);
 			
 			// Add Options
 			_addOptions();
@@ -128,8 +146,11 @@ package classes.ui
 				btn = new BoxButton(_pane, 0, i * 37, lbl, e_buttonHandler);
 				btn.setSize(200, 32);
 				btn.tag = { "label": lbl, "value": dat };
+				btn.group = _formGroup;
 				_optionButtons.push(btn);
 			}
+			if (_optionButtons.length > 0)
+				_optionButtons[0].highlight = true;
 		}
 		
 		///////////////////////////////////
@@ -142,6 +163,9 @@ package classes.ui
 		private function e_buttonHandler(e:Event):void
 		{
 			ResizeListener.removeObject(this);
+			FormManager.removeGroup(FormManager.active_group.owner, _formGroup);
+			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardHandler);
+			
 			if (_defaultHandler != null)
 			{
 				_defaultHandler((e.target as BoxButton).tag);
@@ -150,6 +174,16 @@ package classes.ui
 			{
 				(parent as UI).removeOverlay(this);
 			}
+		}
+		
+		private function e_keyboardHandler(e:KeyboardEvent):void 
+		{
+			if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN)
+				doInputNavigation("down");
+			else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP)
+				doInputNavigation("up");
+			else if ((e.keyCode == Keyboard.SPACE))
+				doInputNavigation("click");
 		}
 		
 		///////////////////////////////////

@@ -18,15 +18,12 @@ package scenes.songselection.ui
 		private var core:EngineCore;
 		public var songData:EngineLevel;
 		
-		private var _mtxGradient:Matrix
 		private var _lblSongName:Label;
 		private var _lblSongFlag:Label;
 		private var _lblSongDifficulty:Label;
 		private var _lblSongDetails:Array;
 		
 		private var _title_only:Boolean = true;
-		private var _highlight:Boolean = false;
-		private var _over:Boolean = false;
 		
 		public function SongButton(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, core:EngineCore = null, songData:EngineLevel = null)
 		{
@@ -42,10 +39,6 @@ package scenes.songselection.ui
 		 */
 		override protected function init():void
 		{
-			//- Gradient Box
-			_mtxGradient = new Matrix();
-			_mtxGradient.createGradientBox(200, 200, (Math.PI / 180) * 225);
-
 			_title_only = (songData.is_title_only || songData.difficulty == 0);
 			setSize(250, 31, false);
 			super.init();
@@ -89,7 +82,7 @@ package scenes.songselection.ui
 			else
 			{
 				_lblSongDifficulty.x = width - 25;
-				_lblSongDifficulty.setSize(20, 28);
+				_lblSongDifficulty.setSize(23, 28);
 				_lblSongFlag.visible = core.user.settings.display_song_flags;
 				_lblSongFlag.x = _lblSongDifficulty.x - 95;
 				_lblSongFlag.setSize(90, 28);
@@ -114,7 +107,7 @@ package scenes.songselection.ui
 			//- Draw Box
 			this.graphics.clear();
 			this.graphics.lineStyle(1, 0xFFFFFF, (highlight ? 0.8 : 0.55));
-			this.graphics.beginGradientFill(GradientType.LINEAR, [0xFFFFFF, 0xFFFFFF], (highlight ? [0.5, 0.25] : [0.35, 0.1]), [0, 255], _mtxGradient);
+			this.graphics.beginGradientFill(GradientType.LINEAR, [0xFFFFFF, 0xFFFFFF], (highlight ? [0.5, 0.25] : [0.35, 0.1]), [0, 255], UIStyle.GRADIENT_MATRIX);
 			this.graphics.drawRect(0, 0, width, height);
 			this.graphics.endFill();
 		}
@@ -218,14 +211,9 @@ package scenes.songselection.ui
 		///////////////////////////////////
 		// getter/setters
 		///////////////////////////////////
-		public function get highlight():Boolean
+		override public function set highlight(val:Boolean):void
 		{
-			return enabled && (_highlight || _over);
-		}
-		
-		public function set highlight(val:Boolean):void
-		{
-			_highlight = val;
+			super.highlight = val;
 			
 			// Only create song details when required.
 			if (val && !_lblSongDetails)

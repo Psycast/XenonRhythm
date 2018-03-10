@@ -54,13 +54,9 @@ package scenes.loader
 			
 			// Play Animation only once.
 			if (core.flags[Flag.LOGIN_SCREEN_SHOWN])
-			{
 				logoAnimation.progress(1);
-			}
 			else
-			{
 				logoAnimation.play();
-			}
 			
 			super.onStage();
 		}
@@ -87,13 +83,9 @@ package scenes.loader
 		{
 			// Update Status Text
 			if ((core.flags[Flag.LOGIN_SCREEN_SHOWN] && !core.user.isLoaded) || (core.user.isLoaded && !core.user.permissions.isGuest))
-			{
 				ffrstatus.text = "Loading Game Data...";
-			}
 			else if (!core.user.isLoaded)
-			{
 				ffrstatus.text = "Loading User Data...";
-			}
 			
 			// Check User Loaded.
 			if (core.user.isLoaded)
@@ -162,7 +154,7 @@ package scenes.loader
 			//os1Loader.loadFromConfig("http://keysmashingisawesome.com/r3.xml");
 			
 			var os2Loader:EngineLoader = new EngineLoader(core);
-			os2Loader.loadFromConfig("http://104.236.179.121/r3.xml");
+			os2Loader.loadFromConfig("https://prawnskunk.com/ffrmania/r3.xml");
 		}
 	}
 

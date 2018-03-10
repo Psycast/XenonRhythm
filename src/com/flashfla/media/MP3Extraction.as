@@ -29,6 +29,8 @@ package com.flashfla.media {
 							break;
 						if (!mp3Frame)
 							mp3Frame = frame + 1;
+						if ((tag.length - 4) == 0)
+							break;
 						mp3Samples += data.readUnsignedShort(); // frame samples
 						data.readUnsignedShort(); // seek samples
 						mp3.writeBytes(data, data.position, tag.length - 4);

@@ -83,12 +83,10 @@ package classes.ui
 		/**
 		 * Remove All Children for this UI component.
 		 */
-		override public function removeChildren():void
+		override public function removeChildren(beginIndex:int = 0, endIndex:int = 2147483647):void 
 		{
-			while (_content.numChildren > 0)
-			{
-				_content.removeChildAt(0);
-			}
+			if(_content.numChildren > 0)
+				_content.removeChildren(0, _content.numChildren - 1);
 		}
 		
 		///////////////////////////////////

@@ -8,6 +8,22 @@ package scenes.songselection.ui.filtereditor
 	
 	public class FilterIcon extends UIComponent
 	{
+		public static const ICON_GEAR:String = "gear";
+		public static const ICON_STYLE:String = "style";
+		public static const ICON_NAME:String = "name";
+		public static const ICON_ARTIST:String = "artist";
+		public static const ICON_STEPARTIST:String = "stepartist";
+		public static const ICON_BPM:String = "bpm";
+		public static const ICON_DIFFICULTY:String = "difficulty";
+		public static const ICON_ARROWCOUNT:String = "arrows";
+		public static const ICON_ID:String = "id";
+		public static const ICON_MIN_NPS:String = "min_nps";
+		public static const ICON_MAX_NPS:String = "max_nps";
+		public static const ICON_RANK:String = "rank";
+		public static const ICON_SCORE:String = "score";
+		public static const ICON_STATS:String = "stats";
+		public static const ICON_TIME:String = "time";
+		
 		protected var _border:Boolean;
 		protected var _icon:MovieClip;
 		
@@ -63,36 +79,36 @@ package scenes.songselection.ui.filtereditor
 		{
 			switch (icon)
 			{
-				case "Gear": 
+				case ICON_GEAR: 
 					return new iconGear();
 					
 				// Engine Filters
-				case EngineLevelFilter.FILTER_ARROWCOUNT: 
+				case ICON_ARROWCOUNT: 
 					return new iconFilterArrowCount();
-				case EngineLevelFilter.FILTER_ARTIST: 
+				case ICON_ARTIST: 
 					return new iconFilterArtist();
-				case EngineLevelFilter.FILTER_BPM: 
+				case ICON_BPM: 
 					return new iconFilterBPM();
-				case EngineLevelFilter.FILTER_DIFFICULTY: 
+				case ICON_DIFFICULTY: 
 					return new iconFilterDifficulty();
-				case EngineLevelFilter.FILTER_STYLE: 
+				case ICON_STYLE: 
 					return new iconFilterGenre();
-				case EngineLevelFilter.FILTER_ID: 
+				case ICON_ID: 
 					return new iconFilterID();
-				case EngineLevelFilter.FILTER_NAME: 
+				case ICON_NAME: 
 					return new iconFilterName();
-				case EngineLevelFilter.FILTER_MAX_NPS: 
-				case EngineLevelFilter.FILTER_MIN_NPS: 
+				case ICON_MAX_NPS: 
+				case ICON_MIN_NPS: 
 					return new iconFilterNPS();
-				case EngineLevelFilter.FILTER_RANK: 
+				case ICON_RANK: 
 					return new iconFilterRank();
-				case EngineLevelFilter.FILTER_SCORE: 
+				case ICON_SCORE: 
 					return new iconFilterScore();
-				case EngineLevelFilter.FILTER_STATS: 
+				case ICON_STATS: 
 					return new iconFilterStats();
-				case EngineLevelFilter.FILTER_STEPARTIST: 
+				case ICON_STEPARTIST: 
 					return new iconFilterStepArtist();
-				case EngineLevelFilter.FILTER_TIME: 
+				case ICON_TIME: 
 					return new iconFilterTime();
 			}
 			return new iconFilterUnknown();

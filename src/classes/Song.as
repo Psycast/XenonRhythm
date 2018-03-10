@@ -93,7 +93,8 @@ package classes
 		 * Beings playback of the music.
 		 * @param	seek Time of when to start playing.
 		 */
-		public function start(seek:Number = 0):void {
+		public function start(seek:Number = 0):void
+		{
 			_musicChannel = music.play(seek + musicDelay);
 			_musicChannel.addEventListener(Event.SOUND_COMPLETE, e_soundFinished);
 			musicIsPlaying = true;
@@ -102,8 +103,10 @@ package classes
 		/**
 		 * Stops playback of the music.
 		 */
-		public function stop():void {
-			if (_musicChannel) {
+		public function stop():void
+		{
+			if (_musicChannel)
+			{
 				_musicChannel.removeEventListener(Event.SOUND_COMPLETE, e_soundFinished);
 				_musicChannel.stop();
 				musicPausePosition = 0;
@@ -112,6 +115,16 @@ package classes
 			musicIsPlaying = false;
 		}
 		
+		/**
+		 * Marks a song as load failed to be removed new check.
+		 */
+		public function markAsFailed():void
+		{
+			if (!_loadFailed)
+			{
+				_loadFailed = true;
+			}
+		}
 		
 		//------------------------------------------------------------------------------------------------//
 		
@@ -315,7 +328,7 @@ package classes
 		/**
 		 * Called when the song has finished playing.
 		 */
-		private function e_soundFinished(e:Event):void 
+		private function e_soundFinished(e:Event):void
 		{
 			musicIsPlaying = false;
 		}
@@ -367,7 +380,7 @@ package classes
 				sample = (chart.Notes[chart.Notes.length - 1].time * 44100) - sample + (2 - mp3FrameSync) * 44100 / -rateRate;
 				if (sample < 0)
 					return;
-					
+				
 				var sampleDiff:int = sample - rateSample;
 				if (sampleDiff < 0 || sampleDiff >= rateSampleCount)
 				{

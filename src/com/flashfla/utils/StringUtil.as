@@ -74,7 +74,7 @@ package com.flashfla.utils {
 		}
 		
 		public static function htmlEscape(str:String):String {
-			return XML( new XMLNode( XMLNodeType.TEXT_NODE, str ) ).toXMLString();
+			return XML( new XMLNode( XMLNodeType.TEXT_NODE, str ) ).toXMLString(); // TODO: Fix or Replace, this causes a ton of GC and is extremely slow.
 		}
 		
 		public static function getURLPieces(urlStr:String):Array {

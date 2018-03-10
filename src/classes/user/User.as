@@ -9,6 +9,7 @@ package classes.user
 	import com.flashfla.utils.StringUtil;
 	import com.flashfla.net.WebRequest;
 	import flash.display.Loader;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
@@ -21,6 +22,10 @@ package classes.user
 	 */
 	public class User extends EventDispatcher
 	{
+		public static const PROFILE:String = "PROFILE";
+		public static const AVATAR:String = "AVATAR";
+		public static const RANK:String = "RANK";
+		
 		private var _isLoaded:Boolean;
 		private var _isLoadedRanks:Boolean;
 		
@@ -152,6 +157,7 @@ package classes.user
 			this.avatar.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, e_avatarLoadError);
 			this.avatar.contentLoaderInfo.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, e_avatarLoadError);
 			this.avatar = null;
+			this.dispatchEvent(new ErrorEvent(AVATAR));
 		}
 		
 		/**
@@ -231,6 +237,7 @@ package classes.user
 		private function e_profileOnError(e:Event):void
 		{
 			Logger.log(this, Logger.ERROR, "Profile Load Error");
+			this.dispatchEvent(new ErrorEvent(PROFILE));
 		}
 		
 		// Ranks
@@ -260,6 +267,7 @@ package classes.user
 		private function e_ranksOnError(e:Event):void
 		{
 			Logger.log(this, Logger.ERROR, "Ranks Load Error");
+			this.dispatchEvent(new ErrorEvent(RANK));
 		}
 		
 		//- Event Dispatching

@@ -3,6 +3,7 @@ package scenes
 	import classes.engine.EngineCore;
 	import classes.ui.UICore;
 	import classes.ui.UIStyle;
+	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	
@@ -30,6 +31,7 @@ package scenes
 			_tf.multiline = true;
 			_tf.defaultTextFormat = UIStyle.getTextFormat(true);
 			_tf.autoSize = TextFieldAutoSize.NONE;
+			_tf.antiAliasType = AntiAliasType.ADVANCED;
 			addChild(_tf);
 			
 			this.graphics.beginFill(0, 0.5);

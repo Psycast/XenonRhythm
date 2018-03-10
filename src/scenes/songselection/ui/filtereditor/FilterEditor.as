@@ -13,6 +13,7 @@ package scenes.songselection.ui.filtereditor
 	import classes.ui.UIOverlay;
 	import classes.ui.UIStyle;
 	import classes.ui.VScrollBar;
+	import com.adobe.serialization.json.JSONManager;
 	import com.flashfla.utils.ArrayUtil;
 	import flash.display.Graphics;
 	import flash.events.Event;
@@ -24,7 +25,6 @@ package scenes.songselection.ui.filtereditor
 		public static const TAB_LIST:int = 1;
 		public static const INDENT_GAP:int = 29;
 		
-		public var core:EngineCore;
 		private var _holder:Box;
 		private var _pane:ScrollPaneBars;
 		
@@ -44,8 +44,7 @@ package scenes.songselection.ui.filtereditor
 		
 		public function FilterEditor(core:EngineCore) 
 		{
-			this.core = core;
-			super();
+			super(core);
 		}
 		
 		/**
@@ -265,7 +264,7 @@ package scenes.songselection.ui.filtereditor
 		private function e_addFilter(e:Event):void 
 		{
 			SELECTED_FILTER = (e.target as BoxButton).tag;
-			core.addOverlay(new BoxComboOverlay(core.getString("filter_editor_add_filter"), EngineLevelFilter.createOptions(core, EngineLevelFilter.FILTERS, "type"), e_addFilterSelection));
+			core.addOverlay(new BoxComboOverlay(core, core.getString("filter_editor_add_filter"), EngineLevelFilter.createOptions(core, EngineLevelFilter.FILTERS, "type"), e_addFilterSelection));
 		}
 		
 		/**

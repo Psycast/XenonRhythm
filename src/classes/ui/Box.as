@@ -8,8 +8,6 @@ package classes.ui
 	
 	public class Box extends UIComponent
 	{
-		private var _highlight:Boolean = false;
-		
 		protected var _background_color:uint = 0xFFFFFF;
 		protected var _background_alpha:Number = 0.1;
 		
@@ -56,19 +54,11 @@ package classes.ui
 		// getter/setters
 		///////////////////////////////////
 		/**
-		 * Gets the highlight status of the box.
-		 */
-		public function get highlight():Boolean
-		{
-			return _highlight;
-		}
-		
-		/**
 		 * Sets the highlight status of the box.
 		 */
-		public function set highlight(val:Boolean):void
+		override public function set highlight(value:Boolean):void 
 		{
-			_highlight = val;
+			super.highlight = value;
 			drawBox();
 		}
 		

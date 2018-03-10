@@ -9,22 +9,27 @@ package scenes.songselection
 	import classes.ui.BoxButton;
 	import classes.ui.BoxCombo;
 	import classes.ui.BoxInput;
+	import classes.ui.FormItems;
+	import classes.ui.FormManager;
 	import classes.ui.Label;
 	import classes.ui.ScrollPaneBars;
+	import classes.ui.UIAnchor;
+	import classes.ui.UIComponent;
 	import classes.ui.UICore;
 	import classes.ui.UISprite;
 	import classes.ui.UIStyle;
 	import com.flashfla.utils.ArrayUtil;
 	import com.flashfla.utils.NumberUtil;
-	import com.flashfla.utils.SpriteUtil;
 	import com.flashfla.utils.StringUtil;
 	import com.flashfla.utils.sprintf;
 	import com.greensock.TweenLite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.ui.Keyboard;
+	import scenes.songselection.ui.GenreButton;
 	import scenes.songselection.ui.SongButton;
 	import scenes.songselection.ui.filtereditor.FilterEditor;
 	import scenes.songselection.ui.filtereditor.FilterIcon;
@@ -35,6 +40,11 @@ package scenes.songselection
 		public const DM_STANDARD:String = "normal";
 		public const DM_ALL:String = "all";
 		public const DM_SEARCH:String = "search";
+		
+		public const LIST_TOP_BAR:String = "top-bar-buttons";
+		public const LIST_SIDEBAR:String = "sidebar-buttons";
+		public const LIST_GENRE:String = "genre-list";
+		public const LIST_SONG:String = "song-list";
 		
 		// Data Elements
 		/** Engine Playlist Reference */
@@ -48,7 +58,6 @@ package scenes.songselection
 		
 		/** Genre Selection Scroll Pane */
 		private var genre_scrollpane:ScrollPaneBars;
-		private var genre_songButtons:Array;
 		
 		/** Song Selection Background */
 		private var top_bar_background:Box;
@@ -61,11 +70,10 @@ package scenes.songselection
 		/** Song Selection */
 		private var ss_background:Box;
 		private var ss_scrollpane:ScrollPaneBars;
-		private var ss_songButtons:Array;
+		//private var ss_songButtons:Array;
 		
 		/** Bottom Area */
 		private var bottom_bar_background:Box;
-		
 		private var bottom_user_info:Label;
 		
 		/** Sidebar */
@@ -74,8 +82,7 @@ package scenes.songselection
 		
 		// UI Variables
 		public var DISPLAY_MODE:String = DM_STANDARD;
-		public var SELECTED_GENRE:int = 1;
-		public var SELECTED_GENRE_TAB:Label;
+		public var SELECTED_GENRE:GenreButton;
 		public var SELECTED_SONG:SongButton;
 		public var CURRENT_PAGE:int = 0;
 		public var SEARCH_TEXT:String = "";
@@ -88,7 +95,7 @@ package scenes.songselection
 			super(core);
 		}
 		
-		override public function init():void 
+		override public function init():void
 		{
 			super.init();
 			INPUT_DISABLED = true;
@@ -96,14 +103,13 @@ package scenes.songselection
 		
 		override public function onStage():void
 		{
-			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
+			stage.addEventListener(Event.ENTER_FRAME, e_frameFadeIn);
 			core.addEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
 			
 			// Overall Background
 			shift_plane = new UISprite(this);
 			shift_plane.alpha = 0;
-			TweenLite.to(shift_plane, 0.5, { "delay": 0.5, "alpha": 1, "onComplete":function():void { INPUT_DISABLED = false;} } );
 			
 			// Game Logo
 			ffr_logo = new UISprite(shift_plane, new FFRDude(), 22, 12);
@@ -113,17 +119,21 @@ package scenes.songselection
 			genre_scrollpane.addEventListener(MouseEvent.CLICK, e_genreSelectionPaneClick);
 			
 			// Search / Filter Box
+			FormManager.registerGroup(this, LIST_TOP_BAR, UIAnchor.NONE);
 			top_bar_background = new Box(shift_plane, 145, -1);
 			
-			search_input = new BoxInput(top_bar_background, 5, 5);
-			search_input.textField.tabEnabled = false;
+			search_input = new BoxInput(top_bar_background, 10, 5);
+			search_input.group = LIST_TOP_BAR;
 			search_button = new BoxButton(top_bar_background, 105, 5, core.getString("song_selection_menu_search"), e_searchClick);
-			search_type_combo = new BoxCombo(core, top_bar_background, 105, 5, "---", e_searchTypeClick);
-			search_type_combo.options = createSearchOptions();
+			search_button.group = LIST_TOP_BAR;
+			search_type_combo = new BoxCombo(core, top_bar_background, 105, 5, "---", e_searchTypeClick, e_disableInputEvents);
+			search_type_combo.options = _createSearchOptions();
 			search_type_combo.title = core.getString("song_selection_menu_search_type");
 			search_type_combo.selectedIndex = SEARCH_TYPE;
+			search_type_combo.group = LIST_TOP_BAR;
 			filters_button = new BoxButton(top_bar_background, 205, 5, core.getString("song_selection_filters"), e_filtersClick);
-
+			filters_button.group = LIST_TOP_BAR;
+			
 			search_button.fontSize = filters_button.fontSize = search_type_combo.fontSize = UIStyle.FONT_SIZE - 3;
 			
 			// Setup Song Selection Pane/Bar
@@ -138,19 +148,24 @@ package scenes.songselection
 			bottom_user_info.fontSize = UIStyle.FONT_SIZE - 1;
 			
 			// Sidebar
+			FormManager.registerGroup(this, LIST_SIDEBAR, UIAnchor.WRAP_VERTICAL);
 			side_bar_background = new Box(shift_plane, Constant.GAME_WIDTH - 40, -1);
 			options_button = new BoxButton(side_bar_background, 5, 5);
 			options_button.setSize(31, 31);
-			(new FilterIcon(options_button, 3, 3, "Gear", false)).setSize(options_button.width - 4, options_button.width - 4);
+			options_button.group = LIST_SIDEBAR;
+			(new FilterIcon(options_button, 3, 3, FilterIcon.ICON_GEAR, false)).setSize(options_button.width - 4, options_button.width - 4);
 			
 			// Draw All Game List
 			drawGameList();
+			
+			FormManager.selectGroup(LIST_SONG);
 			
 			super.onStage();
 		}
 		
 		override public function destroy():void
 		{
+			super.destroy();
 			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
 			core.removeEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
 		}
@@ -168,17 +183,15 @@ package scenes.songselection
 			search_button.x = filters_button.x - search_button.width - 5;
 			search_type_combo.setSize(115, top_bar_background.height - 11);
 			search_type_combo.x = search_button.x - search_type_combo.width - 5;
-			search_input.setSize(search_type_combo.x - 10, top_bar_background.height - 11);
+			search_input.setSize(search_type_combo.x - 15, top_bar_background.height - 11);
 			
 			// Update Song Scroll Pane
 			ss_background.setSize(top_bar_background.width, Constant.GAME_HEIGHT - 80);
 			ss_scrollpane.setSize(ss_background.width - 20, ss_background.height - 20);
 			
 			// Update Song Button Widths
-			for each (var item:SongButton in ss_songButtons)
-			{
+			for each (var item:SongButton in FormManager.getGroup(this, LIST_SONG).items)
 				item.width = ss_scrollpane.paneWidth;
-			}
 			
 			// Scroll Pane Size
 			bottom_bar_background.setSize(top_bar_background.width, 36);
@@ -189,6 +202,29 @@ package scenes.songselection
 			side_bar_background.setSize(41, Constant.GAME_HEIGHT + 2);
 			side_bar_background.x = Constant.GAME_WIDTH - 40;
 			options_button.y = 5; // Constant.GAME_HEIGHT - options_button.height - 4;
+		}
+		
+		override public function doInputNavigation(action:String, index:Number = 0):void
+		{
+			if (INPUT_DISABLED)
+				return;
+			
+			var lastActiveElement:UIComponent = FormManager.getLastHighlight();
+			var activeElement:UIComponent;
+			
+			// Check for 
+			if (action == "confirm" && stage.focus is TextField)
+			{
+				if (stage.focus == search_input.textField)
+					e_searchClick();
+			}
+			else if ((action == "left" || action == "right" || action == "click") && !(stage.focus is TextField))
+				activeElement = FormManager.handleAction(action, index);
+			else
+				activeElement = FormManager.handleAction(action, index);
+			
+			if (activeElement)
+				_handleInputEvent(activeElement, action, lastActiveElement);
 		}
 		
 		//------------------------------------------------------------------------------------------------//
@@ -219,11 +255,11 @@ package scenes.songselection
 		{
 			genre_scrollpane.removeChildren();
 			genre_scrollpane.content.graphics.clear();
-			genre_songButtons = [];
+			(FormManager.registerGroup(this, LIST_GENRE, UIAnchor.WRAP_VERTICAL)).setClipFromComponent(genre_scrollpane.pane);
 			
-			var genreLabel:Label;
+			var selected_genre_id:int = (SELECTED_GENRE ? SELECTED_GENRE.genre : 1);
+			var genreButton:GenreButton;
 			var genreYPosition:int = 0;
-			var drawPosition:Object = {"y": 0, "height": 10};
 			var displayAltEngines:Boolean = (core.loaderCount > 1 && core.user.settings.display_alt_engines);
 			
 			// Get Engine Sources
@@ -243,12 +279,14 @@ package scenes.songselection
 			// Draw Search Tag / Engine Label
 			if (DISPLAY_MODE == DM_SEARCH)
 			{
-				genreLabel = new Label(genre_scrollpane, 0, genreYPosition, 'Search');
-				genreLabel.tag = {"engine": core.source, "genre": "search"};
-				genreLabel.setSize(genre_scrollpane.paneWidth, 0);
-				genreLabel.fontSize = UIStyle.FONT_SIZE + 4;
-				drawPosition = {"y": genreYPosition, "height": genreLabel.height};
-				genreYPosition += genreLabel.height + 2;
+				genreButton = new GenreButton(genre_scrollpane, 0, genreYPosition, core.getString("search"));
+				genreButton.engine = core.source;
+				genreButton.genre = GenreButton.SEARCH;
+				genreButton.setSize(genre_scrollpane.paneWidth, 0);
+				genreButton.fontSize = UIStyle.FONT_SIZE + 4;
+				genreButton.group = LIST_GENRE;
+				genreButton.isSelected = true;
+				genreYPosition += genreButton.height + 2;
 			}
 			
 			// Draw Genre Labels
@@ -257,7 +295,7 @@ package scenes.songselection
 			{
 				engineSource = engineSources[engine];
 				
-				// Draw Diving Border
+				// Draw Dividing Border
 				if (genreYPosition != 0)
 				{
 					with (genre_scrollpane.content.graphics)
@@ -271,56 +309,51 @@ package scenes.songselection
 				// Engine Label
 				if (displayAltEngines)
 				{
-					genreLabel = new Label(genre_scrollpane, 0, genreYPosition, '<font color="' + UIStyle.ACTIVE_FONT_COLOR + '">' + engineSource[1] + '</font>', true);
-					genreLabel.tag = {"engine": engineSource[1], "genre": genre_id};
-					genreLabel.setSize(genre_scrollpane.paneWidth, 0);
-					genreLabel.fontSize = UIStyle.FONT_SIZE + 4;
-					genreYPosition += genreLabel.height + 2;
+					genreButton = new GenreButton(genre_scrollpane, 0, genreYPosition, '<font color="' + UIStyle.ACTIVE_FONT_COLOR + '">' + engineSource[1] + '</font>', true);
+					genreButton.setSize(genre_scrollpane.paneWidth, 0);
+					genreButton.fontSize = UIStyle.FONT_SIZE + 4;
+					genreYPosition += genreButton.height + 2;
 				}
 				
 				// All Genre
-				genreLabel = new Label(genre_scrollpane, 0, genreYPosition, core.getStringSource(engineSource[2], "genre_-1"), true);
-				genreLabel.tag = {"engine": engineSource[2], "genre": "all"};
-				genreLabel.setSize(genre_scrollpane.paneWidth, 20);
-				genreLabel.mouseEnabled = true;
+				genreButton = new GenreButton(genre_scrollpane, 0, genreYPosition, core.getStringSource(engineSource[2], "genre_-1"), true);
+				genreButton.engine = engineSource[2];
+				genreButton.genre = GenreButton.ALL;
+				genreButton.setSize(genre_scrollpane.paneWidth, 20);
+				genreButton.mouseEnabled = true;
+				genreButton.group = LIST_GENRE;
 				if (core.source == engineSource[2] && DISPLAY_MODE == DM_ALL)
 				{
-					genreLabel.fontSize = UIStyle.FONT_SIZE + 2;
-					SELECTED_GENRE_TAB = genreLabel;
-					drawPosition = {"y": genreYPosition, "height": genreLabel.height};
+					genreButton.fontSize = UIStyle.FONT_SIZE + 2;
+					genreButton.isSelected = true;
+					SELECTED_GENRE = genreButton;
 				}
-				genreYPosition += genreLabel.height + 5;
-				genre_songButtons.push(genreLabel);
+				genreYPosition += genreButton.height + 5;
 				
 				// Genre Labels
 				for (var genre_id:String in core.getPlaylist(engineSource[2]).genre_list)
 				{
 					var genre_int:int = parseInt(genre_id);
-					genreLabel = new Label(genre_scrollpane, 0, genreYPosition, core.getStringSource(engineSource[2], "genre_" + (genre_int - 1)), true);
-					genreLabel.tag = {"engine": engineSource[2], "genre": genre_id};
-					genreLabel.setSize(genre_scrollpane.paneWidth, 20);
-					genreLabel.mouseEnabled = true;
-					
-					if (core.source == engineSource[2] && genre_int == SELECTED_GENRE)
+					genreButton = new GenreButton(genre_scrollpane, 0, genreYPosition, core.getStringSource(engineSource[2], "genre_" + (genre_int - 1)), true);
+					genreButton.engine = engineSource[2];
+					genreButton.genre = genre_int;
+					genreButton.setSize(genre_scrollpane.paneWidth, 20);
+					genreButton.mouseEnabled = true;
+					genreButton.group = LIST_GENRE;
+					if (core.source == engineSource[2] && genre_int == selected_genre_id)
 					{
-						genreLabel.fontSize = UIStyle.FONT_SIZE + 2;
-						SELECTED_GENRE_TAB = genreLabel;
-						drawPosition = {"y": genreYPosition, "height": genreLabel.height};
+						genreButton.fontSize = UIStyle.FONT_SIZE + 2;
+						genreButton.isSelected = true;
+						SELECTED_GENRE = genreButton;
 					}
 					
-					genreYPosition += genreLabel.height + 5;
-					genre_songButtons.push(genreLabel);
+					genreYPosition += genreButton.height + 5;
 				}
 			}
+			FormManager.getGroup(this, LIST_GENRE).last_highlight = SELECTED_GENRE;
 			
-			// Draw Active Genre
-			with (genre_scrollpane.content.graphics)
-			{
-				lineStyle(1, 0xFFFFFFF, 0.5);
-				beginFill(0xFFFFFF, 0.25);
-				drawRect(0, drawPosition.y, genre_scrollpane.paneWidth, drawPosition.height);
-				endFill();
-			}
+			if (FormManager.active_group.group_name == LIST_GENRE)
+				FormManager.active_group.last_highlight.highlight = true;
 			
 			// Reset Scroll
 			genre_scrollpane.scrollReset();
@@ -332,7 +365,7 @@ package scenes.songselection
 		public function drawSongList():void
 		{
 			ss_scrollpane.removeChildren();
-			ss_songButtons = [];
+			(FormManager.registerGroup(this, LIST_SONG, UIAnchor.WRAP_VERTICAL, FormItems.NONE)).setClipFromComponent(ss_scrollpane.pane);
 			
 			var i:int;
 			var list:Array;
@@ -365,7 +398,7 @@ package scenes.songselection
 			// Standard Display
 			else
 			{
-				list = _playlist.genre_list[SELECTED_GENRE];
+				list = _playlist.genre_list[SELECTED_GENRE.genre];
 			}
 			
 			// User Filter
@@ -382,11 +415,11 @@ package scenes.songselection
 			{
 				for (i = 0; i < list.length; i++)
 				{
-					ss_songButtons.push(new SongButton(ss_scrollpane, 0, i * 31, core, list[i]));
+					new SongButton(ss_scrollpane, 0, i * 31, core, list[i]).group = LIST_SONG;
 				}
 				
 				// Select First Song
-				_changeSelectedSong(ss_songButtons[0]);
+				_changeSelectedSong(FormManager.getGroup(this, LIST_SONG).items[0] as SongButton);
 			}
 			
 			updateSongPosition();
@@ -395,13 +428,17 @@ package scenes.songselection
 			ss_scrollpane.verticalBar.scroll = 0;
 		}
 		
-		private function updateSongPosition():void 
+		/**
+		 * Updates the Y position of all SongButtons.
+		 */
+		private function updateSongPosition():void
 		{
 			var songButtonYPosition:int = 0;
-			for (var i:int = 0; i < ss_songButtons.length; i++)
+			var items:Vector.<UIComponent> = FormManager.getGroup(this, LIST_SONG).items;
+			for (var i:int = 0; i < items.length; i++)
 			{
-				ss_songButtons[i].y = songButtonYPosition;
-				songButtonYPosition += ss_songButtons[i].height + 5;
+				items[i].y = songButtonYPosition;
+				songButtonYPosition += items[i].height + 5;
 			}
 		}
 		
@@ -412,44 +449,54 @@ package scenes.songselection
 		///////////////////////////////////
 		
 		/**
-		 * Returns the genre tag for the next genre.
-		 * @param	dir Next index direction. True is previous, False is next.
-		 * @return tag object from Genre label.
+		 * Creates the search type options for the BoxCombo
+		 * @return Array of options with correct language strings.
 		 */
-		private function _getNextGenreTag(dir:Boolean):Object
+		private function _createSearchOptions():Array
 		{
-			if (!genre_songButtons)
-				return null;
-				
-			var index:int = ArrayUtil.index_wrap(genre_songButtons.indexOf(SELECTED_GENRE_TAB) + (dir ? -1 : 1), 0, genre_songButtons.length - 1);
-			var genre:Label = genre_songButtons[index];
+			var options:Array = [];
+			for (var i:int = 0; i < SEARCH_OPTIONS.length; i++)
+			{
+				options.push([core.getString("song_value_" + SEARCH_OPTIONS[i]), SEARCH_OPTIONS[i]]);
+			}
 			
-			return genre.tag;
+			return options;
+		}
+		
+		/**
+		 * Gets the Genre Button that matchs the requested ID from the current engine source.
+		 * @param	index Genre ID to find.
+		 * @return GenreButton of matching ID.
+		 */
+		private function _getGenreButtonByID(index:int):GenreButton
+		{
+			var items:Vector.<UIComponent> = FormManager.getGroup(this, LIST_GENRE).items;
+			for each (var item:GenreButton in items)
+			{
+				if (item.genre == index && core.source == item.engine)
+					return item;
+			}
+			return null;
 		}
 		
 		/**
 		 * Changes the current genre using the provided tag for information.
 		 * @param	tag
 		 */
-		private function _changeGenreByTag(tag:Object):void 
+		private function _changeGenre(genreButton:GenreButton):void
 		{
-			if (tag.engine != core.source)
-			{
-				core.source = tag.engine;
-			}
+			if (genreButton.engine != core.source)
+				core.source = genreButton.engine;
 			
 			// All Genre
-			if (tag.genre == "all")
-			{
+			if (genreButton.genre == GenreButton.ALL)
 				DISPLAY_MODE = DM_ALL;
-				SELECTED_GENRE = -1;
-			}
+			
 			// Normal Genres
 			else
-			{
 				DISPLAY_MODE = DM_STANDARD;
-				SELECTED_GENRE = parseInt(tag.genre);
-			}
+			
+			SELECTED_GENRE = genreButton;
 			drawGameList();
 		}
 		
@@ -476,10 +523,9 @@ package scenes.songselection
 			if (SELECTED_SONG)
 			{
 				core.variables.song_queue.push(SELECTED_SONG.songData);
+				
 				if (goToLoader)
-				{
 					_closeScene(0);
-				}
 			}
 		}
 		
@@ -505,25 +551,47 @@ package scenes.songselection
 			// Switch to Intended UI scene
 			switch (sceneIndex)
 			{
-				case 0: 
-					core.scene = new SceneSongLoader(core);
-					break;
+			case 0: 
+				core.scene = new SceneSongLoader(core);
+				break;
 			}
 		}
 		
 		/**
-		 * Creates the search type options for the BoxCombo
-		 * @return Array of options with correct language strings.
+		 * Handles logic based on elements from the doInputNavigation. This uses the new highlight item and the action preformed, while optionally having the previous element.
+		 * @param	activeElement The New Highlighted UIComponent
+		 * @param	action Form Action Preformed
+		 * @param	lastElement Last Highlighted UIComponent.
 		 */
-		private function createSearchOptions():Array 
+		private function _handleInputEvent(activeElement:UIComponent, action:String, lastElement:UIComponent = null):void
 		{
-			var options:Array = [];
-			for (var i:int = 0; i < SEARCH_OPTIONS.length; i++) 
-			{
-				options.push([core.getString("song_value_" + SEARCH_OPTIONS[i]), SEARCH_OPTIONS[i]]);
-			}
+			if (INPUT_DISABLED)
+				return;
 			
-			return options;
+			if (activeElement)
+			{
+				// Song Button
+				if (activeElement is SongButton)
+				{
+					if (SELECTED_SONG != null && SELECTED_SONG == activeElement)
+						_addSelectedSongToQueue(true);
+					else
+						_changeSelectedSong(activeElement as SongButton);
+						
+					ss_scrollpane.scrollChild(activeElement);
+				}
+				// Genre Button
+				if (activeElement is GenreButton)
+				{
+					if (action == "click")
+					{
+						if (lastElement is GenreButton)
+							(lastElement as GenreButton).isSelected = false;
+						_changeGenre(activeElement as GenreButton);
+					}
+					genre_scrollpane.scrollChild(activeElement);
+				}
+			}
 		}
 		
 		//------------------------------------------------------------------------------------------------//
@@ -531,6 +599,62 @@ package scenes.songselection
 		///////////////////////////////////
 		// event handlers
 		///////////////////////////////////
+		/**
+		 * Event: Any
+		 * Called by objects to disable input.
+		 * @param	e
+		 */
+		private function e_disableInputEvents(e:Event = null):void 
+		{
+			INPUT_DISABLED = true;
+		}
+		
+		/**
+		 * Event: Event.ENTER_FRAME
+		 * Called by the initial fade-in one frame after init to avoid the lag caused
+		 * by the creation of the song list.
+		 */
+		private function e_frameFadeIn(e:Event):void
+		{
+			stage.removeEventListener(Event.ENTER_FRAME, e_frameFadeIn);
+			TweenLite.to(shift_plane, 0.5, {"delay": 0.25, "alpha": 1, "onComplete": function():void
+			{
+				INPUT_DISABLED = false;
+			}});
+		}
+		
+		/**
+		 * Event: KEY_DOWN
+		 * Used to navigate the menu using the arrow keys or user set keys
+		 */
+		private function e_keyboardDown(e:KeyboardEvent):void
+		{
+			if (INPUT_DISABLED)
+				return;
+			
+			// Special Case for Search Inputfield
+			if (e.keyCode == Keyboard.ENTER && (stage.focus is TextField))
+				doInputNavigation("confirm");
+			
+			else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN)
+				doInputNavigation("down");
+			else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP)
+				doInputNavigation("up");
+			else if (e.keyCode == core.user.settings.key_left || e.keyCode == Keyboard.LEFT && (!(stage.focus is TextField) || e.shiftKey))
+				doInputNavigation("left");
+			else if (e.keyCode == core.user.settings.key_right || e.keyCode == Keyboard.RIGHT && (!(stage.focus is TextField) || e.shiftKey))
+				doInputNavigation("right");
+			
+			else if (e.keyCode == Keyboard.PAGE_DOWN)
+				doInputNavigation("down", 9);
+			else if (e.keyCode == Keyboard.PAGE_UP)
+				doInputNavigation("up", 9);
+			
+			else if ((e.keyCode == Keyboard.SPACE) && !(stage.focus is TextField))
+				doInputNavigation("click");
+			
+			e.stopPropagation();
+		}
 		
 		/**
 		 * Event: EngineCore.LOADERS_UPDATE
@@ -541,7 +665,7 @@ package scenes.songselection
 			// Current Playlist got removed.
 			if (!core.engineLoaders[_playlist.id])
 			{
-				SELECTED_GENRE = 1;
+				SELECTED_GENRE = _getGenreButtonByID(1);
 			}
 			drawGameList();
 		}
@@ -552,30 +676,36 @@ package scenes.songselection
 		 */
 		private function e_genreSelectionPaneClick(e:MouseEvent):void
 		{
-			if (INPUT_DISABLED)
-				return;
-			
-			var target:* = e.target;
-			if (target is Label)
-			{
-				_changeGenreByTag((target as Label).tag);
-			}
+			if (e.target is GenreButton)
+				_handleInputEvent(e.target as GenreButton, "click");
+		}
+		
+		/**
+		 * Event: MOUSE_CLICK
+		 * Song Selection Scrollpane Click
+		 */
+		private function e_songSelectionPaneClick(e:MouseEvent):void
+		{
+			if (e.target is SongButton)
+				_handleInputEvent(e.target as SongButton, "click");
 		}
 		
 		/**
 		 * Event: BoxCombo Change
 		 * @param	e Object containing the selected option.
 		 */
-		private function e_searchTypeClick(e:Object):void 
+		private function e_searchTypeClick(e:Object):void
 		{
 			SEARCH_TYPE = e["value"];
+			INPUT_DISABLED = false;
+			FormManager.selectGroup(LIST_TOP_BAR, this);
 		}
 		
 		/**
 		 * Event: MOUSE_CLICK
 		 * Search Button Click Event
 		 */
-		private function e_searchClick(e:Event):void
+		private function e_searchClick(e:Event = null):void
 		{
 			if (INPUT_DISABLED)
 				return;
@@ -584,7 +714,7 @@ package scenes.songselection
 			if (SEARCH_TEXT != "")
 			{
 				DISPLAY_MODE = DM_SEARCH;
-				SELECTED_GENRE = -1;
+				SELECTED_GENRE = _getGenreButtonByID(GenreButton.SEARCH);
 				
 				drawGameList();
 			}
@@ -598,108 +728,10 @@ package scenes.songselection
 		{
 			if (INPUT_DISABLED)
 				return;
+				
+			e_disableInputEvents(e);
 			
 			core.addOverlay(new FilterEditor(core));
 		}
-		
-		/**
-		 * Event: MOUSE_CLICK
-		 * Song Selection Scrollpane Click
-		 */
-		private function e_songSelectionPaneClick(e:MouseEvent):void
-		{
-			if (INPUT_DISABLED)
-				return;
-			
-			var target:* = e.target;
-			if (target is SongButton)
-			{
-				if (SELECTED_SONG != null && SELECTED_SONG == e.target)
-				{
-					_addSelectedSongToQueue(true);
-				}
-				else
-				{
-					_changeSelectedSong(e.target as SongButton);
-				}
-			}
-		}
-		
-		/**
-		 * Event: KEY_DOWN
-		 * Used to navigate the menu using the arrow keys or user set keys
-		 */
-		private function e_keyboardDown(e:KeyboardEvent):void
-		{
-			if (INPUT_DISABLED)
-				return;
-			
-			// Genre Navigation
-			if (e.keyCode == Keyboard.TAB)
-			{
-				_changeGenreByTag(_getNextGenreTag(e.shiftKey));
-				genre_scrollpane.scrollChild(SELECTED_GENRE_TAB);
-			}
-			
-			// Focus is Search Input
-			if (stage.focus == search_input.textField)
-			{
-				if (e.keyCode == Keyboard.ENTER)
-				{
-					e_searchClick(e);
-				}
-				return;
-			}
-			
-			// No Stage Focus
-			if (!stage.focus)
-			{
-				// Song Navigation
-				if (ss_songButtons.length > 0)
-				{
-					var selectedIndex:int = SELECTED_SONG ? ss_songButtons.indexOf(SELECTED_SONG) : 0;
-					var newIndex:int = selectedIndex;
-					
-					// Select Song
-					if (e.keyCode == Keyboard.ENTER)
-					{
-						_addSelectedSongToQueue(true);
-					}
-					
-					else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.NUMPAD_2)
-					{
-						newIndex++;
-					}
-					else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP || e.keyCode == Keyboard.NUMPAD_8)
-					{
-						newIndex--;
-					}
-					else if (e.keyCode == Keyboard.PAGE_DOWN)
-					{
-						newIndex += 10;
-					}
-					else if (e.keyCode == Keyboard.PAGE_UP)
-					{
-						newIndex -= 10;
-					}
-					
-					// New Index
-					if (newIndex != selectedIndex)
-					{
-						// Find First Menu Item
-						newIndex = ArrayUtil.find_next_index(newIndex < selectedIndex, newIndex, ss_songButtons, function(n:SongButton):Boolean
-						{
-							return !n.songData.is_title_only;
-						});
-						
-						_changeSelectedSong(ss_songButtons[newIndex]);
-						ss_scrollpane.scrollChild(SELECTED_SONG);
-					}
-					return;
-				}
-			}
-		}
-	
 	}
-
 }

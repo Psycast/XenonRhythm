@@ -12,6 +12,10 @@ package classes.ui
 		public static const CENTER:int = 16;
 		public static const RIGHT:int = 32;
 		
+		public static const WRAP_VERTICAL:int = 5;
+		public static const WRAP_HORIZONTAL:int = 40;
+		public static const WRAP_ALL:int = 45;
+		
 		public static const TOP_LEFT:int = 9;
 		public static const TOP_CENTER:int = 17;
 		public static const TOP_RIGHT:int = 33;
