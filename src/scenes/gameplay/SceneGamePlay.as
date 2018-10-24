@@ -102,7 +102,7 @@ package scenes.gameplay
 			}
 			else if (e.keyCode == core.user.settings.key_right)
 			{
-				
+				song.start();
 			}
 		}
 		

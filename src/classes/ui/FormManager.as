@@ -1,6 +1,6 @@
 package classes.ui
 {
-	import com.adobe.crypto.MD5;
+	import by.blooddy.crypto.MD5;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;

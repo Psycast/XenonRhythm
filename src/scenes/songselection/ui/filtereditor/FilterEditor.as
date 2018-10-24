@@ -13,7 +13,6 @@ package scenes.songselection.ui.filtereditor
 	import classes.ui.UIOverlay;
 	import classes.ui.UIStyle;
 	import classes.ui.VScrollBar;
-	import com.adobe.serialization.json.JSONManager;
 	import com.flashfla.utils.ArrayUtil;
 	import flash.display.Graphics;
 	import flash.events.Event;

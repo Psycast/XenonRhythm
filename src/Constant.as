@@ -8,7 +8,7 @@ package
 	public class Constant
 	{
 		//- URLs
-		public static const ROOT_URL:String = (CONFIG::debug && CONFIG::local_api ? "http://localhost/ffr/game/r3/" : "http://www.flashflashrevolution.com/game/r3/");
+		public static const ROOT_URL:String = ("http://www.flashflashrevolution.com/game/r3/");
 		public static const SITE_CONFIG_URL:String = ROOT_URL + "r3-gameConfig.php";
 		public static const SITE_LOGIN_URL:String =  ROOT_URL + "r3-siteLogin.php";
 		public static const SITE_REPLAY_URL:String =  ROOT_URL + "r3-siteReplay.php";
@@ -35,9 +35,9 @@ package
 		public static const VERSION:int = 3;
 		public static const GAME_ENGINE:String = "ffr";
 		public static const GAME_NAME:String = "FlashFlashRevolution";
-		public static var GAME_WIDTH:int = 800;
+		public static var GAME_WIDTH:int = 1280;
 		public static var GAME_WIDTH_CENTER:int = GAME_WIDTH / 2;
-		public static var GAME_HEIGHT:int = 600;
+		public static var GAME_HEIGHT:int = 720;
 		public static var GAME_HEIGHT_CENTER:int = GAME_HEIGHT / 2;
 	
 		//- Functions

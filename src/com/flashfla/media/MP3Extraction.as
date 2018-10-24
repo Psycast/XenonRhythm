@@ -71,7 +71,7 @@ package com.flashfla.media {
 				metadata.id = mp3Id;
 				metadata.format = mp3Format;
 			}
-
+			mp3.position = 0;
 			return mp3;
 		}
 

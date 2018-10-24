@@ -1,6 +1,5 @@
 package
 {
-	import com.adobe.serialization.json.JSONManager;
 	import com.flashfla.net.WebRequest;
 	import flash.events.Event;
 	
@@ -31,7 +30,7 @@ package
 		
 		private function e_loginComplete(e:Event):void
 		{
-			var _data:Object = JSONManager.decode(e.target.data);
+			var _data:Object = JSON.parse(e.target.data);
 			if (_data["result"] && _data["session"] && _data["result"] == 1)
 			{
 				Logger.log(this, Logger.NOTICE, "Login Success! - Session ID: " + _data["session"]);

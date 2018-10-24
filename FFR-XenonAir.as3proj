@@ -4,15 +4,15 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="bin\FFRXenon.swf" />
+    <movie path="bin\air.swf" />
     <movie fps="60" />
     <movie width="1280" />
     <movie height="720" />
-    <movie version="23" />
+    <movie version="29" />
     <movie minorVersion="0" />
     <movie platform="AIR" />
     <movie background="#000000" />
-    <movie preferredSDK="AIR 28.0.0;28.0.0;" />
+    <movie preferredSDK="AIR 29.0.0;29.0.0;" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
@@ -43,8 +43,8 @@
     <option linkReport="" />
     <option loadExterns="" />
     <option staticLinkRSL="True" />
-    <option additional="-omit-trace-statements=true" />
-    <option compilerConstants="CONFIG::local_api,false" />
+    <option additional="" />
+    <option compilerConstants="CONFIG::not_air,false" />
     <option minorVersion="" />
   </build>
   <!-- SWC Include Libraries -->
@@ -53,7 +53,7 @@
   </includeLibraries>
   <!-- SWC Libraries -->
   <libraryPaths>
-    <!-- example: <element path="..." /> -->
+    <element path="src\assets\blooddy_crypto.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
@@ -77,6 +77,8 @@
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
+    <hidden path="desktop.ini" />
+    <hidden path="src\ZagVC.as" />
     <hidden path="obj" />
   </hiddenPaths>
   <!-- Executed before build -->
@@ -86,12 +88,9 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Unknown" />
-    <option testMovieCommand="" />
+    <option testMovie="Custom" />
+    <option testMovieCommand="bat\RunApp.bat" />
   </options>
   <!-- Plugin storage -->
-  <storage>
-    <entry key="at_enabled"><![CDATA[0]]></entry>
-    <entry key="at_password"><![CDATA[]]></entry>
-  </storage>
+  <storage />
 </project>

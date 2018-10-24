@@ -129,7 +129,7 @@ package scenes.songselection
 			search_type_combo = new BoxCombo(core, top_bar_background, 105, 5, "---", e_searchTypeClick, e_disableInputEvents);
 			search_type_combo.options = _createSearchOptions();
 			search_type_combo.title = core.getString("song_selection_menu_search_type");
-			search_type_combo.selectedIndex = SEARCH_TYPE;
+			search_type_combo.selectedIndexString = SEARCH_TYPE;
 			search_type_combo.group = LIST_TOP_BAR;
 			filters_button = new BoxButton(top_bar_background, 205, 5, core.getString("song_selection_filters"), e_filtersClick);
 			filters_button.group = LIST_TOP_BAR;

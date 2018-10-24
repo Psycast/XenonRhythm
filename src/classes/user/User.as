@@ -5,7 +5,6 @@ package classes.user
 	import classes.engine.EngineSettings;
 	import classes.user.UserInfo;
 	import classes.user.UserPermissions;
-	import com.adobe.serialization.json.JSONManager;
 	import com.flashfla.utils.StringUtil;
 	import com.flashfla.net.WebRequest;
 	import flash.display.Loader;
@@ -138,7 +137,7 @@ package classes.user
 			// Setup Settings
 			if (_data["settings"] && !this.permissions.isGuest)
 			{
-				this.settings.setup(JSONManager.decode(_data["settings"]));
+				this.settings.setup(JSON.parse(_data["settings"]));
 			}
 		}
 		
@@ -212,7 +211,7 @@ package classes.user
 		{
 			Logger.log(this, Logger.INFO, "Profile Load Complete");
 			// JSON Decode Data
-			var _data:Object = JSONManager.decode(StringUtil.trim(e.target.data));
+			var _data:Object = JSON.parse(StringUtil.trim(e.target.data));
 			
 			// Setup Data
 			setupUserData(_data);

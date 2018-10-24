@@ -3,7 +3,6 @@ package classes.chart.parse {
 	import classes.chart.Note;
 	import classes.chart.NoteChart;
 	import classes.chart.Stop;
-	import com.adobe.crypto.MD5;
 	import com.flashfla.utils.StringUtil;
 	import flash.utils.ByteArray;
 	import flash.net.URLRequest;

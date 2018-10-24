@@ -3,7 +3,6 @@ package classes.chart.parse {
 	import classes.chart.Note;
 	import classes.chart.NoteChart;
 	import classes.chart.Stop;
-	import com.adobe.serialization.json.JSONManager;
 	import com.flashfla.utils.ExtraMath;
 	
 	public class ChartStepmania extends NoteChart {

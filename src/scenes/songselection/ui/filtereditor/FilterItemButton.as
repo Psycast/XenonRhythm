@@ -49,13 +49,13 @@ package scenes.songselection.ui.filtereditor
 					combo_stat = new BoxCombo(core, this, 5, 5, filter.input_stat, e_valueStatChange);
 					combo_stat.options = EngineLevelFilter.createOptions(core, EngineLevelFilter.FILTERS_STAT, "compare_stat");
 					combo_stat.title = core.getString("filter_editor_comparison");
-					combo_stat.selectedIndex = filter.input_stat;
+					combo_stat.selectedIndexString = filter.input_stat;
 					combo_stat.setSize(120, 23); // 90
 					
 					combo_compare = new BoxCombo(core, this, 130, 5, filter.comparison, e_valueCompareChange);
 					combo_compare.options = EngineLevelFilter.FILTERS_NUMBER;
 					combo_compare.title = core.getString("filter_editor_comparison");
-					combo_compare.selectedIndex = filter.comparison;
+					combo_compare.selectedIndexString = filter.comparison;
 					combo_compare.setSize(80, 23);
 					
 					input_box = new BoxInput(this, 215, 5, filter.input_number.toString(), e_valueNumberChange);
@@ -75,7 +75,7 @@ package scenes.songselection.ui.filtereditor
 					combo_compare = new BoxCombo(core, this, 100, 5, filter.comparison, e_valueCompareChange);
 					combo_compare.options = EngineLevelFilter.FILTERS_NUMBER;
 					combo_compare.title = core.getString("filter_editor_comparison");
-					combo_compare.selectedIndex = filter.comparison;
+					combo_compare.selectedIndexString = filter.comparison;
 					combo_compare.setSize(110, 23);
 					
 					input_box = new BoxInput(this, 215, 5, filter.input_number.toString(), e_valueNumberChange);
@@ -92,7 +92,7 @@ package scenes.songselection.ui.filtereditor
 					combo_compare = new BoxCombo(core, this, 100, 5, filter.comparison, e_valueCompareChange);
 					combo_compare.options = EngineLevelFilter.createOptions(core, EngineLevelFilter.FILTERS_STRING, "compare_string");
 					combo_compare.title = core.getString("filter_editor_comparison");
-					combo_compare.selectedIndex = filter.comparison;
+					combo_compare.selectedIndexString = filter.comparison;
 					combo_compare.setSize(110, 23);
 					
 					input_box = new BoxInput(this, 215, 5, filter.input_string, e_valueStringChange);

@@ -1,6 +1,5 @@
 package classes.engine 
 {
-	import com.adobe.serialization.json.JSONManager;
 	public class EngineSiteInfo 
 	{
 		public var data:Object;
@@ -48,7 +47,7 @@ package classes.engine
 		{
 			try
 			{
-				data = JSONManager.decode(str);
+				data = JSON.parse(str);
 				valid = true;
 			}
 			catch (e:Error)

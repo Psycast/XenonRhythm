@@ -307,8 +307,9 @@ package scenes.loader
 				doInputNavigation("right");
 			else if (e.keyCode == Keyboard.SPACE)
 				doInputNavigation("click");
-				
-			e.stopPropagation();
+			
+			//if(!stage.focus || (stage.focus && !(stage.focus is TextField)))
+			//	e.stopPropagation();
 		}
 		
 	}

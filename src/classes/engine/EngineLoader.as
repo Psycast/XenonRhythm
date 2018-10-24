@@ -1,6 +1,5 @@
 package classes.engine
 {
-	import com.adobe.serialization.json.JSONManager;
 	import com.flashfla.utils.StringUtil;
 	import com.flashfla.net.WebRequest;
 	import com.flashfla.utils.ArrayUtil;
@@ -194,7 +193,7 @@ package classes.engine
 			{
 				try
 				{
-					var json:Object = JSONManager.decode(data);
+					var json:Object = JSON.parse(data);
 				}
 				catch (e:Error)
 				{

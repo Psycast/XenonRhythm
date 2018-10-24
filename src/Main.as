@@ -4,7 +4,6 @@ package
 	import classes.ui.FormManager;
 	import classes.ui.UIStyle;
 	import classes.user.User;
-	import com.adobe.serialization.json.JSONManager;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -33,8 +32,8 @@ package
 			Logger.log(this, Logger.WARNING, "Game Started, Welcome to " + Constant.GAME_NAME + "!");
 			
 			// Init Classes
-			JSONManager.init();
 			UIStyle.init();
+			
 			stage.stageFocusRect = false;
 			stage.scaleMode = StageScaleMode.NO_SCALE; 
 			stage.align = StageAlign.TOP_LEFT; 

@@ -1,14 +1,15 @@
 package classes.chart.parse {
-	
-	import classes.chart.*;
-	import com.adobe.serialization.json.JSONManager;
-	import com.flashfla.utils.*;
+	import classes.chart.BPMSegment;
+	import classes.chart.Note;
+	import classes.chart.NoteChart;
+	import classes.chart.Stop;
+	import com.flashfla.utils.ExtraMath;
 	
 	public class ChartThirdstyle extends NoteChart {
 		
 		public function ChartThirdstyle(inData:String, framerate:int = 60):void {
 			type = NoteChart.THIRDSTYLE;
-			super(JSONManager.decode(inData), framerate);
+			super(JSON.parse(inData), framerate);
 			
 			//- Set Gap
 			this.gap = Number(chartData["timingData"]["offsetStr"]);

@@ -1,6 +1,5 @@
 package classes.engine
 {
-	import com.adobe.serialization.json.JSONManager;
 	import com.flashfla.utils.sprintf;
 	import com.flashfla.utils.StringUtil;
 	
@@ -47,7 +46,7 @@ package classes.engine
 				// Data is JSON - R^3 Type
 				if (input.charAt(0) == "{" || input.charAt(0) == "[")
 				{
-					data = JSONManager.decode(input);
+					data = JSON.parse(input);
 				}
 			}
 			catch (e:Error)

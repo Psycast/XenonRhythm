@@ -112,36 +112,37 @@ package classes.ui
 		/**
 		 * Sets the current index to the provided number or matching string.
 		 */
-		public function set selectedIndex(i:*):void
+		public function set selectedIndex(i:int):void
 		{
 			if (!options || options.length == 0)
 				return;
-			
-			if (i is Number)
-			{
-				if (i < 0 || i >= options.length)
-					return;
 				
-				label = options[i]["label"];
-				_selectedIndex = i;
+			if (i < 0 || i >= options.length)
 				return;
-			}
-			else
+			
+			label = options[i]["label"];
+			_selectedIndex = i;
+		}
+		
+		/**
+		 * Sets the current index to the provided number or matching string.
+		 */
+		public function set selectedIndexString(i:String):void
+		{
+			if (!options || options.length == 0)
+				return;
+
+			for (var j:int = 0; j < options.length; j++)
 			{
-				for (var j:int = 0; j < options.length; j++)
+				if (options[j]["value"] == i)
 				{
-					if (options[j]["value"] == i)
-					{
-						
-						label = options[j]["label"];
-						_selectedIndex = j;
-						break;
-					}
+					
+					label = options[j]["label"];
+					_selectedIndex = j;
+					break;
 				}
-				return;
 			}
-			label = options[0]["label"];
-			_selectedIndex = 0;
+			return;
 		}
 		
 		/**

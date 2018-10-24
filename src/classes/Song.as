@@ -14,6 +14,7 @@ package classes
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
+	import flash.events.SampleDataEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
@@ -21,8 +22,6 @@ package classes
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
-	import org.audiofx.mp3.MP3ByteArrayLoader;
-	import org.audiofx.mp3.MP3SoundEvent;
 	
 	public class Song extends EventDispatcher
 	{
@@ -95,9 +94,12 @@ package classes
 		 */
 		public function start(seek:Number = 0):void
 		{
-			_musicChannel = music.play(seek + musicDelay);
-			_musicChannel.addEventListener(Event.SOUND_COMPLETE, e_soundFinished);
-			musicIsPlaying = true;
+			if (!musicIsPlaying)
+			{
+				_musicChannel = music.play(seek + musicDelay);
+				_musicChannel.addEventListener(Event.SOUND_COMPLETE, e_soundFinished);
+				musicIsPlaying = true;
+			}
 		}
 		
 		/**
@@ -116,7 +118,7 @@ package classes
 		}
 		
 		/**
-		 * Marks a song as load failed to be removed new check.
+		 * Marks a song as though it failed to load, will be removed from the loaded cache.
 		 */
 		public function markAsFailed():void
 		{
@@ -199,21 +201,21 @@ package classes
 		 */
 		public function set playback_speed(rate:Number):void
 		{
-			rateRate = rate;
 			if (rateRate != 1)
 			{
 				music = new Sound();
 				if (rate_reversed)
-					music.addEventListener("sampleData", e_onReverseSound);
+					music.addEventListener(SampleDataEvent.SAMPLE_DATA, e_onReverseSound);
 				else
-					music.addEventListener("sampleData", e_onRateSound);
+					music.addEventListener(SampleDataEvent.SAMPLE_DATA, e_onRateSound);
 			}
 			else
 			{
 				music = _loadedMusic;
-				music.removeEventListener("sampleData", e_onRateSound);
-				music.removeEventListener("sampleData", e_onReverseSound);
+				music.removeEventListener(SampleDataEvent.SAMPLE_DATA, e_onRateSound);
+				music.removeEventListener(SampleDataEvent.SAMPLE_DATA, e_onReverseSound);
 			}
+			rateRate = rate;
 		}
 		
 		//------------------------------------------------------------------------------------------------//
@@ -233,28 +235,38 @@ package classes
 			// MP3 Extraction from SWF
 			var metadata:Object = new Object();
 			var bytes:ByteArray = MP3Extraction.extractSound(swfData, metadata);
-			var loader:MP3ByteArrayLoader = new MP3ByteArrayLoader();
-			loader.addEventListener(MP3SoundEvent.COMPLETE, e_mp3ExtractComplete);
-			if (!loader.getSound(bytes, metadata.seek, metadata.samples, metadata.format))
-			{
-				Logger.log(this, Logger.ERROR, "Unabled to extract sound.");
-				_doLoadFailure();
-				return;
-			}
+			
 			mp3FrameSync = metadata.frame / 30; // FFR SWF Framerate is 30
 			mp3Rate = MP3Extraction.formatRate(metadata.format) / 44100;
 			
-			// Background Extraction from SWF
-			var mloader:Loader = new Loader();
-			var mbytes:ByteArray = SwfSilencer.stripSound(swfData);
-			mloader.contentLoaderInfo.addEventListener(Event.COMPLETE, e_mp3BackgroundComplete);
-			if (!mbytes)
+			music = _loadedMusic = new Sound();
+			try
 			{
-				Logger.log(this, Logger.ERROR, "Unabled to extract background.");
+				_loadedMusic.loadCompressedDataFromByteArray(bytes, bytes.length);
+			}
+			catch (e:Error)
+			{
+				Logger.log(this, Logger.ERROR, "Music Load Error for \"" + details.name + "\"");
 				_doLoadFailure();
 				return;
 			}
-			mloader.loadBytes(mbytes);
+			
+			isMusicLoaded = true;
+			_doLoadCompleteInit();
+			
+			/*
+			   // Background Extraction from SWF
+			   var mloader:Loader = new Loader();
+			   var mbytes:ByteArray = SwfSilencer.stripSound(swfData);
+			   mloader.contentLoaderInfo.addEventListener(Event.COMPLETE, e_mp3BackgroundComplete);
+			   if (!mbytes)
+			   {
+			   Logger.log(this, Logger.ERROR, "Unabled to extract background.");
+			   _doLoadFailure();
+			   return;
+			   }
+			   mloader.loadBytes(mbytes);
+			 */
 			
 			// Chart 
 			chart = NoteChart.parseChart(NoteChart.FFR_LEGACY, swfData);
@@ -285,14 +297,15 @@ package classes
 		/**
 		 * Handles the completion of the load of the extracted MP3 sound.
 		 * @param	e MP3SoundEvent containing the extracted sound object.
+		 *
+		   private function e_mp3ExtractComplete(e:MP3SoundEvent):void
+		   {
+		   music = _loadedMusic = e.sound as Sound;
+		
+		   isMusicLoaded = true;
+		   _doLoadCompleteInit();
+		   }
 		 */
-		private function e_mp3ExtractComplete(e:MP3SoundEvent):void
-		{
-			music = _loadedMusic = e.sound as Sound;
-			
-			isMusicLoaded = true;
-			_doLoadCompleteInit();
-		}
 		
 		/**
 		 * Handles the extraction of the background from the SWF.
@@ -336,7 +349,7 @@ package classes
 		/**
 		 * Called every 4096 samples to get the next batch for playback.
 		 */
-		private function e_onRateSound(e:*):void
+		private function e_onRateSound(e:SampleDataEvent):void
 		{
 			var osamples:int = 0;
 			while (osamples < 4096)
@@ -369,7 +382,7 @@ package classes
 		/**
 		 * Called every 4096 samples to get the next batch for playback when song is played in reverse.
 		 */
-		private function e_onReverseSound(e:*):void
+		private function e_onReverseSound(e:SampleDataEvent):void
 		{
 			var osamples:int = 0;
 			while (osamples < 4096)
