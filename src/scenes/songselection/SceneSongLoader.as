@@ -296,6 +296,7 @@ package scenes.songselection
 			if (song && !song.load_failed)
 			{
 				song.markAsFailed();
+				core.variables.song_queue.shift();
 			}
 			_switchScene(0);
 		}
