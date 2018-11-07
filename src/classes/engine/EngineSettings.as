@@ -170,7 +170,8 @@ package classes.engine
 			var filtersOut:Array = [];
 			for each (var item:EngineLevelFilter in filters_out) 
 			{
-				filtersOut.push(item.export());
+				if((item.type == EngineLevelFilter.FILTER_AND || item.type == EngineLevelFilter.FILTER_OR) && item.filters.length > 0)
+					filtersOut.push(item.export());
 			}
 			return filtersOut;
 		}
