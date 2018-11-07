@@ -21,7 +21,7 @@ package scenes.gameplay
 	{
 		private var song:Song;
 		private var settings:EngineSettings;
-		private var score:ScoreValue;
+		private var score:ScoreValues;
 		
 		private var dragTarget:UIPlayComponent;
 		
@@ -45,7 +45,7 @@ package scenes.gameplay
 			}
 			
 			// Game Variables
-			score = new ScoreValue();
+			score = new ScoreValues();
 			
 			super.init();
 		}

@@ -10,19 +10,19 @@ package scenes.gameplay.ui.components
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
-	import scenes.gameplay.ScoreValue;
+	import scenes.gameplay.ScoreValues;
 	
 	public class UIPAWindow extends UIPlayComponent
 	{
 		private static const FIELDS:Array = ["Amazing", "Perfect", "Good", "Average", "Miss", "Boo"];
-		private var score:ScoreValue;
+		private var score:ScoreValues;
 		private var settings:EngineSettings;
 		private var _plane:Sprite;
 		private var _textlabels:Array;
 		private var _textvalues:Array;
 		private var FIELD_INDEX:int = 0;
 		
-		public function UIPAWindow(parent:DisplayObjectContainer = null, core:EngineCore = null, score:ScoreValue = null, settings:EngineSettings = null)
+		public function UIPAWindow(parent:DisplayObjectContainer = null, core:EngineCore = null, score:ScoreValues = null, settings:EngineSettings = null)
 		{
 			this.score = score;
 			this.settings = settings;

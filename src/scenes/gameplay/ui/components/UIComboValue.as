@@ -9,15 +9,15 @@ package scenes.gameplay.ui.components
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
-	import scenes.gameplay.ScoreValue;
+	import scenes.gameplay.ScoreValues;
 	
 	public class UIComboValue extends UIPlayComponent
 	{
-		private var score:ScoreValue;
+		private var score:ScoreValues;
 		private var _text:TextField;
 		private var _textShadow:TextField;
 		
-		public function UIComboValue(parent:DisplayObjectContainer = null, core:EngineCore = null, score:ScoreValue = null)
+		public function UIComboValue(parent:DisplayObjectContainer = null, core:EngineCore = null, score:ScoreValues = null)
 		{
 			this.score = score;
 			super(parent, core);

@@ -1,6 +1,6 @@
 package scenes.gameplay 
 {
-	public class ScoreValue 
+	public class ScoreValues 
 	{
 		public var amazing:Number = 0;
 		public var perfect:Number = 0;
