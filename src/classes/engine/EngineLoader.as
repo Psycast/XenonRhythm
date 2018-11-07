@@ -107,11 +107,16 @@ package classes.engine
 				configURL = url;
 				_requestParams = params;
 				url = prepareURL(url);
-				var wr:WebRequest = new WebRequest(url, e_configLoad);
+				var wr:WebRequest = new WebRequest(url, e_configLoad, e_configError);
 				wr.load(_requestParams);
 				Logger.log(this, Logger.INFO, "Loading Engine Config: " + url);
 			}
 		
+		}
+		
+		private function e_configError(e:Event):void 
+		{
+			Logger.log(this, Logger.ERROR, "Loading Engine Config Error: " + configURL);
 		}
 		
 		private function e_configLoad(e:Event):void

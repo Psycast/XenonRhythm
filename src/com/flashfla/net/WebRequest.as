@@ -26,7 +26,7 @@ package com.flashfla.net
 			this._funOnError = funOnError;
 		}
 		
-		public function load(params:Object = null, type:String = "POST"):void
+		public function load(params:Object = null):void
 		{
 			_loader = new URLLoader();
 			_addListeners();
@@ -34,6 +34,7 @@ package com.flashfla.net
 			var req:URLRequest = new URLRequest(_url);
 			if (params)
 			{
+				req.method = "POST";
 				var variables:URLVariables = new URLVariables();
 				for (var key:String in params)
 				{
@@ -41,7 +42,10 @@ package com.flashfla.net
 				}
 				req.data = variables;
 			}
-			req.method = type;
+			else {
+				req.method = "GET";
+			}
+			
 			_loader.load(req);
 		}
 		
