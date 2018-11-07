@@ -14,6 +14,7 @@ package scenes.loader
 	import com.greensock.easing.Power2;
 	import flash.events.Event;
 	import scenes.home.SceneTitleScreen;
+	import scenes.songselection.SceneSongSelection;
 	
 	public class SceneGameLoader extends UICore
 	{
@@ -125,7 +126,7 @@ package scenes.loader
 					{
 						Logger.log(this, Logger.NOTICE, "FFR Core Engine Loaded.");
 						removeEventListener(Event.ENTER_FRAME, e_frameLoadingCheck);
-						core.scene = new SceneTitleScreen(core);
+						core.scene = new SceneSongSelection(core);
 					}
 					if (el != null)
 					{
