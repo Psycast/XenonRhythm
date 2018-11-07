@@ -145,7 +145,7 @@ package scenes.loader
 		private function _setFields(enabled:Boolean, isError:Boolean = false):void
 		{
 			
-			input_user.enabled = input_pass.enabled = login_btn.enabled = guest_btn.enabled = enabled;
+			input_user.enabled = input_pass.enabled = login_btn.enabled = guest_btn.enabled = save_checkbox.enabled = enabled;
 			
 			if (isError)
 			{
