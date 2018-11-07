@@ -56,7 +56,7 @@ package classes.ui
 			this.name = owner.class_name + "_" + group_name;
 			this.wrap_mode = wrap_mode;
 			this.activation_mode = activation_mode;
-			items = new Vector.<UIComponent>;
+			items = new <UIComponent>[];
 		}
 		
 		//------------------------------------------------------------------------------------------------//

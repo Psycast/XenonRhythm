@@ -130,8 +130,8 @@ package scenes.songselection.ui.filtereditor
 		
 		private function e_clickRemovefilter(e:Event):void
 		{
-			if(ArrayUtil.remove(filter, filter.parent_filter.filters))
-				updater.draw();
+			filter.parent_filter.filters.removeAt(filter.parent_filter.filters.indexOf(filter));
+			updater.draw();
 		}
 	}
 

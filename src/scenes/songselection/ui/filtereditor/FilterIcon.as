@@ -79,8 +79,8 @@ package scenes.songselection.ui.filtereditor
 		{
 			switch (icon)
 			{
-				//case ICON_GEAR: 
-				//	return new iconGear();
+				case ICON_GEAR: 
+					return new iconGear();
 					
 				// Engine Filters
 				case ICON_ARROWCOUNT: 

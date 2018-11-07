@@ -298,7 +298,7 @@ package classes.ui
 		}
 		
 		/**
-		 * Gets the last highlited item from the active group.
+		 * Gets the last highlighted item from the active group.
 		 * @return UIComponent that was highlighted, or null if not set.
 		 */
 		static public function getLastHighlight():UIComponent 

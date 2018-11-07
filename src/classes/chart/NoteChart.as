@@ -16,9 +16,9 @@ package classes.chart
 		
 		public var type:String;
 		public var gap:Number = 0;
-		public var BPMs:Array = new Array();
-		public var Stops:Array = new Array();
-		public var Notes:Array = new Array();
+		public var BPMs:Vector.<BPMSegment> = new <BPMSegment>[];
+		public var Stops:Vector.<Stop> = new <Stop>[];
+		public var Notes:Vector.<Note> = new <Note>[];
 		public var chartData:Object;
 		public var framerate:int = 60;
 		protected var frameOffset:int = 0;

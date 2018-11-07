@@ -34,7 +34,7 @@ package classes.engine
 		public var inverse:Boolean = false;
 		
 		public var parent_filter:EngineLevelFilter;
-		public var filters:Array = [];
+		public var filters:Vector.<EngineLevelFilter>;
 		public var input_number:Number = 0;
 		public var input_string:String = "";
 		public var input_stat:String = FILTERS_STAT[0]; // Display4
@@ -45,7 +45,6 @@ package classes.engine
 			{
 				name = "Untitled Filter";
 				type = "and";
-				filters = [];
 			}
 		}
 		
@@ -276,6 +275,11 @@ package classes.engine
 		{
 			switch (type)
 			{
+				case FILTER_AND:
+				case FILTER_OR:
+					filters = new <EngineLevelFilter>[];
+					break;
+					
 				case FILTER_STATS: 
 					input_stat = FILTERS_STAT[0];
 					comparison = FILTERS_NUMBER[0];

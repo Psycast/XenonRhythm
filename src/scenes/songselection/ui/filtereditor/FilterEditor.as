@@ -286,10 +286,8 @@ package scenes.songselection.ui.filtereditor
 		private function e_removeFilter(e:Event):void 
 		{
 			var filter:EngineLevelFilter = (e.target as BoxButton).tag;
-			if(ArrayUtil.remove(filter, filter.parent_filter.filters))
-			{
-				draw();
-			}
+			filter.parent_filter.filters.removeAt(filter.parent_filter.filters.indexOf(filter));
+			draw();
 		}
 		
 		///////////////////////////////////
