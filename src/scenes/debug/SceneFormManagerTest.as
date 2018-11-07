@@ -1,4 +1,4 @@
-package scenes 
+package scenes.debug 
 {
 	import classes.engine.EngineCore;
 	import classes.ui.BoxButton;
