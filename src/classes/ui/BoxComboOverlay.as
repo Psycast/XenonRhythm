@@ -75,7 +75,7 @@ package classes.ui
 			
 			// Setup Form Group
 			_formGroup = "BoxComboOverlay-" + getTimer().toString();
-			FormManager.registerGroup(FormManager.active_group.owner, _formGroup, UIAnchor.WRAP_VERTICAL);
+			FormManager.registerGroup(core.ui.overlayParent, _formGroup, UIAnchor.WRAP_VERTICAL);
 			FormManager.selectGroup(_formGroup);
 			
 			// Add Options
@@ -163,7 +163,7 @@ package classes.ui
 		private function e_buttonHandler(e:Event):void
 		{
 			ResizeListener.removeObject(this);
-			FormManager.removeGroup(FormManager.active_group.owner, _formGroup);
+			FormManager.removeGroup(core.ui.overlayParent, _formGroup);
 			stage.removeEventListener(KeyboardEvent.KEY_DOWN, e_keyboardHandler);
 			
 			if (_defaultHandler != null)

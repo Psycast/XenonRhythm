@@ -14,6 +14,8 @@ package
 	
 	public class UI extends Sprite
 	{
+		private var _overlayParent:UICore = new UICore(null);
+		
 		// Active Scene
 		private var _scene:UICore;
 		private var _debugscrene:UICore = new SceneDebugLogger(null);
@@ -51,6 +53,11 @@ package
 			// Reset Stage Focus
 			if (stage && (!stage.focus || stage.focus.parent == null || stage.focus.stage == null))
 				stage.focus = null;
+		}
+		
+		public function get overlayParent():UICore 
+		{
+			return _overlayParent;
 		}
 		
 		// Overlays
