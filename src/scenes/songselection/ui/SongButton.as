@@ -39,7 +39,7 @@ package scenes.songselection.ui
 		 */
 		override protected function init():void
 		{
-			_title_only = (songData.is_title_only || songData.difficulty == 0);
+			_title_only = (songData.is_title_only);
 			setSize(250, 31, false);
 			super.init();
 		}
@@ -56,7 +56,7 @@ package scenes.songselection.ui
 			}
 			else
 			{
-				_lblSongName = new Label(this, 5, 2, songData.name);
+				_lblSongName = new Label(this, 5, 2, songData.name, true);
 				_lblSongFlag = new Label(this, 5, 2, Constant.getSongIcon(core, songData), true);
 				_lblSongFlag.autoSize = TextFieldAutoSize.RIGHT;
 				_lblSongDifficulty = new Label(this, 5, 2, songData.difficulty.toString());
@@ -75,7 +75,7 @@ package scenes.songselection.ui
 			drawBox();
 			
 			// Song Divider
-			if (songData.is_title_only || songData.difficulty == 0)
+			if (songData.is_title_only)
 			{
 				_lblSongName.setSize(width - 10, 28);
 			}

@@ -84,7 +84,7 @@ package classes.chart.parse {
 				var start:Number = Number(s.substring(0, s.indexOf("=")));
 				var bpm:Number = Number(s.substring(s.indexOf("=") + 1));
 				if (BPMs.length != 0) {
-					BPMs[BPMs.length - 1].setEnd(start / 16);
+					BPMs[BPMs.length - 1].end = start / 16;
 				}
 				BPMs.push(new BPMSegment(start / 16, bpm));
 			}

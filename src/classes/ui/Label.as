@@ -20,6 +20,14 @@ package classes.ui
 		
 		private var _textformat:TextFormat;
 		
+		/**
+		 * 
+		 * @param	parent
+		 * @param	xpos
+		 * @param	ypos
+		 * @param	text
+		 * @param	useHtml
+		 */
 		public function Label(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, text:String = "", useHtml:Boolean = false)
 		{
 			_useHtml = useHtml;

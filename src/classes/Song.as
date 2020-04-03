@@ -4,11 +4,7 @@ package classes
 	import classes.engine.EngineCore;
 	import classes.engine.EngineLevel;
 	import com.flashfla.media.MP3Extraction;
-	import com.flashfla.media.SwfSilencer;
 	import com.flashfla.utils.TimeUtil;
-	import flash.display.Loader;
-	import flash.display.LoaderInfo;
-	import flash.display.MovieClip;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -22,14 +18,13 @@ package classes
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	import flash.utils.ByteArray;
+	import flash.utils.getTimer;
 	
 	public class Song extends EventDispatcher
 	{
 		private var core:EngineCore;
 		
 		public var details:EngineLevel;
-		public var music:Sound;
-		public var background:MovieClip;
 		public var chart:NoteChart;
 		
 		private var _loadFailed:Boolean = false;
@@ -41,17 +36,21 @@ package classes
 		public var isChartLoaded:Boolean = false;
 		
 		// Music Variables
-		public var musicDelay:Number = 0;
+		private var _playbackSpeed:Number = 1;
+		
+		public var musicDelay:Number = 0; // TODO: Only used in Isolation.
 		public var musicPausePosition:Number = 0;
 		public var musicIsPlaying:Boolean = false;
 		public var mp3FrameSync:Number = 0;
 		public var mp3Rate:Number = 1;
 		
-		// Music Rate Variables
-		private var rateRate:Number = 1;
-		private var rateSample:int = 0;
-		private var rateSampleCount:int = 0;
-		private var rateSamples:ByteArray = new ByteArray();
+		// Music Rate Variables 
+		private static const SAMPLES_PER_CALLBACK:int = 4096; // Should be >= 2048 && < = 8192
+		private static var loadedSamples:ByteArray = new ByteArray();
+		private var _dynamicSound:Sound;
+		private var _samplePhase:Number;
+		private var _numSamples:int;
+		private var startTime:int;
 		
 		/**
 		 * This is the core song class that contains most the songs logic required for playing.
@@ -94,10 +93,19 @@ package classes
 		 */
 		public function start(seek:Number = 0):void
 		{
+			Logger.log(this, Logger.NOTICE, "Starting Sound Playback");
 			if (!musicIsPlaying)
 			{
-				_musicChannel = music.play(seek + musicDelay);
+				_dynamicSound = new Sound();
+				_dynamicSound.addEventListener(SampleDataEvent.SAMPLE_DATA, e_onSampleData);
+				
+				_samplePhase = 0;
+				
+				startTime = getTimer();
+				
+				_musicChannel = _dynamicSound.play();
 				_musicChannel.addEventListener(Event.SOUND_COMPLETE, e_soundFinished);
+				
 				musicIsPlaying = true;
 			}
 		}
@@ -107,11 +115,11 @@ package classes
 		 */
 		public function stop():void
 		{
+			Logger.log(this, Logger.NOTICE, "Stopping Sound Playback");
 			if (_musicChannel)
 			{
 				_musicChannel.removeEventListener(Event.SOUND_COMPLETE, e_soundFinished);
 				_musicChannel.stop();
-				musicPausePosition = 0;
 				_musicChannel = null;
 			}
 			musicIsPlaying = false;
@@ -181,19 +189,11 @@ package classes
 		}
 		
 		/**
-		 * True when the rate is less then 0, False when not.
-		 */
-		public function get rate_reversed():Boolean
-		{
-			return rateRate < 0;
-		}
-		
-		/**
 		 * Gets the current music playback speed.
 		 */
 		public function get playback_speed():Number
 		{
-			return rateRate;
+			return _playbackSpeed;
 		}
 		
 		/**
@@ -201,21 +201,13 @@ package classes
 		 */
 		public function set playback_speed(rate:Number):void
 		{
-			if (rateRate != 1)
-			{
-				music = new Sound();
-				if (rate_reversed)
-					music.addEventListener(SampleDataEvent.SAMPLE_DATA, e_onReverseSound);
-				else
-					music.addEventListener(SampleDataEvent.SAMPLE_DATA, e_onRateSound);
-			}
-			else
-			{
-				music = _loadedMusic;
-				music.removeEventListener(SampleDataEvent.SAMPLE_DATA, e_onRateSound);
-				music.removeEventListener(SampleDataEvent.SAMPLE_DATA, e_onReverseSound);
-			}
-			rateRate = rate;
+			if (Math.abs(rate) < 0.01)
+				rate = 0;
+			
+			if (rate >= 0)
+				_playbackSpeed = rate;
+			
+			Logger.log(this, Logger.INFO, "Setting playback speed to " + _playbackSpeed);
 		}
 		
 		//------------------------------------------------------------------------------------------------//
@@ -239,10 +231,15 @@ package classes
 			mp3FrameSync = metadata.frame / 30; // FFR SWF Framerate is 30
 			mp3Rate = MP3Extraction.formatRate(metadata.format) / 44100;
 			
-			music = _loadedMusic = new Sound();
+			// Load Music Bytes
 			try
 			{
+				_loadedMusic = new Sound();
 				_loadedMusic.loadCompressedDataFromByteArray(bytes, bytes.length);
+				
+				_numSamples = int(_loadedMusic.length * 44.1);
+				
+				isMusicLoaded = true;
 			}
 			catch (e:Error)
 			{
@@ -251,28 +248,13 @@ package classes
 				return;
 			}
 			
-			isMusicLoaded = true;
-			_doLoadCompleteInit();
-			
-			/*
-			   // Background Extraction from SWF
-			   var mloader:Loader = new Loader();
-			   var mbytes:ByteArray = SwfSilencer.stripSound(swfData);
-			   mloader.contentLoaderInfo.addEventListener(Event.COMPLETE, e_mp3BackgroundComplete);
-			   if (!mbytes)
-			   {
-			   Logger.log(this, Logger.ERROR, "Unabled to extract background.");
-			   _doLoadFailure();
-			   return;
-			   }
-			   mloader.loadBytes(mbytes);
-			 */
-			
 			// Chart 
 			chart = NoteChart.parseChart(NoteChart.FFR_LEGACY, swfData);
 			e_chartLoadComplete(e);
 			
 			Logger.log(this, Logger.INFO, "Music Load Complete for \"" + details.name + "\"");
+			
+			_doLoadCompleteInit();
 		}
 		
 		/**
@@ -292,31 +274,6 @@ package classes
 		private function e_musicLoadProgress(e:ProgressEvent):void
 		{
 			dispatchEvent(e.clone());
-		}
-		
-		/**
-		 * Handles the completion of the load of the extracted MP3 sound.
-		 * @param	e MP3SoundEvent containing the extracted sound object.
-		 *
-		   private function e_mp3ExtractComplete(e:MP3SoundEvent):void
-		   {
-		   music = _loadedMusic = e.sound as Sound;
-		
-		   isMusicLoaded = true;
-		   _doLoadCompleteInit();
-		   }
-		 */
-		
-		/**
-		 * Handles the extraction of the background from the SWF.
-		 * @param	e Complete Event
-		 */
-		private function e_mp3BackgroundComplete(e:Event):void
-		{
-			var info:LoaderInfo = e.currentTarget as LoaderInfo;
-			background = info.content as MovieClip;
-			
-			_doLoadCompleteInit();
 		}
 		
 		/**
@@ -343,85 +300,57 @@ package classes
 		 */
 		private function e_soundFinished(e:Event):void
 		{
+			Logger.log(this, Logger.INFO, "Finished Sound Playback");
 			musicIsPlaying = false;
 		}
 		
 		/**
-		 * Called every 4096 samples to get the next batch for playback.
+		 * Sample Data Event for music playback.
+		 * @param	event
 		 */
-		private function e_onRateSound(e:SampleDataEvent):void
+		private function e_onSampleData(event:SampleDataEvent):void
 		{
-			var osamples:int = 0;
-			while (osamples < 4096)
+			//trace(int((_samplePhase / 44100) * 1000), (getTimer() - startTime), (int((_samplePhase / 44100) * 1000) - (getTimer() - startTime)), _samplePhase);
+			
+			/** Loaded Samples Byte Position */
+			var p:int;
+			
+			// Clear Samples
+			loadedSamples.length = 0;
+			
+			var initialPhase:int = int(_samplePhase);
+			var readSamples:Number;
+			
+			if (_playbackSpeed > 0)
 			{
-				var sample:int = (e.position + osamples) * rateRate;
-				var sampleDiff:int = sample - rateSample;
-				while (sampleDiff < 0 || sampleDiff >= rateSampleCount)
+				readSamples = _loadedMusic.extract(loadedSamples, SAMPLES_PER_CALLBACK * _playbackSpeed, initialPhase);
+				loadedSamples.position = 0;
+				
+				while (loadedSamples.bytesAvailable > 0)
 				{
-					rateSample += rateSampleCount;
-					rateSamples.position = 0;
-					sampleDiff = sample - rateSample;
-					var seekExtract:Boolean = (sampleDiff < 0 || sampleDiff > 8192);
-					rateSampleCount = (_loadedMusic as Object).extract(rateSamples, 4096, seekExtract ? sample * mp3Rate : -1);
-					if (seekExtract)
-					{
-						rateSample = sample;
-						sampleDiff = sample - rateSample;
-					}
+					p = int(_samplePhase - initialPhase) * 8;
 					
-					if (rateSampleCount <= 0)
+					if (p < 0)
 						return;
-				}
-				rateSamples.position = 8 * sampleDiff;
-				e.data.writeFloat(rateSamples.readFloat());
-				e.data.writeFloat(rateSamples.readFloat());
-				osamples++;
-			}
-		}
-		
-		/**
-		 * Called every 4096 samples to get the next batch for playback when song is played in reverse.
-		 */
-		private function e_onReverseSound(e:SampleDataEvent):void
-		{
-			var osamples:int = 0;
-			while (osamples < 4096)
-			{
-				var sample:int = (e.position + osamples) * -rateRate;
-				
-				// Start reversing at the final note, as some levels have songs longer then the notecharts.
-				sample = (chart.Notes[chart.Notes.length - 1].time * 44100) - sample + (2 - mp3FrameSync) * 44100 / -rateRate;
-				if (sample < 0)
-					return;
-				
-				var sampleDiff:int = sample - rateSample;
-				if (sampleDiff < 0 || sampleDiff >= rateSampleCount)
-				{
-					rateSample += rateSampleCount;
-					rateSamples.position = 0;
-					sampleDiff = sample - rateSample;
-					var seekPosition:int = sample - 4095;
-					rateSampleCount = (_loadedMusic as Object).extract(rateSamples, 4096, seekPosition * mp3Rate);
-					rateSample = seekPosition;
-					sampleDiff = sample - rateSample;
 					
-					if (rateSampleCount < 4096)
+					if (p < loadedSamples.length - 8 && event.data.length <= SAMPLES_PER_CALLBACK * 8)
 					{
-						rateSamples.position = rateSampleCount * 8;
-						for (var i:int = rateSampleCount; i < 4096; i++)
-						{
-							rateSamples.writeFloat(0);
-							rateSamples.writeFloat(0);
-						}
-						rateSampleCount = 4096;
+						loadedSamples.position = p;
+						
+						event.data.writeFloat(loadedSamples.readFloat());
+						event.data.writeFloat(loadedSamples.readFloat());
+						
+					}
+					else
+						loadedSamples.position = loadedSamples.length;
+					
+					_samplePhase += _playbackSpeed;
+					
+					if (_samplePhase >= _numSamples) {
+					   _samplePhase -= _numSamples;
 					}
 				}
-				rateSamples.position = 8 * sampleDiff;
-				e.data.writeFloat(rateSamples.readFloat());
-				e.data.writeFloat(rateSamples.readFloat());
-				osamples++;
 			}
 		}
 	}
-
 }

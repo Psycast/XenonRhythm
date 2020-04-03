@@ -11,7 +11,7 @@ package classes.ui
 	
 	public class FormManager
 	{
-		/** Dictionay contain form groups. */
+		/** Dictionary contain form groups. */
 		public static var groups:Dictionary = new Dictionary();
 		
 		/** The current active form group. */

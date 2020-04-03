@@ -143,7 +143,13 @@ package scenes.songselection
 			
 			// Search / Filter Box
 			bottom_bar_background = new Box(shift_plane, 145, Constant.GAME_HEIGHT - 36);
-			bottom_user_info = new Label(bottom_bar_background, 5, 5, sprintf(core.getString("main_menu_userbar"), {"player_name": core.user.name, "games_played": NumberUtil.numberFormat(core.user.info.games_played), "grand_total": NumberUtil.numberFormat(core.user.info.grand_total), "rank": NumberUtil.numberFormat(core.user.info.game_rank), "avg_rank": NumberUtil.numberFormat(core.user.levelranks.getAverageRank(core.canonLoader), 3, true)}));
+			bottom_user_info = new Label(bottom_bar_background, 5, 5, sprintf(core.getString("main_menu_userbar"), {
+					"player_name": core.user.name, 
+					"games_played": NumberUtil.numberFormat(core.user.info.games_played), 
+					"grand_total": NumberUtil.numberFormat(core.user.info.grand_total), 
+					"rank": NumberUtil.numberFormat(core.user.info.game_rank), 
+					"avg_rank": NumberUtil.numberFormat(core.user.levelranks.getAverageRank(core.canonLoader), 3, true)
+				}));
 			bottom_user_info.autoSize = TextFieldAutoSize.CENTER;
 			bottom_user_info.fontSize = UIStyle.FONT_SIZE - 1;
 			
@@ -633,27 +639,35 @@ package scenes.songselection
 				return;
 			
 			// Special Case for Search Inputfield
-			if (e.keyCode == Keyboard.ENTER && (stage.focus is TextField))
-				doInputNavigation("confirm");
-			
-			else if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN)
-				doInputNavigation("down");
-			else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP)
-				doInputNavigation("up");
-			else if (e.keyCode == core.user.settings.key_left || e.keyCode == Keyboard.LEFT && (!(stage.focus is TextField) || e.shiftKey))
-				doInputNavigation("left");
-			else if (e.keyCode == core.user.settings.key_right || e.keyCode == Keyboard.RIGHT && (!(stage.focus is TextField) || e.shiftKey))
-				doInputNavigation("right");
-			
-			else if (e.keyCode == Keyboard.PAGE_DOWN)
-				doInputNavigation("down", 9);
-			else if (e.keyCode == Keyboard.PAGE_UP)
-				doInputNavigation("up", 9);
-			
-			else if ((e.keyCode == Keyboard.SPACE) && !(stage.focus is TextField))
-				doInputNavigation("click");
-			
-			e.stopPropagation();
+			if (stage.focus is TextField && !e.shiftKey)
+			{
+				if (e.keyCode == Keyboard.ENTER)
+				{
+					doInputNavigation("confirm");
+					stage.focus = null;
+				}
+			}
+			else
+			{
+				if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN)
+					doInputNavigation("down");
+				else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP)
+					doInputNavigation("up");
+				else if (e.keyCode == core.user.settings.key_left || e.keyCode == Keyboard.LEFT && (!(stage.focus is TextField) || e.shiftKey))
+					doInputNavigation("left");
+				else if (e.keyCode == core.user.settings.key_right || e.keyCode == Keyboard.RIGHT && (!(stage.focus is TextField) || e.shiftKey))
+					doInputNavigation("right");
+				
+				else if (e.keyCode == Keyboard.PAGE_DOWN)
+					doInputNavigation("down", 9);
+				else if (e.keyCode == Keyboard.PAGE_UP)
+					doInputNavigation("up", 9);
+				
+				else if ((e.keyCode == Keyboard.SPACE) && !(stage.focus is TextField))
+					doInputNavigation("click");
+					
+				e.stopPropagation();
+			}
 		}
 		
 		/**

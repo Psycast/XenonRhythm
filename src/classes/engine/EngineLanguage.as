@@ -73,6 +73,33 @@ package classes.engine
 			
 			return "";
 		}
+
+		/**
+		 * Prefill the required elements for login screen, as only user data is loaded at that time to save time.
+		 */
+		public function loadLoginText():void
+		{
+			// Init Data Holders
+			data = {
+				"us": {
+					"_en_name": "English",
+					"_id": "us",
+					"_index": "1",
+					"_real_name": "English",
+					"login_name": "Username:",
+					"login_pass": "Password:",
+					"login_remember": "Remember Me",
+					"login_text": "LOGIN",
+					"login_guest": "GUEST",
+					"login_change_user": "CHANGE USER",
+					"login_continue_as": "Continue as:",
+					"login_invalid_session": "Expired session, please re-login to continue.",
+					"login_status_failure": "Login Failure",
+					"login_status_waiting": "Logging in..."
+				}
+			};
+			indexed = ["us"];
+		}
 	}
 
 }

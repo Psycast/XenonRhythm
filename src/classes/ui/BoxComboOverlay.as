@@ -145,7 +145,7 @@ package classes.ui
 				
 				btn = new BoxButton(_pane, 0, i * 37, lbl, e_buttonHandler);
 				btn.setSize(200, 32);
-				btn.tag = { "label": lbl, "value": dat };
+				btn.tag = { "label": lbl, "value": dat, "index": i };
 				btn.group = _formGroup;
 				_optionButtons.push(btn);
 			}

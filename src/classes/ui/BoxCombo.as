@@ -78,7 +78,7 @@ package classes.ui
 			if (onClickHandler != null)
 				onClickHandler(e);
 				
-			if (options != null && options.length > 0 && !_overlay)
+			if (options != null && options.length > 0)
 			{
 				_overlay = new BoxComboOverlay(core, title, options, e_overlayReturn, overlayPosition);
 				core.addOverlay(_overlay);
@@ -91,7 +91,7 @@ package classes.ui
 		 */
 		private function e_overlayReturn(e:Object):void
 		{
-			selectedIndex = e["value"];
+			selectedIndex = e["index"];
 			if (handler != null)
 			{
 				handler(e);

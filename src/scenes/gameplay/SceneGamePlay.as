@@ -5,8 +5,6 @@ package scenes.gameplay
 	import classes.engine.EngineSettings;
 	import classes.ui.UIAnchor;
 	import classes.ui.UICore;
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
@@ -87,6 +85,24 @@ package scenes.gameplay
 					}
 				}
 			}
+			if (e.keyCode == Keyboard.SPACE)
+			{
+				if (song.musicIsPlaying)
+					song.stop();
+				else
+				{
+					song.start();
+				}
+			}
+			else if (e.keyCode == Keyboard.UP)
+			{
+				song.playback_speed += 0.1;
+			}
+			
+			else if (e.keyCode == Keyboard.DOWN)
+			{
+				song.playback_speed -= 0.1;
+			}
 			
 			if (e.keyCode == core.user.settings.key_down)
 			{
@@ -102,7 +118,7 @@ package scenes.gameplay
 			}
 			else if (e.keyCode == core.user.settings.key_right)
 			{
-				song.start();
+				
 			}
 		}
 		

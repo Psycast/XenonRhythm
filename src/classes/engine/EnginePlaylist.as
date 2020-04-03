@@ -9,6 +9,7 @@ package classes.engine
 		public var valid:Boolean = false;
 		
 		public var load_path:String;
+		public var preview_load_path:String;
 		
 		public var song_list:Array;
 		public var index_list:Array;
@@ -18,6 +19,7 @@ package classes.engine
 		public var total_genres:int = 0;
 		public var total_songs:int = 0;
 		public var total_public_songs:int = 0;
+		public var isCanon:Boolean = false;
 		
 		public function EnginePlaylist(id:String)
 		{
@@ -107,8 +109,8 @@ package classes.engine
 					song.difficulty = item.difficulty;
 				if (item.arrows)
 					song.notes = item.arrows;
-				if (item.previewhash)
-					song.play_hash = item.previewhash;
+				if (item.playhash)
+					song.play_hash = item.playhash;
 				if (item.previewhash)
 					song.preview_hash = item.previewhash;
 				if (item.prerelease)
@@ -196,6 +198,11 @@ package classes.engine
 			this.load_path = song_url;
 		}
 		
+		public function setPreviewPath(song_url:String):void 
+		{
+			this.preview_load_path = song_url;
+		}
+
 		public function getLevelPath(level:EngineLevel):String
 		{
 			var path:String = sprintf(load_path, level);
@@ -203,9 +210,14 @@ package classes.engine
 			// Append Legacy URLs if URL didn't change with song details.
 			if (path == load_path)
 				path = sprintf(load_path + "level_%(id)s.swf", level);
+			
+			// Append Session ID when Canon Song
+			if (this.isCanon)
+				path += "&session=" + Session.SESSION_ID;
 				
 			return path;
 		}
+		
 	}
 
 }

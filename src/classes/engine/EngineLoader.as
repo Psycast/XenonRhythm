@@ -15,6 +15,7 @@ package classes.engine
 		
 		private var domain:String = "";
 		private var song_url:String;
+		private var song_preview_url:String;
 		
 		private var _plURL:String = "";
 		private var _inURL:String = "";
@@ -160,6 +161,8 @@ package classes.engine
 						this.domain = node.domain.toString();
 					if (node.songURL != null)
 						this.song_url = node.songURL.toString();
+					if (node.previewURL != null)
+						this.song_preview_url = node.previewURL.toString();
 					
 					// Load Playlist
 					if (node.playlistURL != null)
@@ -216,6 +219,8 @@ package classes.engine
 					this.domain = json.domain;
 				if (json.songURL != null)
 					this.song_url = json.songURL;
+				if (json.previewURL != null)
+					this.song_preview_url = json.previewURL;
 				
 				// Load Playlist
 				if (json.playlistURL != null)
@@ -257,6 +262,8 @@ package classes.engine
 			_playlist = new EnginePlaylist(id);
 			_playlist.parseData(e.target.data);
 			_playlist.setLoadPath(this.song_url);
+			_playlist.setPreviewPath(this.song_preview_url != null ? this.song_preview_url : this.song_url);
+			_playlist.isCanon = this.isCanon;
 			
 			// Register Playlist if Valid
 			if (_playlist.valid)

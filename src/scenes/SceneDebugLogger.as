@@ -6,11 +6,12 @@ package scenes
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.GridFitType;
 	
 	public class SceneDebugLogger extends UICore
 	{
 		private var _tf:TextField;
-		private var _colours:Array = ["#DDDDDD", "#FFFFFF", "#FFCE7F", "#FF5E5B", "#E7ADFF"];
+		private var _colours:Array = ["#DDDDDD", "#FFFFFF", "#FFCE7F", "#FF5E5B", "#B9FFAD"];
 		
 		//------------------------------------------------------------------------------------------------//
 		
@@ -29,20 +30,23 @@ package scenes
 			_tf.height = Constant.GAME_HEIGHT - 10;
 			_tf.embedFonts = true;
 			_tf.multiline = true;
-			_tf.defaultTextFormat = UIStyle.getTextFormat(true);
+			_tf.defaultTextFormat = UIStyle.TEXT_FORMAT_CONSOLE;
 			_tf.autoSize = TextFieldAutoSize.NONE;
 			_tf.antiAliasType = AntiAliasType.ADVANCED;
+			_tf.gridFitType = GridFitType.SUBPIXEL;
 			addChild(_tf);
 			
 			this.graphics.beginFill(0, 0.5);
 			this.graphics.drawRect(0, 0, Constant.GAME_WIDTH, Constant.GAME_HEIGHT);
 			this.graphics.endFill();
 			
-			Logger.debugUpdateCallback = draw;
+			Logger.debugUpdateCallback.add(draw);
 		}
 		
 		override public function onStage():void
 		{
+			_tf.width = stage.stageWidth - 10;
+			_tf.height = stage.stageHeight - 10;
 			draw();
 		}
 		
@@ -66,7 +70,7 @@ package scenes
 			for (var i:int = 0; i < a.length; i++)
 			{
 				b = a[i];
-				s += "<font color=\"" + _colours[b[1]] + "\">" + (!b[3] ? "[" + b[0] + "] " : "") + b[2] + "</font><br>";
+				s += "<font color=\"" + _colours[b[2]] + "\">" + (!b[4] ? "[" + b[0] + "][" + b[1] + "] " : "") + b[3] + "</font><br>";
 			}
 			return s;
 		}

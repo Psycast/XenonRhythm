@@ -1,0 +1,311 @@
+[
+	{
+		"id": "up",
+		"name": "Up",
+		"config": "4key",
+		"anchor": 17, /* Top (1) & Center (16) */
+		"tracks": {
+			"left": {
+				"x": [["SET", "-$GAP"], ["DIV", 2], ["ADD", "-$GAP"]],
+				"y": [["SET", 90]],
+				"rotation": 1,
+				"vertex": "y",
+				"direction": -1
+			},
+			"down": {
+				"x": [["SET", "-$GAP"], ["DIV", 2]],
+				"y": [["SET", 90]],
+				"rotation": 0,
+				"vertex": "y",
+				"direction": -1
+			},
+			"up": {
+				"x": [["SET", "$GAP"], ["DIV", 2]],
+				"y": [["SET", 90]],
+				"rotation": 2,
+				"vertex": "y",
+				"direction": -1
+			},
+			"right": {
+				"x": [["SET", "$GAP"], ["DIV", 2], ["ADD", "$GAP"]],
+				"y": [["SET", 90]],
+				"rotation": 3,
+				"vertex": "y",
+				"direction": -1
+			}
+		},
+		"lane_order": ["left", "down", "up", "right"],
+		"impulse_bounds": { 
+			"min_x": -150, 
+			"max_x": 150, 
+			"min_y": -50, 
+			"max_y": 150
+		}
+	},
+	{
+		"id": "down",
+		"name": "Down",
+		"config": "4key",
+		"anchor": 20, /* Bottom (4) & Center (16) */
+		"tracks": {
+			"left": {
+				"x": [["SET", "-$GAP"], ["DIV", 2], ["ADD", "-$GAP"]],
+				"y": [["SET", -80]],
+				"rotation": 1,
+				"vertex": "y",
+				"direction": 1
+			},
+			"down": {
+				"x": [["SET", "-$GAP"], ["DIV", 2]],
+				"y": [["SET", -80]],
+				"rotation": 0,
+				"vertex": "y",
+				"direction": 1
+			},
+			"up": {
+				"x": [["SET", "$GAP"], ["DIV", 2]],
+				"y": [["SET", -80]],
+				"rotation": 2,
+				"vertex": "y",
+				"direction": 1
+			},
+			"right": {
+				"x": [["SET", "$GAP"], ["DIV", 2], ["ADD", "$GAP"]],
+				"y": [["SET", -80]],
+				"rotation": 3,
+				"vertex": "y",
+				"direction": 1
+			}
+		},
+		"lane_order": ["left", "down", "up", "right"],
+		"impulse_bounds": { 
+			"min_x": -150, 
+			"max_x": 150, 
+			"min_y": -150, 
+			"max_y": 50
+		}
+	},
+	{
+		"id": "left",
+		"name": "Left",
+		"config": "4key",
+		"anchor": 10, /* Middle (2) & Left (16) */
+		"tracks": {
+			"left": {
+				"x": [["SET", 80]],
+				"y": [["SET", "$GAP"], ["DIV", 2], ["ADD", "$GAP"]],
+				"rotation": 1,
+				"vertex": "x",
+				"direction": -1
+			},
+			"down": {
+				"x": [["SET", 80]],
+				"y": [["SET", "$GAP"], ["DIV", 2]],
+				"rotation": 0,
+				"vertex": "x",
+				"direction": -1
+			},
+			"up": {
+				"x": [["SET", 80]],
+				"y": [["SET", "-$GAP"], ["DIV", 2]],
+				"rotation": 2,
+				"vertex": "x",
+				"direction": -1
+			},
+			"right": {
+				"x": [["SET", 80]],
+				"y": [["SET", "-$GAP"], ["DIV", 2], ["ADD", "-$GAP"]],
+				"rotation": 3,
+				"vertex": "x",
+				"direction": -1
+			}
+		},
+		"lane_order": ["up", "right", "left", "down"],
+		"impulse_bounds": { 
+			"min_x": -50,
+			"max_x": 150,
+			"min_y": -120,
+			"max_y": 120
+		}
+	},
+	{
+		"id": "right",
+		"name": "Right",
+		"config": "4key",
+		"anchor": 34, /* Middle (2) & Right (32) */
+		"tracks": {
+			"left": {
+				"x": [["SET", -80]],
+				"y": [["SET", "$GAP"], ["DIV", 2], ["ADD", "$GAP"]],
+				"rotation": 1,
+				"vertex": "x",
+				"direction": 1
+			},
+			"down": {
+				"x": [["SET", -80]],
+				"y": [["SET", "$GAP"], ["DIV", 2]],
+				"rotation": 0,
+				"vertex": "x",
+				"direction": 1
+			},
+			"up": {
+				"x": [["SET", -80]],
+				"y": [["SET", "-$GAP"], ["DIV", 2]],
+				"rotation": 2,
+				"vertex": "x",
+				"direction": 1
+			},
+			"right": {
+				"x": [["SET", -80]],
+				"y": [["SET", "-$GAP"], ["DIV", 2], ["ADD", "-$GAP"]],
+				"rotation": 3,
+				"vertex": "x",
+				"direction": 1
+			}
+		},
+		"lane_order": ["up", "right", "left", "down"],
+		"impulse_bounds": {
+			"min_x": -150,
+			"max_x": 50,
+			"min_y": -120,
+			"max_y": 120
+		}
+	},
+	{
+		"id": "split",
+		"name": "Split",
+		"config": "4key",
+		"anchor": 0, /* NONE */
+		"tracks": {
+			"left": {
+				"x": [["SET", "-$GAP"], ["DIV", 2], ["ADD", "-$GAP"]],
+				"y": [["SET", 90]],
+				"rotation": 1,
+				"vertex": "y",
+				"direction": -1,
+				"anchor": 17 /* TOP_CENTER */
+			},
+			"down": {
+				"x": [["SET", "-$GAP"], ["DIV", 2]],
+				"y": [["SET", -80]],
+				"rotation": 0,
+				"vertex": "y",
+				"direction": 1,
+				"anchor": 20 /* BOTTOM_CENTER */
+			},
+			"up": {
+				"x": [["SET", "$GAP"], ["DIV", 2]],
+				"y": [["SET", -80]],
+				"rotation": 2,
+				"vertex": "y",
+				"direction": 1,
+				"anchor": 20 /* BOTTOM_CENTER */
+			},
+			"right": {
+				"x": [["SET", "$GAP"], ["DIV", 2], ["ADD", "$GAP"]],
+				"y": [["SET", 90]],
+				"rotation": 3,
+				"vertex": "y",
+				"direction": -1,
+				"anchor": 17 /* TOP_CENTER */
+			}
+		},
+		"lane_order": ["left", "down", "up", "right"],
+		"impulse_bounds": {
+			"min_x": -150,
+			"max_x": 150,
+			"min_y": -50,
+			"max_y": 50
+		}
+	},
+	{
+		"id": "split_down ",
+		"name": "Split - Alt",
+		"config": "4key",
+		"anchor": 0, /* NONE */
+		"tracks": {
+			"left": {
+				"x": [["SET", "-$GAP"], ["DIV", 2], ["ADD", "-$GAP"]],
+				"y": [["SET", -80]],
+				"rotation": 1,
+				"vertex": "y",
+				"direction": 1,
+				"anchor": 20 /* TOP_CENTER */
+			},
+			"down": {
+				"x": [["SET", "-$GAP"], ["DIV", 2]],
+				"y": [["SET", 90]],
+				"rotation": 0,
+				"vertex": "y",
+				"direction": -1,
+				"anchor": 17 /* BOTTOM_CENTER */
+			},
+			"up": {
+				"x": [["SET", "$GAP"], ["DIV", 2]],
+				"y": [["SET", 90]],
+				"rotation": 2,
+				"vertex": "y",
+				"direction": -1,
+				"anchor": 17 /* BOTTOM_CENTER */
+			},
+			"right": {
+				"x": [["SET", "$GAP"], ["DIV", 2], ["ADD", "$GAP"]],
+				"y": [["SET", -80]],
+				"rotation": 3,
+				"vertex": "y",
+				"direction": 1,
+				"anchor": 20 /* TOP_CENTER */
+			}
+		},
+		"lane_order": ["left", "down", "up", "right"],
+		"impulse_bounds": {
+			"min_x": -150,
+			"max_x": 150,
+			"min_y": -50,
+			"max_y": 50
+		}
+	},
+	{
+		"id": "plus",
+		"name": "Plus",
+		"config": "4key",
+		"anchor": 18, /* Middle (2) & Center (16) */
+		"tracks": {
+			"left": {
+				"x": [["SET", "-$GAP"], ["DIV", 2]],
+				"y": [["SET", 0]],
+				"rotation": 1,
+				"vertex": "x",
+				"direction": 1
+			},
+			"down": {
+				"x": [["SET", 0]],
+				"y": [["SET", "$GAP"], ["DIV", 2]],
+				"rotation": 0,
+				"vertex": "y",
+				"direction": -1
+			},
+			"up": {
+				"x": [["SET", 0]],
+				"y": [["SET", "-$GAP"], ["DIV", 2]],
+				"rotation": 2,
+				"vertex": "y",
+				"direction": 1
+			},
+			"right": {
+				"x": [["SET", "$GAP"], ["DIV", 2]],
+				"y": [["SET", 0]],
+				"rotation": 3,
+				"vertex": "x",
+				"direction": -1
+			}
+		},
+		"lane_order": ["up", "right", "down", "left"],
+		"impulse_bounds": { 
+			"min_x": -150, 
+			"max_x": 150, 
+			"min_y": -150, 
+			"max_y": 150
+		}
+	}
+]

@@ -100,7 +100,7 @@ package scenes.songselection
 			TweenLite.to(queueBox, 1, {"alpha": 1, "y": "-25"});
 			
 			// Song Details
-			songName = new Label(queueBox, 5, 5, songData.name);
+			songName = new Label(queueBox, 5, 5, songData.name, true);
 			songName.setSize(100, (songData.author != "" ? 45 : 90), false);
 			songName.fontSize = UIStyle.FONT_SIZE + 15;
 			songName.autoSize = TextFieldAutoSize.CENTER;

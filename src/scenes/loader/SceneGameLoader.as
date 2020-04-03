@@ -15,10 +15,10 @@ package scenes.loader
 	import flash.events.Event;
 	import scenes.home.SceneTitleScreen;
 	import scenes.songselection.SceneSongSelection;
+	import classes.engine.EngineLanguage;
 	
 	public class SceneGameLoader extends UICore
 	{
-		private var langLoader:EngineLoader;
 		private var ffrlogo:UISprite;
 		private var ffrname:UISprite;
 		private var ffrstatus:Label;
@@ -46,9 +46,14 @@ package scenes.loader
 			ffrstatus.anchor = UIAnchor.MIDDLE_CENTER;
 			ffrstatus.alpha = 0;
 			
+			super.onStage();
+			
+			getChildAt(0).alpha = 0;
+			
 			// Logo Animation
 			var logoAnimation:TimelineLite = new TimelineLite({"paused": true, "onComplete": e_timelineComplete});
-			logoAnimation.add([new TweenLite(ffrlogo, 0.5, {"alpha": 0.85}), new TweenLite(ffrlogo, 1.5, {"scaleX": 1.5, "scaleY": 1.5, "ease": Elastic.easeOut.config(0.3)})], 0);
+			logoAnimation.to(getChildAt(0), 0.5, {"alpha": 1});
+			logoAnimation.add([new TweenLite(ffrlogo, 0.5, {"alpha": 0.85}), new TweenLite(ffrlogo, 1.5, {"scaleX": 1.5, "scaleY": 1.5, "ease": Elastic.easeOut.config(0.3)})], "+=0.5");
 			logoAnimation.to(ffrlogo, 1, {"x": "-=125", "ease": Power2.easeInOut}, "-=0.7");
 			logoAnimation.add([new TweenLite(ffrname, 0.5, {"alpha": 0.85}), new TweenLite(ffrname, 1.2, {"x": "+=50", "ease": Power2.easeOut})], "-=0.7");
 			logoAnimation.to([ffrlogo, ffrname], 0.8, {"y": "-=150", "ease": Power2.easeInOut}, "-=0.25");
@@ -58,8 +63,6 @@ package scenes.loader
 				logoAnimation.progress(1);
 			else
 				logoAnimation.play();
-			
-			super.onStage();
 		}
 		
 		/**
@@ -95,18 +98,15 @@ package scenes.loader
 				if (core.user.permissions.isGuest && !core.flags[Flag.LOGIN_SCREEN_SHOWN])
 				{
 					// Load Language
-					if (langLoader == null)
+					if (core.getLanguage(Constant.GAME_ENGINE) == null)
 					{
 						// Load Basic Language
 						Logger.log(this, Logger.WARNING, "Loading temporary FFR Language.");
-						langLoader = new EngineLoader(core, Constant.GAME_ENGINE, Constant.GAME_NAME);
-						langLoader.loadLanguage(Constant.LANGUAGE_URL);
-						return;
+
+						var loginText:EngineLanguage = new EngineLanguage(Constant.GAME_ENGINE);
+						loginText.loadLoginText();
+						core.registerLanguage(loginText);
 					}
-					
-					// Wait Till Language Loaded
-					if (core.getLanguage(Constant.GAME_ENGINE) == null)
-						return;
 					
 					Logger.log(this, Logger.INFO, "User is guest, showing login.");
 					removeEventListener(Event.ENTER_FRAME, e_frameLoadingCheck);

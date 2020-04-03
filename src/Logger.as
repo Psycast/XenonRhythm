@@ -2,6 +2,7 @@ package
 {
 	import com.flashfla.utils.TimeUtil;
 	import flash.utils.getTimer;
+	import com.zehfernando.signals.SimpleSignal;
 
 	public class Logger 
 	{
@@ -14,7 +15,7 @@ package
 		/** Red **/ 	public static const ERROR:Number = 3; 	// Red
 		/** Purple **/	public static const NOTICE:Number = 4;	// Purple
 		
-		public static var debugUpdateCallback:Function;
+		public static var debugUpdateCallback:SimpleSignal = new SimpleSignal();
 		public static var history:Array = [];
 		
 		public static function divider(clazz:*):void 
@@ -29,9 +30,9 @@ package
 			if (!enabled) return;
 			
 			// Store History
-			history.push([class_name(clazz), level, text, simple]);
+			history.push([getTimer(), class_name(clazz), level, text, simple]);
 			if (history.length > 250) history.unshift();
-			if (debugUpdateCallback != null) debugUpdateCallback();
+			debugUpdateCallback.dispatch();
 			
 			// Display
 			trace(level + ":" + (!simple ? "[" + TimeUtil.convertToHHMMSS(getTimer() / 1000) + "][" + class_name(clazz) + "] " : "") + text);

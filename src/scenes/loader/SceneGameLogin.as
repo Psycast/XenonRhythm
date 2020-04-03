@@ -109,7 +109,7 @@ package scenes.loader
 			}
 			
 			_setFields(true);
-			TweenLite.to(loginBox, 1, { "x": "-=75", "alpha": 1, "ease": Power2.easeOut } );
+			TweenLite.to(loginBox, 1, { "x": "-=75", "alpha": 1, "ease": Power2.easeOut, "onComplete": function():void {doInputNavigation("confirm2");} } );
 			
 			super.onStage();
 		}
@@ -163,8 +163,8 @@ package scenes.loader
 		{
 			TweenLite.to(loginBox, 1, {"x": "-=75", "alpha": 0, "ease": Power2.easeIn, "onComplete": function():void
 			{
-				// Remove Placeholder Language Loader
-				core.removeLoader(core.getCurrentLoader());
+				// Remove Placeholder Language
+				core.removeLanguage(core.getLanguage(Constant.GAME_ENGINE));
 				
 				// Jump back to Engine Loading
 				core.scene = new SceneGameLoader(core);
