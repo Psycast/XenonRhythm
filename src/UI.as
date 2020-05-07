@@ -3,24 +3,49 @@ package
 	import classes.ui.ResizeListener;
 	import classes.ui.UICore;
 	import classes.ui.UIStyle;
+
 	import flash.display.DisplayObject;
+	import flash.display.NativeWindow;
+	import flash.display.NativeWindowInitOptions;
 	import flash.display.Sprite;
+	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.filters.BlurFilter;
 	import flash.geom.ColorTransform;
 	import flash.ui.Keyboard;
+
 	import scenes.SceneDebugLogger;
+	import flash.utils.getTimer;
 	
 	public class UI extends Sprite
 	{
 		private var _overlayParent:UICore = new UICore(null);
 		
+		// Delta Timer
+		private var _deltaLastTick:Number = 0;
+		private var _curTimer:Number = 0;
+		private var _eclipsedTime:Number = 0;
+
 		// Active Scene
 		private var _scene:UICore;
-		private var _debugscrene:UICore = new SceneDebugLogger(null);
 		private var _overlays:int = 0;
-		
+		private var _debugWindow:NativeWindow;
+
+		public function onFrameEvent(e:Event):void
+		{
+			//e.stopImmediatePropagation();
+
+			_curTimer = getTimer();
+            _eclipsedTime = _curTimer - _deltaLastTick;
+
+            _deltaLastTick = _curTimer;
+
+			if(_scene)
+				_scene.onTick(_deltaLastTick, _eclipsedTime);
+		}
+
 		// Game Scene
 		public function get scene():UICore
 		{
@@ -146,7 +171,9 @@ package
 				}
 			}
 		}
+			_debugWindow.activate();
 		}
+		//}
 	}
 
 }

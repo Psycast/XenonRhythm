@@ -3,9 +3,11 @@ package classes.ui
 	import assets.sGameBackground;
 	import classes.engine.EngineCore;
 	import flash.display.Sprite;
+	import classes.engine.IEngineTickable;
 	
 	public class UICore extends Sprite
 	{
+		protected var tickables:Vector.<IEngineTickable> = new Vector.<IEngineTickable>();
 		protected var core:EngineCore;
 		private var _INPUT_DISABLED:Boolean = false;
 		public var SCENE_SWITCHING:Boolean = false;
@@ -53,6 +55,54 @@ package classes.ui
 		public function onResize():void
 		{
 			position();
+		}
+
+		/**
+		 * Abstract onTick() function. Called onEnterFrame.
+		 * @param eclipsedMilliseconds Milliseconds eclipsed since last tick update.
+		 */
+		public function onTick(currentMilliseconds:Number, eclipsedMilliseconds:Number):void
+		{
+			if(tickables.length > 0)
+			{
+				var len:int = tickables.length - 1;
+				for(var index:int = len; index >= 0; index--)
+				{
+					tickables[index].tick(currentMilliseconds, eclipsedMilliseconds);
+				}
+			}
+		}
+
+		/**
+		 * Add a tickable object to the list of tickable objects.
+		 * @param tickable Tickable to add.
+		 * @return If the tickable object was added to the list.
+		 */
+		public function addTickable(tickable:IEngineTickable):Boolean
+		{
+			if(tickables.indexOf(tickable) == -1)
+			{
+				tickables.push(tickable);
+				Logger.log(this, Logger.DEBUG, "Added Tickable " + tickable);
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * Removes the tickable from the list of ticking objects.
+		 * @param tickable Tickable object to remove from list.
+		 * @return If the tickable object was removed.
+		 */
+		public function removeTickable(tickable:IEngineTickable):Boolean
+		{
+			var ifr:int = tickables.indexOf(tickable);
+			if (ifr > -1) {
+				tickables.splice(ifr, 1);
+				Logger.log(this, Logger.DEBUG, "Removed Tickable " + tickable);
+				return true;
+			}
+			return false;
 		}
 		
 		/**

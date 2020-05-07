@@ -76,6 +76,8 @@ package
 			core = new EngineCore();
 			core.ui = new UI();
 			addChildAt(core.ui, 0);
+
+			stage.addEventListener(Event.ENTER_FRAME, core.ui.onFrameEvent);
 			
 			// Load User
 			core.user = new User(true, true);
