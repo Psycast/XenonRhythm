@@ -31,6 +31,7 @@ package
 		// Active Scene
 		private var _scene:UICore;
 		private var _overlays:int = 0;
+		private var _debugScene:UICore = new SceneDebugLogger(null);
 		private var _debugWindow:NativeWindow;
 
 		public function onFrameEvent(e:Event):void
@@ -151,7 +152,7 @@ package
 			}
 		}
 		
-		CONFIG::debug {
+		//CONFIG::debug {
 		public function e_debugKeyDown(e:KeyboardEvent):void 
 		{
 			if (e.keyCode == Keyboard.F11)
@@ -160,17 +161,33 @@ package
 			}
 			if (e.keyCode == Keyboard.F12)
 			{
-				if (contains(_debugscrene))
-				{
-					removeChild(_debugscrene);
-				}
-				else
-				{
-					addChild(_debugscrene);
-					_debugscrene.onStage();
-				}
+				_openDebugLog();
 			}
 		}
+		public function _openDebugLog():void
+		{
+			if(!NativeWindow.isSupported)
+				return;
+
+			if(_debugWindow != null && !_debugWindow.closed)
+			{
+				stage.nativeWindow.x += 400;
+				_debugWindow.close();
+				return;
+			}
+
+			_debugWindow = new NativeWindow(new NativeWindowInitOptions());
+			_debugWindow.width = 800;
+			_debugWindow.height = stage.nativeWindow.height;
+			_debugWindow.title = "Xenon Debug Logger";
+			_debugWindow.stage.align = StageAlign.TOP_LEFT;
+			_debugWindow.stage.scaleMode = StageScaleMode.NO_SCALE;
+			_debugWindow.stage.color = 0;
+			_debugWindow.stage.addChild(_debugScene);
+			_debugScene.onStage();
+			stage.nativeWindow.x -= 400;
+			_debugWindow.x = stage.nativeWindow.bounds.right;
+			_debugWindow.y = stage.nativeWindow.y;
 			_debugWindow.activate();
 		}
 		//}
