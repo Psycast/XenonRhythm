@@ -11,7 +11,7 @@ package scenes
 	public class SceneDebugLogger extends UICore
 	{
 		private var _tf:TextField;
-		private var _colours:Array = ["#DDDDDD", "#FFFFFF", "#FFCE7F", "#FF5E5B", "#B9FFAD"];
+		private var _colours:Array = ["#FFFFFF", "#888888", "#FFCE7F", "#FF5E5B", "#B9FFAD"];
 		
 		//------------------------------------------------------------------------------------------------//
 		

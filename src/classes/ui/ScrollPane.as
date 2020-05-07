@@ -198,7 +198,7 @@ package classes.ui
 			if (child == null || !_content.contains(child) || !doScrollVertical)
 				return 0;
 			
-			// Child to Tall, Scroll to top.
+			// Child is to tall, Scroll to top.
 			if(child.height > height)
 				return Math.max(Math.min(child.y / (contentHeight - this.height), 1), 0);
 			

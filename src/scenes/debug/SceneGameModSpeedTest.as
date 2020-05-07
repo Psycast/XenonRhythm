@@ -1,13 +1,9 @@
 package scenes.debug 
 {
 	import classes.engine.EngineCore;
-	import classes.ui.BoxButton;
-	import classes.ui.FormManager;
-	import classes.ui.UIAnchor;
 	import classes.ui.UICore;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
-	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
 	
 	public class SceneGameModSpeedTest extends UICore 

@@ -6,18 +6,13 @@ package
 	import classes.ui.FormManager;
 	import classes.ui.UIStyle;
 	import classes.user.User;
-	import com.zehfernando.input.binding.GamepadControls;
 	import com.zehfernando.input.binding.KeyActionBinder;
-	import flash.display.NativeWindow;
 	import flash.display.Sprite;
-	import flash.display.Stage;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import flash.events.TimerEvent;
 	import flash.system.Capabilities;
-	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	import scenes.loader.SceneGameLoader;
 	import classes.noteskin.NoteskinManager;
