@@ -40,9 +40,9 @@ package classes.engine.track
 		}
 		
 		private static function arrayToStringVector(__strings:Array):Vector.<String> {
-			var v:Vector.<String> = new Vector.<String>();
+			var v:Vector.<String> = new Vector.<String>(__strings.length, true);
 			if (__strings != null) {
-				for (var i:int = 0; i < __strings.length; i++) v.push(__strings[i]);
+				for (var i:int = 0; i < __strings.length; i++) v[i] = __strings[i];
 			}
 			return v;
 		}

@@ -2,15 +2,25 @@ package classes.engine.track
 {
 	public class TrackConfigLane 
 	{
+		public var index:int = 0;
 		public var track:String;
 		
 		public var x:Array;
 		public var y:Array;
 		
-		public var rotation:int = 0;
+		/** Rotation, in radians. */
+		public var rotation:Number = 0;
+
+		/** Rotation, in degrees. */
+		public var rotation_deg:Number = 0;
+
+		/** Vertex Direction is applied to. */
 		public var vertex:String = "y";
+
+		/** Direction of Velocity, 1 or -1 */
 		public var direction:int = 1;
 		
+		/** UI Anchor Point for Lane, see "ui.UIAnchor" */
 		public var anchor:int = 0;
 		
 		/**
@@ -19,10 +29,13 @@ package classes.engine.track
 		 */
 		public function load(input:Object):void 
 		{
+			this.index = input.index;
+			
 			this.x = input.x;
 			this.y = input.y;
 			
-			this.rotation = input.rotation;
+			this.rotation_deg = ((input.rotation + 360) % 360); // Wrap Rotation into the 0-359 range.
+			this.rotation = this.rotation_deg / 180.0 * Math.PI; // Convert Degree to Radians;
 			this.vertex = input.vertex;
 			this.direction = input.direction;
 			
