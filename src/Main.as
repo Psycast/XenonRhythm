@@ -20,6 +20,7 @@ package
 	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	import scenes.loader.SceneGameLoader;
+	import classes.noteskin.NoteskinManager;
 	
 	public class Main extends Sprite
 	{
@@ -47,6 +48,7 @@ package
 			UIStyle.init();
 			KeyActionBinder.init(stage);
 			TrackConfigManager.init();
+			NoteskinManager.init();
 			
 			// Key Binder Test
 			binder = new KeyActionBinder();
