@@ -105,12 +105,12 @@ package scenes.songselection
 		override public function onStage():void
 		{
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
-			stage.addEventListener(Event.ENTER_FRAME, e_frameFadeIn);
 			core.addEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
 
 			// Overall Background
 			shift_plane = new UISprite(this);
 			shift_plane.alpha = 0;
+			TweenLite.to(shift_plane, 0.5, {"alpha": 1, "onComplete": function():void { INPUT_DISABLED = false; }});
 			
 			// Game Logo
 			ffr_logo = new UISprite(shift_plane, new FFRDude(), 22, 12);
@@ -584,20 +584,6 @@ package scenes.songselection
 		private function e_disableInputEvents(e:Event = null):void 
 		{
 			INPUT_DISABLED = true;
-		}
-		
-		/**
-		 * Event: Event.ENTER_FRAME
-		 * Called by the initial fade-in one frame after init to avoid the lag caused
-		 * by the creation of the song list.
-		 */
-		private function e_frameFadeIn(e:Event):void
-		{
-			stage.removeEventListener(Event.ENTER_FRAME, e_frameFadeIn);
-			TweenLite.to(shift_plane, 0.5, {"delay": 0.25, "alpha": 1, "onComplete": function():void
-			{
-				INPUT_DISABLED = false;
-			}});
 		}
 		
 		/**
