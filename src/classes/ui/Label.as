@@ -10,7 +10,6 @@ package classes.ui
 	public class Label extends UIComponent
 	{
 		protected var DEFAULT_FONT_SIZE:int = UIStyle.FONT_SIZE;
-		protected var RESET_FONT_SIZE:int = UIStyle.FONT_SIZE;
 		protected var _useHtml:Boolean = false;
 		protected var _useArea:Boolean = false;
 		protected var _autoSize:String = TextFieldAutoSize.LEFT;
@@ -60,6 +59,7 @@ package classes.ui
 			_tf.autoSize = TextFieldAutoSize.LEFT;
 			_tf.antiAliasType = AntiAliasType.ADVANCED;
 			//_tf.border = true;
+			_tf.cacheAsBitmap = true;
 			addChild(_tf);
 			draw();
 		}
@@ -73,10 +73,6 @@ package classes.ui
 		{
 			if (w != _width || h != _height)
 			{
-				if (w > _width)
-					_fontSize = RESET_FONT_SIZE;
-				if (h > height)
-					_fontSize = RESET_FONT_SIZE;
 				_useArea = true;
 				_width = w;
 				_height = h;
@@ -98,16 +94,20 @@ package classes.ui
 			// Adjust sizes
 			if (_useArea)
 			{
-				//- Fit Witin Area
-				while (_tf.width > width)
+				if(_width > 0)
 				{
-					if (_fontSize <= 1)
-						break;
-					
-					_fontSize--;
-					_tf.htmlText = formatted_text;
+					_tf.scaleX = 1;
+					if (_tf.width > _width)
+						_tf.scaleX = (_width / _tf.width);
 				}
-				
+				/*
+				if(_height > 0)
+				{
+					_tf.scaleY = 1;
+					if (_tf.height > _height)
+						_tf.scaleY = (_height / _tf.height);
+				}
+				*/
 				_height = Math.max(_height, _tf.height);
 				
 				//- Text Alignment Vertical
@@ -116,17 +116,11 @@ package classes.ui
 			
 			//- Text Alignment to Area
 			if (_autoSize == TextFieldAutoSize.LEFT)
-			{
 				_tf.x = 0;
-			}
 			else if (_autoSize == TextFieldAutoSize.CENTER)
-			{
-				_tf.x = ((width - _tf.width) / 2);
-			}
+				_tf.x = Math.floor((width - _tf.width) / 2);
 			else if (_autoSize == TextFieldAutoSize.RIGHT)
-			{
-				_tf.x = (width - _tf.width);
-			}
+				_tf.x = Math.floor(width - _tf.width);
 			
 			// Draw Click Area
 			this.graphics.clear();
@@ -145,8 +139,6 @@ package classes.ui
 		 */
 		override public function set width(w:Number):void
 		{
-			if (w > _width)
-				_fontSize = RESET_FONT_SIZE;
 			_useArea = true;
 			_width = w;
 			draw();
@@ -157,8 +149,6 @@ package classes.ui
 		 */
 		override public function set height(h:Number):void
 		{
-			if (h > height)
-				_fontSize = RESET_FONT_SIZE;
 			_useArea = true;
 			_height = h;
 			draw();
@@ -206,7 +196,9 @@ package classes.ui
 			_text = t;
 			if (_text == null)
 				_text = "";
-			
+				
+			_textformat = UIStyle.getTextFormat(UIStyle.textIsUnicode(text));
+
 			draw();
 		}
 		
@@ -251,7 +243,6 @@ package classes.ui
 				_textformat.color = def.color;
 				_textformat.size = value;
 			}
-			RESET_FONT_SIZE = value;
 			_fontSize = value;
 			draw();
 		}
