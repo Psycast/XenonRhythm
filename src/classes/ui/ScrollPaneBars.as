@@ -15,6 +15,8 @@ package classes.ui
 		private var _hscroll:HScrollBar;
 		private var _useVerticalBar:Boolean;
 		private var _useHorizontalBar:Boolean;
+		private var _forceVerticalBar:Boolean;
+		private var _forceHorizontalBar:Boolean;
 		
 		public function ScrollPaneBars(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, useVertical:Boolean = true, useHorizontal:Boolean = false)
 		{
@@ -59,18 +61,18 @@ package classes.ui
 		{
 			_pane.setSize(_width, _height);
 			
-			if (useHorizontalBar)
+			if (useHorizontalBar || forceHorizontalBar)
 			{
-				if (_pane.doScrollHorizontal)
+				if (_pane.doScrollHorizontal || forceHorizontalBar)
 				{
 					_pane.height = _height - 20;
 				}
 				_hscroll.setSize(_pane.width, 15);
 				_hscroll.move(0, _height - 15);
 			}
-			if (useVerticalBar)
+			if (useVerticalBar || forceVerticalBar)
 			{
-				if (_pane.doScrollVertical)
+				if (_pane.doScrollVertical || forceVerticalBar)
 				{
 					_pane.width = _width - 20;
 				}
@@ -93,10 +95,10 @@ package classes.ui
 			_pane.removeChildren(beginIndex, endIndex);
 		}
 		
-		public function scrollUpdate():void
+		public function scrollUpdate(keepPosition:Boolean = false):void
 		{
-			_vscroll.visible = useVerticalBar && _pane.doScrollVertical;
-			_hscroll.visible = useHorizontalBar && _pane.doScrollHorizontal;
+			_vscroll.visible = (useVerticalBar && _pane.doScrollVertical) || forceVerticalBar;
+			_hscroll.visible = (useHorizontalBar && _pane.doScrollHorizontal) || forceHorizontalBar;
 			
 			if (useVerticalBar)
 			{
@@ -187,6 +189,17 @@ package classes.ui
 			draw();
 		}
 		
+		public function get forceVerticalBar():Boolean
+		{
+			return _forceVerticalBar;
+		}
+		
+		public function set forceVerticalBar(value:Boolean):void
+		{
+			_forceVerticalBar = value;
+			draw();
+		}
+		
 		public function get horizontalBar():HScrollBar
 		{
 			return _hscroll;
@@ -200,6 +213,17 @@ package classes.ui
 		public function set useHorizontalBar(value:Boolean):void
 		{
 			_useHorizontalBar = value;
+			draw();
+		}
+		
+		public function get forceHorizontalBar():Boolean
+		{
+			return _forceHorizontalBar;
+		}
+		
+		public function set forceHorizontalBar(value:Boolean):void
+		{
+			_forceHorizontalBar = value;
 			draw();
 		}
 	}
