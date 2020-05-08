@@ -5,6 +5,7 @@ package scenes.songselection
 	import classes.engine.EngineLevel;
 	import classes.engine.EngineLoader;
 	import classes.engine.EnginePlaylist;
+	import classes.engine.EngineTickableTimer;
 	import classes.ui.Box;
 	import classes.ui.BoxButton;
 	import classes.ui.BoxCombo;
@@ -18,7 +19,6 @@ package scenes.songselection
 	import classes.ui.UICore;
 	import classes.ui.UISprite;
 	import classes.ui.UIStyle;
-	import com.flashfla.utils.ArrayUtil;
 	import com.flashfla.utils.NumberUtil;
 	import com.flashfla.utils.StringUtil;
 	import com.flashfla.utils.sprintf;
@@ -31,6 +31,7 @@ package scenes.songselection
 	import flash.ui.Keyboard;
 	import scenes.songselection.ui.GenreButton;
 	import scenes.songselection.ui.SongButton;
+	import scenes.songselection.ui.UISongSelector;
 	import scenes.songselection.ui.filtereditor.FilterEditor;
 	import scenes.songselection.ui.filtereditor.FilterIcon;
 	
@@ -69,7 +70,7 @@ package scenes.songselection
 		
 		/** Song Selection */
 		private var ss_background:Box;
-		private var ss_scrollpane:ScrollPaneBars;
+		private var ss_scrollpane:UISongSelector;
 		//private var ss_songButtons:Array;
 		
 		/** Bottom Area */
@@ -87,7 +88,7 @@ package scenes.songselection
 		public var CURRENT_PAGE:int = 0;
 		public var SEARCH_TEXT:String = "";
 		public var SEARCH_TYPE:String = SEARCH_OPTIONS[0];
-		
+
 		//------------------------------------------------------------------------------------------------//
 		
 		public function SceneSongSelection(core:EngineCore)
@@ -106,7 +107,7 @@ package scenes.songselection
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, e_keyboardDown);
 			stage.addEventListener(Event.ENTER_FRAME, e_frameFadeIn);
 			core.addEventListener(EngineCore.LOADERS_UPDATE, e_loadersUpdate);
-			
+
 			// Overall Background
 			shift_plane = new UISprite(this);
 			shift_plane.alpha = 0;
@@ -138,7 +139,7 @@ package scenes.songselection
 			
 			// Setup Song Selection Pane/Bar
 			ss_background = new Box(shift_plane, 145, 40);
-			ss_scrollpane = new ScrollPaneBars(ss_background, 10, 10);
+			ss_scrollpane = new UISongSelector(core, ss_background, 10, 10);
 			ss_scrollpane.addEventListener(MouseEvent.CLICK, e_songSelectionPaneClick);
 			
 			// Search / Filter Box
@@ -192,12 +193,12 @@ package scenes.songselection
 			search_input.setSize(search_type_combo.x - 15, top_bar_background.height - 11);
 			
 			// Update Song Scroll Pane
+			var ssPaneSize:int = 350;
 			ss_background.setSize(top_bar_background.width, Constant.GAME_HEIGHT - 80);
-			ss_scrollpane.setSize(ss_background.width - 20, ss_background.height - 20);
+			ss_scrollpane.setSize(ss_background.width - ssPaneSize - 20, ss_background.height - 20);
 			
 			// Update Song Button Widths
-			for each (var item:SongButton in FormManager.getGroup(this, LIST_SONG).items)
-				item.width = ss_scrollpane.paneWidth;
+			ss_scrollpane.updateWidths();
 			
 			// Scroll Pane Size
 			bottom_bar_background.setSize(top_bar_background.width, 36);
@@ -370,8 +371,10 @@ package scenes.songselection
 		 */
 		public function drawSongList():void
 		{
-			ss_scrollpane.removeChildren();
-			(FormManager.registerGroup(this, LIST_SONG, UIAnchor.WRAP_VERTICAL, FormItems.NONE)).setClipFromComponent(ss_scrollpane.pane);
+			// Clear Up Old Elements
+			ss_scrollpane.clear();
+
+			FormManager.registerGroup(this, LIST_SONG, UIAnchor.WRAP_VERTICAL, FormItems.NONE);
 			
 			var i:int;
 			var list:Array;
@@ -383,23 +386,12 @@ package scenes.songselection
 				list = _playlist.index_list.filter(function(item:EngineLevel, index:int, array:Array):Boolean
 				{
 					return item[SEARCH_TYPE].toLowerCase().indexOf(SEARCH_TEXT) != -1;
-				}).sortOn("name");
-				
+				}).sortOn("name", Array.CASEINSENSITIVE);
 			}
 			// Display All
 			else if (DISPLAY_MODE == DM_ALL)
 			{
 				list = _playlist.index_list;
-				
-				// User Filter
-				if (core.variables.active_filter != null)
-				{
-					list = list.filter(function(item:EngineLevel, index:int, array:Array):Boolean
-					{
-						return core.variables.active_filter.process(item, core.user);
-					});
-				}
-				list = list.slice(CURRENT_PAGE * 500, (CURRENT_PAGE + 1) * 500);
 			}
 			// Standard Display
 			else
@@ -408,46 +400,23 @@ package scenes.songselection
 			}
 			
 			// User Filter
-			if (core.variables.active_filter != null && list != null && DISPLAY_MODE != DM_ALL)
+			if (core.variables.active_filter != null && list != null)
 			{
 				list = list.filter(function(item:EngineLevel, index:int, array:Array):Boolean
 				{
 					return core.variables.active_filter.process(item, core.user);
 				});
 			}
-			
-			// Display
+
 			if (list != null && list.length > 0)
 			{
-				for (i = 0; i < list.length; i++)
-				{
-					new SongButton(ss_scrollpane, 0, i * 31, core, list[i]).group = LIST_SONG;
-				}
-				
-				// Select First Song
-				_changeSelectedSong(FormManager.getGroup(this, LIST_SONG).items[0] as SongButton);
+				ss_scrollpane.setRenderList(list);
+				_changeSelectedSong(ss_scrollpane.findSongButton(list[0]));
 			}
-			
-			updateSongPosition();
-			
-			// Reset Scroll
-			ss_scrollpane.verticalBar.scroll = 0;
+			else
+				ss_scrollpane.clear();
 		}
-		
-		/**
-		 * Updates the Y position of all SongButtons.
-		 */
-		private function updateSongPosition():void
-		{
-			var songButtonYPosition:int = 0;
-			var items:Vector.<UIComponent> = FormManager.getGroup(this, LIST_SONG).items;
-			for (var i:int = 0; i < items.length; i++)
-			{
-				items[i].y = songButtonYPosition;
-				songButtonYPosition += items[i].height + 5;
-			}
-		}
-		
+
 		//------------------------------------------------------------------------------------------------//
 		
 		///////////////////////////////////
@@ -517,7 +486,7 @@ package scenes.songselection
 			if (songButton == null)
 				return;
 			(SELECTED_SONG = songButton).highlight = true;
-			updateSongPosition();
+			ss_scrollpane.selectedSongData = songButton.songData;
 		}
 		
 		/**
@@ -579,13 +548,15 @@ package scenes.songselection
 				// Song Button
 				if (activeElement is SongButton)
 				{
-					if (SELECTED_SONG != null && SELECTED_SONG == activeElement)
+					if (ss_scrollpane.selectedSongData == (activeElement as SongButton).songData)
 						_addSelectedSongToQueue(true);
 					else
 						_changeSelectedSong(activeElement as SongButton);
-						
-					ss_scrollpane.scrollChild(activeElement);
+					
+					if(action != "click")
+						ss_scrollpane.scrollChild(activeElement);
 				}
+
 				// Genre Button
 				if (activeElement is GenreButton)
 				{
