@@ -48,7 +48,5 @@ package scenes.songselection.ui
 				}
 			}
 		}
-	
 	}
-
 }

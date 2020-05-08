@@ -57,5 +57,4 @@ package classes.engine
 			return ((amazing + perfect) * 50) + (good * 25) + (average * 5) - (miss * 10) - (boo * 5);
 		}
 	}
-
 }

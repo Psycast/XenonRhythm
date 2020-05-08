@@ -130,7 +130,5 @@ package classes.engine
 		{
 			return _score_combo;
 		}
-	
 	}
-
 }

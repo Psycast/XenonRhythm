@@ -410,7 +410,5 @@ package classes.engine
 		{
 			return url + (url.indexOf("?") != -1 ? "&d=" : "?d=") + new Date().getTime();
 		}
-	
 	}
-
 }

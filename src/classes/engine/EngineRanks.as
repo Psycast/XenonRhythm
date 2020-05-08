@@ -26,5 +26,4 @@ package classes.engine
 			ranks[data.level] = data;
 		}
 	}
-
 }

@@ -272,5 +272,4 @@ package classes.engine
 			ui.updateStageResize();
 		}
 	}
-
 }

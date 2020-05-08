@@ -149,5 +149,4 @@ package classes.ui
 			_dragger.visible = value;
 		}
 	}
-
 }

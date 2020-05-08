@@ -23,7 +23,5 @@ package classes.engine
 			
 			return (loaded_levels[key] = new Song(core, songData));
 		}
-		
 	}
-
 }
