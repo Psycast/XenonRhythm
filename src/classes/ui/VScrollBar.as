@@ -102,17 +102,26 @@ package classes.ui
 		}
 		
 		/**
-		 * Sets the current scroll percent.
+		 * Sets the current scroll percent. Dispatchs Change Event.
 		 * @param percent Range of 0-1
 		 */
 		public function set scroll(val:Number):void
+		{
+			scrollSilent = val;
+			this.dispatchEvent(new Event(Event.CHANGE));
+		}
+
+		/**
+		 * Sets the current scroll percent.
+		 * @param percent Range of 0-1
+		 */
+		public function set scrollSilent(val:Number):void
 		{
 			if (UIStyle.USE_ANIMATION)
 				TweenLite.to(_dragger, 0.25, {y: ((height - _dragger.height) * Math.max(Math.min(val, 1), 0))});
 			else
 				_dragger.y = (height - _dragger.height) * Math.max(Math.min(val, 1), 0);
 			_lastScroll = Math.max(Math.min(val, 1), 0);
-			this.dispatchEvent(new Event(Event.CHANGE));
 		}
 		
 		/**
