@@ -14,14 +14,15 @@ package scenes.songselection.ui
 	{
 		public static const FIXED_HEIGHT:int = 31;
 
-		private var core:EngineCore;
-		public var songData:EngineLevel;
-
+		/** Index in Vector */
 		public var index:int = 0;
 
 		/** Marks the Button as in-use to avoid removeal in song selector. */
 		public var garbageSweep:Boolean = false;
 		
+		private var core:EngineCore;
+		public var songData:EngineLevel;
+
 		private var _lblSongName:Label;
 		private var _lblSongFlag:Label;
 		private var _lblSongDifficulty:Label;

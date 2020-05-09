@@ -31,7 +31,7 @@ package scenes.songselection.ui
         private var _scrollY:Number = 0;
 		private var _calcHeight:int = 0;
 
-		public var selectedSongData:EngineLevel;
+		private var _selectedSongData:EngineLevel;
 
         public function UISongSelector(core:EngineCore, parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0)
 		{
@@ -45,28 +45,13 @@ package scenes.songselection.ui
 		override protected function init():void
 		{
 			_formItems = FormManager.registerGroup(core.ui.scene, LIST_SONG, UIAnchor.WRAP_VERTICAL, FormItems.NONE);
+			_formItems.setClipFromComponent(this);
 			_formItems.setHandleAction(_handleFormAction);
 
 			setSize(150, 100, false);
 			super.init();
 		}
 
-		/**
-		 * TODO: Fix this or really fix scrollChildVertical, which makes this needed?
-		 * Override FormManger handler. Currently broken.
-		 * @param action 
-		 * @param index 
-		 * @return 
-		 */
-		public function _handleFormAction(action:String, index:Number = 0):Array
-		{
-			trace("_handleFormAction:", action, index);
-			if(action != "up" && action != "down")
-				return [false, null];
-
-			return [true, null];
-		}
-		
 		/**
 		 *  Creates the Content Pane and Scrollbar for this components.
 		 */
@@ -302,9 +287,58 @@ package scenes.songselection.ui
 			_vscroll.scroll = 0;
 		}
 
+		/**
+		 * 
+		 * Override FormManger handler. Provides support for wrapping the top and button
+		 * of the infinite scroll pane.
+		 * @param active_group Active FormItems Group
+		 * @param action Current Action
+		 * @param index 
+		 * @return An Array of 2 elements, a boolean and UIComponent.
+		 */
+		public function _handleFormAction(active_group:FormItems, action:String, index:Number = 0):Array
+		{
+			// Only Override Up/Down Actions
+			if(action != "up" && action != "down")
+				return [false, null];
+
+			// Bail if nothing to do.
+			if(renderElements == null || renderElements.length == 0)
+				return [false, null];
+
+			// Wrap Top
+			if(action == "up" && selectedSongData == renderElements[0])
+			{
+				scrollVertical = 1;
+				_vscroll.scrollSilent = 1;
+				return [true, findSongButton(renderElements[renderElements.length - 1])];
+			}
+
+			// Wrap Bottom
+			if(action == "down" && selectedSongData == renderElements[renderElements.length - 1])
+			{
+				scrollVertical = 0;
+				_vscroll.scrollSilent = 0;
+				return [true, findSongButton(renderElements[0])];
+			}
+
+			return [false, null];
+		}
+		
 		///////////////////////////////////
 		// components get / set
 		///////////////////////////////////
+
+		public function get selectedSongData():EngineLevel
+		{
+			return _selectedSongData;
+		}
+		
+		public function set selectedSongData(val:EngineLevel):void
+		{
+			_formItems.setHighlightItem(findSongButton(val));
+			_selectedSongData = val;
+		}
 		
 		/**
 		 * Overall size of the scroll pane, excluding the scrollbar width.
@@ -349,7 +383,6 @@ package scenes.songselection.ui
 		}
 
 		/**
-		 * TODO: Extremely Broken due to use of non-existent pool objects.
 		 * 
 		 * Gets the vertical scroll value required to display a specified child.
 		 * @param	child Child to show.
@@ -361,11 +394,13 @@ package scenes.songselection.ui
 			if (child == null || !_pane.contains(child) || !doScroll)
 				return 0;
 			
+			var _y:int = (child as SongButton).index  * (SongButton.FIXED_HEIGHT + 5); // Calculate Real Y.
+
 			// Child is to tall, Scroll to top.
 			if(child.height > height)
-				return Math.max(Math.min((_scrollY + child.y) / (_calcHeight - this.height), 1), 0);
+				return Math.max(Math.min(_y / (_calcHeight - this.height), 1), 0);
 			
-			return Math.max(Math.min((((_scrollY + child.y) + (child.height / 2)) - (this.height / 2)) / (_calcHeight - this.height), 1), 0);
+			return Math.max(Math.min(((_y + (child.height / 2)) - (this.height / 2)) / (_calcHeight - this.height), 1), 0);
 		}
 
 		///////////////////////////////////
