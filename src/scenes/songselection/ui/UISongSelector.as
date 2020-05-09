@@ -10,11 +10,17 @@ package scenes.songselection.ui
     import flash.events.MouseEvent;
     import flash.events.Event;
     import classes.engine.EngineCore;
+    import classes.ui.UIAnchor;
+    import classes.ui.FormItems;
+    import classes.ui.FormManager;
 
     public class UISongSelector extends UIComponent
     {
+		public static const LIST_SONG:String = "song-list";
+
 		private var core:EngineCore;
 
+		private var _formItems:FormItems;
 		private var _pane:Sprite;
 		private var _vscroll:VScrollBar;
 
@@ -38,10 +44,28 @@ package scenes.songselection.ui
 		 */
 		override protected function init():void
 		{
+			_formItems = FormManager.registerGroup(core.ui.scene, LIST_SONG, UIAnchor.WRAP_VERTICAL, FormItems.NONE);
+			_formItems.setHandleAction(_handleFormAction);
+
 			setSize(150, 100, false);
 			super.init();
 		}
 
+		/**
+		 * TODO: Fix this or really fix scrollChildVertical, which makes this needed?
+		 * Override FormManger handler. Currently broken.
+		 * @param action 
+		 * @param index 
+		 * @return 
+		 */
+		public function _handleFormAction(action:String, index:Number = 0):Array
+		{
+			trace("_handleFormAction:", action, index);
+			if(action != "up" && action != "down")
+				return [false, null];
+
+			return [true, null];
+		}
 		
 		/**
 		 *  Creates the Content Pane and Scrollbar for this components.
@@ -325,6 +349,8 @@ package scenes.songselection.ui
 		}
 
 		/**
+		 * TODO: Extremely Broken due to use of non-existent pool objects.
+		 * 
 		 * Gets the vertical scroll value required to display a specified child.
 		 * @param	child Child to show.
 		 * @return	Scroll Value required to show child in center of scroll pane.
@@ -337,9 +363,9 @@ package scenes.songselection.ui
 			
 			// Child is to tall, Scroll to top.
 			if(child.height > height)
-				return Math.max(Math.min(child.y / (_calcHeight - this.height), 1), 0);
+				return Math.max(Math.min((_scrollY + child.y) / (_calcHeight - this.height), 1), 0);
 			
-			return Math.max(Math.min(((child.y + (child.height / 2)) - (this.height / 2)) / (_calcHeight - this.height), 1), 0);
+			return Math.max(Math.min((((_scrollY + child.y) + (child.height / 2)) - (this.height / 2)) / (_calcHeight - this.height), 1), 0);
 		}
 
 		///////////////////////////////////

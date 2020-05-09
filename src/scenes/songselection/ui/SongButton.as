@@ -43,7 +43,7 @@ package scenes.songselection.ui
 			addChildren();
 			drawBox();
 
-			this.group = "song-list";
+			this.group = UISongSelector.LIST_SONG;
 		}
 		
 		/**

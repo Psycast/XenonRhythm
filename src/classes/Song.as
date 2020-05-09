@@ -223,6 +223,20 @@ package classes
 		private function e_musicLoadComplete(e:Event):void
 		{
 			var swfData:ByteArray = e.target.data;
+
+			// Parse Chart
+			chart = NoteChart.parseChart(NoteChart.FFR_LEGACY, swfData);
+			if (chart.Notes.length > 0)
+			{
+				Logger.log(this, Logger.INFO, "Chart Load Complete for \"" + details.name + "\"");
+				isChartLoaded = true;
+			}
+			else
+			{
+				Logger.log(this, Logger.ERROR, "Chart Load Failure for \"" + details.name + "\"");
+				_doLoadFailure();
+				return;
+			}
 			
 			// MP3 Extraction from SWF
 			var metadata:Object = new Object();
@@ -248,10 +262,6 @@ package classes
 				return;
 			}
 			
-			// Chart 
-			chart = NoteChart.parseChart(NoteChart.FFR_LEGACY, swfData);
-			e_chartLoadComplete(e);
-			
 			Logger.log(this, Logger.INFO, "Music Load Complete for \"" + details.name + "\"");
 			
 			_doLoadCompleteInit();
@@ -274,25 +284,6 @@ package classes
 		private function e_musicLoadProgress(e:ProgressEvent):void
 		{
 			dispatchEvent(e.clone());
-		}
-		
-		/**
-		 * Handles the load completion of the chart data.
-		 * @param	e Complete Event
-		 */
-		private function e_chartLoadComplete(e:Event):void
-		{
-			if (chart.Notes.length > 0)
-			{
-				isChartLoaded = true;
-				Logger.log(this, Logger.INFO, "Chart Load Complete for \"" + details.name + "\"");
-				_doLoadCompleteInit();
-			}
-			else
-			{
-				Logger.log(this, Logger.ERROR, "Chart Load Failure for \"" + details.name + "\"");
-				_doLoadFailure();
-			}
 		}
 		
 		/**

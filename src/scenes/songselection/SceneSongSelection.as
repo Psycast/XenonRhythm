@@ -373,8 +373,6 @@ package scenes.songselection
 		{
 			// Clear Up Old Elements
 			ss_scrollpane.clear();
-
-			FormManager.registerGroup(this, LIST_SONG, UIAnchor.WRAP_VERTICAL, FormItems.NONE);
 			
 			var i:int;
 			var list:Array;
