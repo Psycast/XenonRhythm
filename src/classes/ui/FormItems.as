@@ -28,6 +28,8 @@ package classes.ui
 		
 		/** ScrollPane for Group, this overrides the global bounds of the group to allow better navigation from form group to form group. Only set with setClipFromComponent()  */
 		private var _parent_component:UIComponent;
+
+		private var _handleAction:Function;
 		
 		/**
 		 * Activation Mode:
@@ -302,7 +304,7 @@ package classes.ui
 		}
 		
 		/**
-		 * Gets the center point of the FormItem based on global bounds.
+		 * Gets the center point of the FormItems based on global bounds.
 		 * @return Point of center.
 		 */
 		public function getCenterPoint():Point
@@ -323,14 +325,39 @@ package classes.ui
 		}
 		
 		/**
-		 * Sets the ScrollPane to use as an override for the global bounds, this will make 
+		 * Sets the FormItems to use as an override for the global bounds, this will make 
 		 * the getBoundsGlobal() and getCenterPoint() use the global position of the clipping
 		 * bounds instead of the actual position and dimensions of the form group.
-		 * @param	comp ScrollPane to use as an override.
+		 * @param	comp Component to use as an override.
 		 */
-		public function setClipFromComponent(comp:ScrollPane):void 
+		public function setClipFromComponent(comp:UIComponent):void 
 		{
 			_parent_component = comp;
+		}
+
+		/**
+		 * Sets a custom handler for actions. This is called in FormManger with the following
+		 * arguments pass onto the handler function: (active_group, action, index)
+		 * This function is expected to return an array containing 2 elements.
+		 * 
+		 * The first is a boolean, if true the handler will return the UIComponent found in element 2.
+		 * If the value is false, then the FormManger will continue with it's normal operation.
+		 * 
+		 * example: [true, items[0]]
+		 * @param func Call Function
+		 */
+		public function setHandleAction(func:Function):void
+		{
+			_handleAction = func;
+		}
+		
+		/**
+		 * Get Custom Handler Function.
+		 * @return 
+		 */
+		public function getHandleAction():Function
+		{
+			return _handleAction;
 		}
 		
 		//------------------------------------------------------------------------------------------------//
@@ -345,7 +372,5 @@ package classes.ui
 		private static function _highlightFilter(item:UIComponent, index:int, vector:Vector.<UIComponent>):Boolean {
 			return item.highlight;
 		}
-		
 	}
-
 }

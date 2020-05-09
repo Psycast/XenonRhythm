@@ -2,12 +2,9 @@ package classes.ui
 {
 	import by.blooddy.crypto.MD5;
 	import flash.display.Sprite;
-	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
-	import scenes.home.SceneTitleScreen;
-	import scenes.songselection.SceneSongSelection;
 	
 	public class FormManager
 	{
@@ -147,6 +144,15 @@ package classes.ui
 		{
 			if (!active_group || active_group.items.length == 0)
 				return null;
+
+			// Custom Handlers
+			var customHandler:Function = active_group.getHandleAction();
+			if(customHandler != null)
+			{
+				var result:Array = customHandler(active_group, action, index);
+				if(result[0])
+					return result[1];
+			}
 			
 			// Get Highlighted Item
 			var highlight_item:UIComponent = active_group.getHighlightItem();
