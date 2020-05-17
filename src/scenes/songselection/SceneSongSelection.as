@@ -1,16 +1,15 @@
 package scenes.songselection
 {
-	import assets.menu.FFRDude;
+	import assets.menu.BrandLogo;
+
 	import classes.engine.EngineCore;
 	import classes.engine.EngineLevel;
 	import classes.engine.EngineLoader;
 	import classes.engine.EnginePlaylist;
-	import classes.engine.EngineTickableTimer;
 	import classes.ui.Box;
 	import classes.ui.BoxButton;
 	import classes.ui.BoxCombo;
 	import classes.ui.BoxInput;
-	import classes.ui.FormItems;
 	import classes.ui.FormManager;
 	import classes.ui.Label;
 	import classes.ui.ScrollPaneBars;
@@ -55,7 +54,7 @@ package scenes.songselection
 		/** Contains all child elements for easy horizontal movement */
 		private var shift_plane:UISprite;
 		
-		private var ffr_logo:UISprite;
+		private var xenon_logo:UISprite;
 		
 		/** Genre Selection Scroll Pane */
 		private var genre_scrollpane:ScrollPaneBars;
@@ -113,7 +112,7 @@ package scenes.songselection
 			TweenLite.to(shift_plane, 0.5, {"alpha": 1, "onComplete": function():void { INPUT_DISABLED = false; }});
 			
 			// Game Logo
-			ffr_logo = new UISprite(shift_plane, new FFRDude(), 22, 12);
+			xenon_logo = new UISprite(shift_plane, new BrandLogo(), 18, 12);
 			
 			// Setup Genre Selection Pane/Bar
 			(genre_scrollpane = new ScrollPaneBars(shift_plane, 5, 125)).setSize(115, 100);

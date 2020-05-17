@@ -1,7 +1,7 @@
 package scenes.loader
 {
-	import assets.menu.FFRDudeCenter;
-	import assets.menu.FFRName;
+	import assets.menu.BrandLogoCenter;
+	import assets.menu.BrandName;
 	import classes.engine.EngineCore;
 	import classes.ui.Box;
 	import classes.ui.BoxButton;
@@ -13,8 +13,8 @@ package scenes.loader
 	import classes.ui.UICore;
 	import classes.ui.UISprite;
 	import classes.user.User;
-	import com.greensock.easing.Power2;
 	import com.greensock.TweenLite;
+	import com.greensock.easing.Power2;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.net.SharedObject;
@@ -51,18 +51,16 @@ package scenes.loader
 			FormManager.registerGroup(this, "login-form", UIAnchor.WRAP_ALL);
 			
 			// FFR Dude
-			var ffrlogo:UISprite = new UISprite(this, new FFRDudeCenter(), -125, -150);
-			ffrlogo.anchor = UIAnchor.MIDDLE_CENTER;
-			ffrlogo.scaleX = ffrlogo.scaleY = 1.5;
-			ffrlogo.alpha = 0.85;
+			var xenonlogo:UISprite = new UISprite(this, new BrandLogoCenter(), -65, -50);
+			xenonlogo.anchor = UIAnchor.MIDDLE_CENTER;
+			xenonlogo.scaleX = xenonlogo.scaleY = 1.5;
 			
 			// FFR Name
-			var ffrname:UISprite = new UISprite(this, new FFRName(), -75, -150);
-			ffrname.anchor = UIAnchor.MIDDLE_CENTER;
-			ffrname.alpha = 0.85;
+			var xenonname:UISprite = new UISprite(this, new BrandName(), -35, -50);
+			xenonname.anchor = UIAnchor.MIDDLE_CENTER;
 			
 			// Login Box
-			loginBox = new Box(this, -75, -70);
+			loginBox = new Box(this, -75, 40);
 			loginBox.setSize(300, 140);
 			loginBox.alpha = 0;
 			loginBox.anchor = UIAnchor.MIDDLE_CENTER;

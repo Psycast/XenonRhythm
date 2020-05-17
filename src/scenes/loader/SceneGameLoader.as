@@ -1,8 +1,9 @@
 package scenes.loader
 {
-	import assets.menu.FFRDudeCenter;
-	import assets.menu.FFRName;
+	import assets.menu.BrandLogoCenter;
+	import assets.menu.BrandName;
 	import classes.engine.EngineCore;
+	import classes.engine.EngineLanguage;
 	import classes.engine.EngineLoader;
 	import classes.ui.Label;
 	import classes.ui.UIAnchor;
@@ -13,14 +14,13 @@ package scenes.loader
 	import com.greensock.easing.Elastic;
 	import com.greensock.easing.Power2;
 	import flash.events.Event;
-	import scenes.home.SceneTitleScreen;
 	import scenes.songselection.SceneSongSelection;
-	import classes.engine.EngineLanguage;
 	
 	public class SceneGameLoader extends UICore
 	{
-		private var ffrlogo:UISprite;
-		private var ffrname:UISprite;
+		private var animation_finished:Boolean = false;
+		private var xenonlogo:UISprite;
+		private var xenonname:UISprite;
 		private var ffrstatus:Label;
 		
 		public function SceneGameLoader(core:EngineCore)
@@ -31,32 +31,34 @@ package scenes.loader
 		override public function onStage():void
 		{
 			// FFR Dude
-			ffrlogo = new UISprite(this, new FFRDudeCenter());
-			ffrlogo.anchor = UIAnchor.MIDDLE_CENTER;
-			ffrlogo.scaleX = ffrlogo.scaleY = 3;
-			ffrlogo.alpha = 0;
+			xenonlogo = new UISprite(this, new BrandLogoCenter());
+			xenonlogo.anchor = UIAnchor.MIDDLE_CENTER;
+			xenonlogo.scaleX = xenonlogo.scaleY = 3;
+			xenonlogo.alpha = 0;
 			
 			// FFR Name
-			ffrname = new UISprite(this, new FFRName(), -125, 0);
-			ffrname.anchor = UIAnchor.MIDDLE_CENTER;
-			ffrname.alpha = 0;
+			xenonname = new UISprite(this, new BrandName(), -90, 0);
+			xenonname.anchor = UIAnchor.MIDDLE_CENTER;
+			xenonname.alpha = 0;
 			
 			// Loading Text
-			ffrstatus = new Label(this, 0, 0);
+			ffrstatus = new Label(this, 0, 40);
 			ffrstatus.anchor = UIAnchor.MIDDLE_CENTER;
 			ffrstatus.alpha = 0;
 			
 			super.onStage();
 			
 			getChildAt(0).alpha = 0;
+
+			addEventListener(Event.ENTER_FRAME, e_frameLoadingCheck);
 			
 			// Logo Animation
 			var logoAnimation:TimelineLite = new TimelineLite({"paused": true, "onComplete": e_timelineComplete});
 			logoAnimation.to(getChildAt(0), 0.5, {"alpha": 1});
-			logoAnimation.add([new TweenLite(ffrlogo, 0.5, {"alpha": 0.85}), new TweenLite(ffrlogo, 1.5, {"scaleX": 1.5, "scaleY": 1.5, "ease": Elastic.easeOut.config(0.3)})], "+=0.5");
-			logoAnimation.to(ffrlogo, 1, {"x": "-=125", "ease": Power2.easeInOut}, "-=0.7");
-			logoAnimation.add([new TweenLite(ffrname, 0.5, {"alpha": 0.85}), new TweenLite(ffrname, 1.2, {"x": "+=50", "ease": Power2.easeOut})], "-=0.7");
-			logoAnimation.to([ffrlogo, ffrname], 0.8, {"y": "-=150", "ease": Power2.easeInOut}, "-=0.25");
+			logoAnimation.add([new TweenLite(xenonlogo, 0.5, {"alpha": 1}), new TweenLite(xenonlogo, 1.5, {"scaleX": 1.5, "scaleY": 1.5, "ease": Elastic.easeOut.config(0.3)})], "+=0.5");
+			logoAnimation.to(xenonlogo, 1, {"x": "-=65", "ease": Power2.easeInOut}, "-=0.7");
+			logoAnimation.add([new TweenLite(xenonname, 0.5, {"alpha": 1}), new TweenLite(xenonname, 1.2, {"x": "+=55", "ease": Power2.easeOut})], "-=0.7");
+			logoAnimation.to([xenonlogo, xenonname], 0.8, {"y": "-=50", "ease": Power2.easeInOut}, "-=0.25");
 			
 			// Play Animation only once.
 			if (core.flags[Flag.LOGIN_SCREEN_SHOWN])
@@ -71,10 +73,9 @@ package scenes.loader
 		 */
 		private function e_timelineComplete():void
 		{
-			ffrstatus.move(ffrname.x + 30, ffrname.y + 30);
 			new TweenLite(ffrstatus, 0.5, {"alpha": 0.85});
-			
-			addEventListener(Event.ENTER_FRAME, e_frameLoadingCheck);
+
+			animation_finished = true;
 		}
 		
 		//------------------------------------------------------------------------------------------------//
@@ -95,8 +96,12 @@ package scenes.loader
 			if (core.user.isLoaded)
 			{
 				// Check for Guest and never attempted Login.
-				if (core.user.permissions.isGuest && !core.flags[Flag.LOGIN_SCREEN_SHOWN])
+				if (false && core.user.permissions.isGuest && !core.flags[Flag.LOGIN_SCREEN_SHOWN])
 				{
+					// Wait For Animation
+					if(!animation_finished)
+						return;
+					
 					// Load Language
 					if (core.getLanguage(Constant.GAME_ENGINE) == null)
 					{
@@ -124,6 +129,10 @@ package scenes.loader
 					}
 					else if (el.loaded)
 					{
+						// Wait For Animation
+						if(!animation_finished)
+							return;
+						
 						Logger.log(this, Logger.NOTICE, "FFR Core Engine Loaded.");
 						removeEventListener(Event.ENTER_FRAME, e_frameLoadingCheck);
 						core.scene = new SceneSongSelection(core);
