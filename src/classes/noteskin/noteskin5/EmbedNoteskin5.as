@@ -1,6 +1,6 @@
 package classes.noteskin.noteskin5
 {
-simport classes.noteskin.EmbedNoteskinBase;
+	import classes.noteskin.EmbedNoteskinBase;
 	import flash.display.Bitmap;
 
 	public class EmbedNoteskin5 extends EmbedNoteskinBase
