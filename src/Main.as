@@ -45,22 +45,7 @@ package
 			TrackConfigManager.init();
 			NoteskinManager.init();
 			
-			// Key Binder Test
-			binder = new KeyActionBinder();
-			
-			// Setup as many action bindings as you want
-			binder.addKeyboardActionBinding("move-left", Keyboard.LEFT);
-			binder.addKeyboardActionBinding("move-right", Keyboard.RIGHT);
-			binder.addGamepadActionBinding("move-left", "AXIS_0");
-			binder.addGamepadActionBinding("move-right", "AXIS_1");
-			
-			binder.onActionValueChanged.add(function(action:String, val:*):void
-			{
-				trace(action, val);
-			});
-			
 			// Stage Focus
-			
 			stage.stageFocusRect = false;
 			stage.scaleMode = StageScaleMode.NO_SCALE; 
 			stage.align = StageAlign.TOP_LEFT; 
