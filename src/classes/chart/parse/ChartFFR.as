@@ -5,6 +5,13 @@ package classes.chart.parse {
 	import classes.chart.Stop;
 	
 	public class ChartFFR extends NoteChart {
+		private static const DIRECTION_MAP:Object = {
+			"L": "left",
+			"R": "right",
+			"D": "down",
+			"U": "up"
+		};
+
 		//- Input:
 		// 2A,L,re|2A,D,re|.........
 		
@@ -16,12 +23,8 @@ package classes.chart.parse {
 			// Extract Notes
 			for (var i:int = 0; i < this.chartData.length; i++) {
 				var note:Object = this.chartData[i].split(",");
-				this.Notes.push(new Note(note[1], parseInt(note[0], 16) / 30, colorComplete(note[2])));
+				this.Notes.push(new Note(DIRECTION_MAP[note[1]], parseInt(note[0], 16) / 30, colorComplete(note[2])));
 			}
-		}
-		
-		override public function noteToTime(n:Note):int {
-			return Math.floor(n.time * 30);
 		}
 		
 		private function colorComplete(color:String):String {

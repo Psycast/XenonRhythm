@@ -10,7 +10,6 @@ package classes.chart {
 		 * @param	direction
 		 * @param	pos
 		 * @param	color
-		 * @param	frame
 		 */
 		public function Note(direction:String, time:Number, color:String):void {
 			this.direction = direction;

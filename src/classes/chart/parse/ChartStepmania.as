@@ -57,9 +57,6 @@ package classes.chart.parse {
 				}
 				lineNum++;
 			}
-			
-			//- Set Note Frames
-			notesToFrame();
 		}
 		
 		private function extractNotesFromLine(s:String, divisor:int, measure:int):void {
@@ -92,13 +89,13 @@ package classes.chart.parse {
 				
 				// Add Notes
 				if (chunk.charAt(0) == "1" || chunk.charAt(0) == "2")
-					Notes.push(new Note("L", measure + i / divisor, col));
+					Notes.push(new Note("left", measure + i / divisor, col));
 				if (chunk.charAt(1) == "1" || chunk.charAt(1) == "2")
-					Notes.push(new Note("D", measure + i / divisor, col));
+					Notes.push(new Note("down", measure + i / divisor, col));
 				if (chunk.charAt(2) == "1" || chunk.charAt(2) == "2")
-					Notes.push(new Note("U", measure + i / divisor, col));
+					Notes.push(new Note("up", measure + i / divisor, col));
 				if (chunk.charAt(3) == "1" || chunk.charAt(3) == "2")
-					Notes.push(new Note("R", measure + i / divisor, col));
+					Notes.push(new Note("right", measure + i / divisor, col));
 			}
 		}
 		

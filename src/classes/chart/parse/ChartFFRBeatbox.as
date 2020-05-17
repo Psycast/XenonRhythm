@@ -5,6 +5,13 @@ package classes.chart.parse {
 	import classes.chart.Stop;
 	
 	public class ChartFFRBeatbox extends NoteChart {
+		private static const DIRECTION_MAP:Object = {
+			"L": "left",
+			"R": "right",
+			"D": "down",
+			"U": "up"
+		};
+
 		//- Input:
 		// _root.beatBox = [[66, "L", "blue"], ......... , [4375, "R", "red"]];
 		
@@ -16,14 +23,10 @@ package classes.chart.parse {
 			for (var i:int = 0; i < this.chartData.length; i++) {
 				var note:Array = this.chartData[i].split(",").map(clean);
 				if (note.length >= 2)
-					this.Notes.push(new Note(note[1], Number(note[0]) / 30, note[2]));
+					this.Notes.push(new Note(DIRECTION_MAP[note[1]], Number(note[0]) / 30, note[2]));
 			}
 		}
 		
-		override public function noteToTime(n:Note):int {
-			return Math.floor(n.time * 30);
-		}
-
 		private function clean(ins:String, param2:Object = null, param3:Object = null):String {
 			return String(ins).replace(/[[\]]|\s|"|'/g, "");
 		}

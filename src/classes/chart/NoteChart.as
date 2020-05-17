@@ -1,8 +1,11 @@
 package classes.chart
 {
-	import classes.chart.parse.*;
-	import classes.engine.EngineLevel;
-	
+	import classes.chart.parse.ChartThirdstyle;
+	import classes.chart.parse.ChartStepmania;
+	import classes.chart.parse.ChartFFRLegacy;
+	import classes.chart.parse.ChartFFRBeatbox;
+	import classes.chart.parse.ChartFFR;
+
 	public class NoteChart
 	{
 		public static const FFR:String = "ChartFFR";
@@ -15,10 +18,13 @@ package classes.chart
 		public static const THIRDSTYLE:String = "ChartTS";
 		
 		public var type:String;
+		public var laneType:String = "4key";
 		public var gap:Number = 0;
+
 		public var BPMs:Vector.<BPMSegment> = new <BPMSegment>[];
 		public var Stops:Vector.<Stop> = new <Stop>[];
 		public var Notes:Vector.<Note> = new <Note>[];
+
 		public var chartData:Object;
 		public var framerate:int = 60;
 		protected var frameOffset:int = 0;
@@ -57,18 +63,6 @@ package classes.chart
 				
 				default: 
 					return new ChartFFR(String(inData), 30);
-			}
-		}
-		
-		/**
-		 * Calculates the frame for all loaded notes.
-		 */
-		
-		protected function notesToFrame():void
-		{
-			for (var n:String in this.Notes)
-			{
-				this.Notes[n].setFrame(noteToTime(this.Notes[n]));
 			}
 		}
 		
