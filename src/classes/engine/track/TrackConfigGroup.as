@@ -11,6 +11,7 @@ package classes.engine.track
 		public var track_lanes:Object = {};
 		
 		public var lane_order:Vector.<String>;
+		public var lane_count:int = 0;
 		
 		public var impulse_bound:TrackImpulseBounds = new TrackImpulseBounds(0, 0, 0, 0);
 		
@@ -36,6 +37,7 @@ package classes.engine.track
 			}
 			
 			lane_order = arrayToStringVector(input.lane_order);
+			lane_count = lane_order.length;
 			impulse_bound.updateFrom(input.impulse_bounds);
 		}
 		
