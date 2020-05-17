@@ -127,7 +127,6 @@ package classes.ui
 				_y = super.y - Constant.GAME_HEIGHT;
 			else
 				_y = super.y;
-				
 			super.stopDrag();
 		}
 		
@@ -323,7 +322,7 @@ package classes.ui
 		 */
 		public function get group():String
 		{
-			return _group.group_name;
+			return _group ? _group.group_name : "";
 		}
 	
 	}
