@@ -1,21 +1,21 @@
 package scenes.songselection.ui
 {
-    import classes.ui.UIComponent;
-    import flash.geom.Rectangle;
-    import flash.display.DisplayObjectContainer;
-    import classes.engine.EngineLevel;
-    import flash.display.DisplayObject;
-    import flash.display.Sprite;
-    import classes.ui.VScrollBar;
-    import flash.events.MouseEvent;
-    import flash.events.Event;
-    import classes.engine.EngineCore;
-    import classes.ui.UIAnchor;
-    import classes.ui.FormItems;
-    import classes.ui.FormManager;
+	import classes.ui.UIComponent;
+	import flash.geom.Rectangle;
+	import flash.display.DisplayObjectContainer;
+	import classes.engine.EngineLevel;
+	import flash.display.DisplayObject;
+	import flash.display.Sprite;
+	import classes.ui.VScrollBar;
+	import flash.events.MouseEvent;
+	import flash.events.Event;
+	import classes.engine.EngineCore;
+	import classes.ui.UIAnchor;
+	import classes.ui.FormItems;
+	import classes.ui.FormManager;
 
-    public class UISongSelector extends UIComponent
-    {
+	public class UISongSelector extends UIComponent
+	{
 		public static const LIST_SONG:String = "song-list";
 
 		private var core:EngineCore;
@@ -25,15 +25,15 @@ package scenes.songselection.ui
 		private var _vscroll:VScrollBar;
 
 		private var songButtons:Vector.<SongButton> = new Vector.<SongButton>();
-        private var renderElements:Vector.<EngineLevel>;
-        private var renderCount:int = 0;
+		private var renderElements:Vector.<EngineLevel>;
+		private var renderCount:int = 0;
 
-        private var _scrollY:Number = 0;
+		private var _scrollY:Number = 0;
 		private var _calcHeight:int = 0;
 
 		private var _selectedSongData:EngineLevel;
 
-        public function UISongSelector(core:EngineCore, parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0)
+		public function UISongSelector(core:EngineCore, parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0)
 		{
 			this.core = core;
 			super(parent, xpos, ypos);
@@ -73,7 +73,7 @@ package scenes.songselection.ui
 		 */
 		override public function setSize(w:Number, h:Number, redraw:Boolean = true):void
 		{
-            scrollRect = new Rectangle(0, 0, w + 1, h);
+			scrollRect = new Rectangle(0, 0, w + 1, h);
 			super.setSize(w, h, redraw);
 		}
 
@@ -105,11 +105,11 @@ package scenes.songselection.ui
 		 * Sets the data for the Song Selector to use as a reference for drawing.
 		 * @param list Array on EngineLevel Items to use.
 		 */
-        public function setRenderList(list:Array):void
-        {
+		public function setRenderList(list:Array):void
+		{
 			clearButtons(true);
 
-            var i:int;
+			var i:int;
 
 			renderCount = list.length;
 
@@ -118,12 +118,12 @@ package scenes.songselection.ui
 			_vscroll.scrollFactor = scrollFactorVertical;
 			_vscroll.showDragger = doScroll;
 
-            renderElements = new Vector.<EngineLevel>(renderCount, true);
-            for (i = 0; i < list.length; i++)
-                renderElements[i] = list[i];
+			renderElements = new Vector.<EngineLevel>(renderCount, true);
+			for (i = 0; i < list.length; i++)
+				renderElements[i] = list[i];
 			
 			updateChildrenVisibility();
-        }
+		}
 
 		/**
 		 * Creates and Removes Song Buttons from the stage, depending on the scroll position.
@@ -421,25 +421,25 @@ package scenes.songselection.ui
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/** SongButton Pool Vector */
-        private static var __vectorSongButton:Vector.<SongButton> = new Vector.<SongButton>();
+		private static var __vectorSongButton:Vector.<SongButton> = new Vector.<SongButton>();
 
-        /** Retrieves a SongButton instance from the pool. */
-        public static function getSongButton():SongButton
-        {
-            if (__vectorSongButton.length == 0) return new SongButton();
-            else return __vectorSongButton.pop();
-        }
+		/** Retrieves a SongButton instance from the pool. */
+		public static function getSongButton():SongButton
+		{
+			if (__vectorSongButton.length == 0) return new SongButton();
+			else return __vectorSongButton.pop();
+		}
 
-        /** Stores a SongButton instance in the pool.
-         *  Don't keep any references to the object after moving it to the pool! */
-        public static function putSongButton(songbutton:SongButton):void
-        {
-            if (songbutton) 
+		/** Stores a SongButton instance in the pool.
+		 *  Don't keep any references to the object after moving it to the pool! */
+		public static function putSongButton(songbutton:SongButton):void
+		{
+			if (songbutton) 
 			{
 				songbutton.highlight = false;
 				__vectorSongButton[__vectorSongButton.length] = songbutton;
 			}
-        }
+		}
 
-    }
+	}
 }

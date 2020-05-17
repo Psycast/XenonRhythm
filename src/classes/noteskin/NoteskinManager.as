@@ -9,33 +9,33 @@ package classes.noteskin
 	import classes.noteskin.noteskin6.EmbedNoteskin6;
 	import classes.noteskin.noteskin7.EmbedNoteskin7;
 
-    public class NoteskinManager
-    {
-        public static var NOTESKINS:Vector.<EmbedNoteskinBase>;
+	public class NoteskinManager
+	{
+		public static var NOTESKINS:Vector.<EmbedNoteskinBase>;
 
-        public static function init():void
-        {
-            NOTESKINS = new Vector.<EmbedNoteskinBase>();
+		public static function init():void
+		{
+			NOTESKINS = new Vector.<EmbedNoteskinBase>();
 
-            // Load Embedded Noteskin images.
-            var loadList:Vector.<EmbedNoteskinBase> = new Vector.<EmbedNoteskinBase>();
-            loadList.push(new EmbedNoteskin1());
-            loadList.push(new EmbedNoteskin2());
-            loadList.push(new EmbedNoteskin3());
-            loadList.push(new EmbedNoteskin4());
-            loadList.push(new EmbedNoteskin5());
-            loadList.push(new EmbedNoteskin6());
-            loadList.push(new EmbedNoteskin7());
+			// Load Embedded Noteskin images.
+			var loadList:Vector.<EmbedNoteskinBase> = new Vector.<EmbedNoteskinBase>();
+			loadList.push(new EmbedNoteskin1());
+			loadList.push(new EmbedNoteskin2());
+			loadList.push(new EmbedNoteskin3());
+			loadList.push(new EmbedNoteskin4());
+			loadList.push(new EmbedNoteskin5());
+			loadList.push(new EmbedNoteskin6());
+			loadList.push(new EmbedNoteskin7());
 
-            for each(var NOTESKIN:EmbedNoteskinBase in loadList)
-            {
-                NOTESKIN.init();
+			for each(var NOTESKIN:EmbedNoteskinBase in loadList)
+			{
+				NOTESKIN.init();
 
-                if(NOTESKIN.valid)
-                    NOTESKINS.push(NOTESKIN);
-            }
+				if(NOTESKIN.valid)
+					NOTESKINS.push(NOTESKIN);
+			}
 
-            Logger.log("NoteskinManager", Logger.INFO, "Loaded " + NOTESKINS.length + " noteskin configs.");
-        }
-    }
+			Logger.log("NoteskinManager", Logger.INFO, "Loaded " + NOTESKINS.length + " noteskin configs.");
+		}
+	}
 }

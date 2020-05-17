@@ -15,22 +15,22 @@ package com.flashfla.utils {
 	/**
 	 * getDefinitionNames function
 	 *
-	 * @author                    etc
-	 * @version                    2.1
-	 * @playerversion            Flash 9.0.45+
-	 * @langversion                3.0
+	 * @author				etc
+	 * @version				2.1
+	 * @playerversion		Flash 9.0.45+
+	 * @langversion			3.0
 	 */ /**
 	 * Return an array of class names in LoaderInfo object.
 	 *
-	 * @param    data        Associated LoaderInfo object or a ByteArray, which contains swf data.
+	 * @param	data		Associated LoaderInfo object or a ByteArray, which contains swf data.
 	 *
-	 * @param    extended    If false, function returns only classes.
-	 *                         If true, function return all visible definitions (classes, interfaces, functions, namespaces, variables, constants, vectors, etc.).
-	 *                         Extended mode is slightly slower than a regular search.
+	 * @param	extended	If false, function returns only classes.
+	 *						If true, function return all visible definitions (classes, interfaces, functions, namespaces, variables, constants, vectors, etc.).
+	 *						Extended mode is slightly slower than a regular search.
 	 *
-	 * @param    linkedOnly    If true, function returns only linked classes (objects with linkage), MUCH faster than regular or extended search.
-	 *                         This mode is preferable if you need only graphic resources (sprites, bitmaps, fonts, etc.).
-	 *                         NB: "extended" parameter will be ignored if this argument is true.
+	 * @param	linkedOnly	If true, function returns only linked classes (objects with linkage), MUCH faster than regular or extended search.
+	 *						This mode is preferable if you need only graphic resources (sprites, bitmaps, fonts, etc.).
+	 *						NB: "extended" parameter will be ignored if this argument is true.
 	 */
 	public function getDefinitionNames(data:Object, extended:Boolean = false, linkedOnly:Boolean = false):Array {
 		var bytes:ByteArray;

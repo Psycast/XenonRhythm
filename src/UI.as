@@ -39,9 +39,9 @@ package
 			//e.stopImmediatePropagation();
 
 			_curTimer = getTimer();
-            _eclipsedTime = _curTimer - _deltaLastTick;
+			_eclipsedTime = _curTimer - _deltaLastTick;
 
-            _deltaLastTick = _curTimer;
+			_deltaLastTick = _curTimer;
 
 			if(_scene)
 				_scene.onTick(_deltaLastTick, _eclipsedTime);
