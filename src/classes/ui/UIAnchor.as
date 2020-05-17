@@ -31,7 +31,7 @@ package classes.ui
 		public static const ALIGNMENTS_H:Array = [LEFT, CENTER, RIGHT];
 		
 		/**
-		 * Returns a value based on the alignment. [0, (value/2), value]
+		 * Returns a value based on the alignment. [0, -(value/2), -value]
 		 * @param	alignment Anchor value of TOP,MIDDLE,BOTTOM
 		 * @param	value Value to use for MIDDLE and BOTTOM alignments.
 		 * @return int
@@ -46,7 +46,7 @@ package classes.ui
 		}
 		
 		/**
-		 * Returns a value based on the alignment. [0, (value/2), value]
+		 * Returns a value based on the alignment. [0, -(value/2), -value]
 		 * @param	alignment Anchor value of LEFT,CENTER,RIGHT
 		 * @param	value Value to use for CENTER and RIGHT alignments.
 		 * @return int
