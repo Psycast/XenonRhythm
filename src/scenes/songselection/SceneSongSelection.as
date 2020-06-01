@@ -603,13 +603,13 @@ package scenes.songselection
 			}
 			else
 			{
-				if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN)
+				if (core.user.settings.menu_keys.isPressed("down", e.keyCode))
 					doInputNavigation("down");
-				else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP)
+				else if (core.user.settings.menu_keys.isPressed("up", e.keyCode))
 					doInputNavigation("up");
-				else if (e.keyCode == core.user.settings.key_left || e.keyCode == Keyboard.LEFT && (!(stage.focus is TextField) || e.shiftKey))
+				else if (core.user.settings.menu_keys.isPressed("left", e.keyCode) && (!(stage.focus is TextField) || e.shiftKey))
 					doInputNavigation("left");
-				else if (e.keyCode == core.user.settings.key_right || e.keyCode == Keyboard.RIGHT && (!(stage.focus is TextField) || e.shiftKey))
+				else if (core.user.settings.menu_keys.isPressed("right", e.keyCode) && (!(stage.focus is TextField) || e.shiftKey))
 					doInputNavigation("right");
 				
 				else if (e.keyCode == Keyboard.PAGE_DOWN)
@@ -617,7 +617,7 @@ package scenes.songselection
 				else if (e.keyCode == Keyboard.PAGE_UP)
 					doInputNavigation("up", 9);
 				
-				else if ((e.keyCode == Keyboard.SPACE) && !(stage.focus is TextField))
+				else if (core.user.settings.menu_keys.isPressed("select", e.keyCode) && !(stage.focus is TextField))
 					doInputNavigation("click");
 					
 				e.stopPropagation();

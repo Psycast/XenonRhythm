@@ -178,11 +178,11 @@ package classes.ui
 		
 		private function e_keyboardHandler(e:KeyboardEvent):void 
 		{
-			if (e.keyCode == core.user.settings.key_down || e.keyCode == Keyboard.DOWN)
+			if (core.user.settings.menu_keys.isPressed("down", e.keyCode))
 				doInputNavigation("down");
-			else if (e.keyCode == core.user.settings.key_up || e.keyCode == Keyboard.UP)
+			else if (core.user.settings.menu_keys.isPressed("up", e.keyCode))
 				doInputNavigation("up");
-			else if ((e.keyCode == Keyboard.SPACE))
+			else if (core.user.settings.menu_keys.isPressed("select", e.keyCode))
 				doInputNavigation("click");
 		}
 		

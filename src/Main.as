@@ -1,12 +1,12 @@
 package
 {
-	import classes.engine.track.TrackConfigManager;
-	import classes.input.InputMapManager;
 	import classes.engine.EngineCore;
+	import classes.engine.input.InputConfigManager;
+	import classes.engine.track.TrackConfigManager;
+	import classes.noteskin.NoteskinManager;
 	import classes.ui.FormManager;
 	import classes.ui.UIStyle;
 	import classes.user.User;
-	import com.zehfernando.input.binding.KeyActionBinder;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -41,7 +41,7 @@ package
 			
 			// Init Classes
 			UIStyle.init();
-			KeyActionBinder.init(stage);
+			InputConfigManager.init();
 			TrackConfigManager.init();
 			NoteskinManager.init();
 			
@@ -70,8 +70,6 @@ package
 				// Setup Stage Events
 				stage.addEventListener(Event.RESIZE, core.e_stageResize);
 				core.ui.updateStageResize();
-				
-				var newMap:InputMapManager = new InputMapManager();
 				
 				CONFIG::debug { 
 					stage.addEventListener(KeyboardEvent.KEY_DOWN, core.ui.e_debugKeyDown);

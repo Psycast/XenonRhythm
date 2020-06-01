@@ -14,8 +14,8 @@ package classes.engine.track
 		/** Rotation, in degrees. */
 		public var rotation_deg:Number = 0;
 
-		/** Vertex Direction is applied to. */
-		public var vertex:String = "y";
+		/** Vertex Direction is applied to. 0 is y, 1 is x*/
+		public var vertex:int = 0;
 
 		/** Direction of Velocity, 1 or -1 */
 		public var direction:int = 1;
@@ -36,7 +36,7 @@ package classes.engine.track
 			
 			this.rotation_deg = ((input.rotation + 360) % 360); // Wrap Rotation into the 0-359 range.
 			this.rotation = this.rotation_deg / 180.0 * Math.PI; // Convert Degree to Radians;
-			this.vertex = input.vertex;
+			this.vertex = (input.vertex == "x" ? 1 : 0);
 			this.direction = input.direction;
 			
 			if (input.anchor != null)
