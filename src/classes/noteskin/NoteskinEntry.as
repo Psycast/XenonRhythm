@@ -7,8 +7,9 @@ package classes.noteskin
 	import classes.engine.track.TrackConfigGroup;
 	import classes.engine.track.TrackConfigLane;
 	import flash.geom.Matrix;
+	import classes.engine.EngineSettings;
 
-	public class EmbedNoteskinBase
+	public class NoteskinEntry
 	{
 		/** Static Helper Point for Bitmap Generation */
 		private static const BASE_POINT:Point = new Point(0, 0);
@@ -51,6 +52,13 @@ package classes.noteskin
 
 		/** Apply Lane Ratation to images on cache creation. */
 		public var useNoteRotation:Boolean = true;
+
+		/** 
+		 * Used to modify the settings gap between notes. a value 1.0 is expected
+		 * for noteskins that use a 64px wide image for receptors. A 32px noteskin
+		 * would expect a 0.5 value instead.
+		 */
+		public var gapMultipler:Number = 1;
 
 		/**
 		 * Vector list of Sprite BitmapData for the noteskin, with the following indexes:
@@ -120,15 +128,15 @@ package classes.noteskin
 		}
 
 		/**
-		 * Fills the provided output vector with precalculated bitmaps for all notes direction and colors.
+		 * Create a vector of precalculated bitmaps for all notes direction and colors.
 		 * @param trackData Reference trackdata to build cache for.
-		 * @param output Premade output vector to fill with bitmaps, using a simple index.
+		 * @param settings Engine settings to apply effects from.
 		 */
-		public function buildCache(trackData:TrackConfigGroup):Vector.<BitmapData>
+		public function buildNoteCache(trackData:TrackConfigGroup, settings:EngineSettings):Vector.<BitmapData>
 		{
 			var directions:int = trackData.lane_order.length;
 
-			var output:Vector.<BitmapData> = new Vector.<BitmapData>(directions * 9, true);
+			var output:Vector.<BitmapData> = new Vector.<BitmapData>(directions * COLOR_COUNT, true);
 
 			var rect:Rectangle = new Rectangle(0, 0, 64, 64);
 			var matrix:Matrix = new Matrix();
@@ -143,27 +151,27 @@ package classes.noteskin
 			{
 				laneGroup = trackData.track_lanes[trackID];
 
-				for(var color:int = 0; color < 9; color++)
+				for(var color:int = 0; color < COLOR_COUNT; color++)
 				{
 					hashIndex = laneGroup.index + color * directions;
-					sourceBitmap = images[color];
+					sourceBitmap = images[color + 1];
 
 					rect.width = sourceBitmap.width;
 					rect.height = sourceBitmap.height;
+
+					// Determine Result Size for Bitmap
+					BASE_BITMAP.bitmapData = sourceBitmap;
+					BASE_BITMAP.rotation = useNoteRotation ? laneGroup.rotation_deg : laneGroupDown.rotation_deg;
 
 					// Reset Matrix, Offset to center of Bitmap, Rotate, Offset Back.
 					matrix.a = matrix.d = 1;
 					matrix.b = matrix.c = matrix.tx = matrix.ty = 0;
 					matrix.translate(-(rect.left + (rect.width / 2)), -(rect.top + (rect.height / 2)));
 					matrix.rotate(useNoteRotation ? laneGroup.rotation : laneGroupDown.rotation);
-					matrix.translate(rect.left + (rect.width / 2), rect.top + (rect.height / 2));
-
-					// Determine Result Size for Bitmap
-					BASE_BITMAP.bitmapData = sourceBitmap;
-					BASE_BITMAP.rotation = useNoteRotation ? laneGroup.rotation_deg : laneGroupDown.rotation_deg;
+					matrix.translate(rect.left + (BASE_BITMAP.width / 2), rect.top + (BASE_BITMAP.height / 2));
 
 					// Create Cache bitmap data.
-					cacheBitmap = new BitmapData(BASE_BITMAP.width, BASE_BITMAP.height, true, 0x00000000)
+					cacheBitmap = new BitmapData(BASE_BITMAP.width, BASE_BITMAP.height, true, 0x00000000); //0xAARRGGBB
 					cacheBitmap.draw(sourceBitmap, matrix);
 					output[hashIndex] = cacheBitmap;
 				}
@@ -175,11 +183,73 @@ package classes.noteskin
 		}
 
 		/**
+		 * Create a vector of precalculated bitmaps for all receptor directions.
+		 * @param trackData Reference trackdata to build cache for.
+		 * @param settings Engine settings to apply effects from.
+		 */
+		public function buildReceptorCache(trackData:TrackConfigGroup, settings:EngineSettings):Vector.<BitmapData>
+		{
+			var directions:int = trackData.lane_order.length;
+
+			var output:Vector.<BitmapData> = new Vector.<BitmapData>(directions, true);
+
+			var rect:Rectangle = new Rectangle(0, 0, 64, 64);
+			var matrix:Matrix = new Matrix();
+
+			var laneGroupDown:TrackConfigLane = trackData.track_lanes["down"];
+			var laneGroup:TrackConfigLane;
+			var hashIndex:int;
+			var sourceBitmap:BitmapData;
+			var cacheBitmap:BitmapData;
+
+			for each(var trackID:String in trackData.lane_order)
+			{
+				laneGroup = trackData.track_lanes[trackID];
+
+				hashIndex = laneGroup.index;
+				sourceBitmap = images[INDEXES["receptor"]];
+
+				rect.width = sourceBitmap.width;
+				rect.height = sourceBitmap.height;
+
+				// Determine Result Size for Bitmap
+				BASE_BITMAP.bitmapData = sourceBitmap;
+				BASE_BITMAP.rotation = useNoteRotation ? laneGroup.rotation_deg : laneGroupDown.rotation_deg;
+
+				// Reset Matrix, Offset to center of Bitmap, Rotate, Offset Back.
+				matrix.a = matrix.d = 1;
+				matrix.b = matrix.c = matrix.tx = matrix.ty = 0;
+				matrix.translate(-(rect.left + (rect.width / 2)), -(rect.top + (rect.height / 2)));
+				matrix.rotate(useNoteRotation ? laneGroup.rotation : laneGroupDown.rotation);
+				matrix.translate(rect.left + (BASE_BITMAP.width / 2), rect.top + (BASE_BITMAP.height / 2));
+
+				// Create Cache bitmap data.
+				cacheBitmap = new BitmapData(BASE_BITMAP.width, BASE_BITMAP.height, true, 0x00000000); //0xAARRGGBB
+				cacheBitmap.draw(sourceBitmap, matrix);
+				output[hashIndex] = cacheBitmap;
+			}
+
+			BASE_BITMAP.bitmapData = null;
+
+			return output;
+		}
+		
+		/**
 		 * Gets the noteskin name, if it isn't override it will return the 
 		 * name of the class that was used to generate it.
 		 * @return Name of the noteskin.
 		 */
-		public function getName():String {
+		public function getName():String
+		{
+			return getID();
+		}
+
+		/**
+		 * Gets the noteskin name, if it isn't override it will return the 
+		 * name of the class that was used to generate it.
+		 * @return id of the noteskin.
+		 */
+		public function getID():String {
 			var t:String = (Object(this).constructor).toString();
 			return t.substr(7, t.length - 8);
 		}

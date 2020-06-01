@@ -1,9 +1,9 @@
 package classes.noteskin.noteskin4
 {
-	import classes.noteskin.EmbedNoteskinBase;
+	import classes.noteskin.NoteskinEntry;
 	import flash.display.Bitmap;
 
-	public class EmbedNoteskin4 extends EmbedNoteskinBase
+	public class EmbedNoteskin4 extends NoteskinEntry
 	{
 		[Embed(source = "packed.json", mimeType='application/octet-stream')]
 		private static const PACKED_JSON:Class;
@@ -17,9 +17,14 @@ package classes.noteskin.noteskin4
 			processData(String(new PACKED_JSON()), (new PACKED_BMP() as Bitmap));
 		}
 
+		override public function getID():String
+		{
+			return "ffr4";
+		}
+		
 		override public function getName():String
 		{
-			return "noteskin4";
+			return "SM Orbular";
 		}
 	}
 }

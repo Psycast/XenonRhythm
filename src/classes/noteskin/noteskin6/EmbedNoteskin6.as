@@ -1,12 +1,10 @@
 package classes.noteskin.noteskin6
 {
-	import classes.noteskin.EmbedNoteskinBase;
+	import classes.noteskin.NoteskinEntry;
 	import flash.display.Bitmap;
 
-	public class EmbedNoteskin6 extends EmbedNoteskinBase
+	public class EmbedNoteskin6 extends NoteskinEntry
 	{
-		public static var NAME:String = "noteskin6";
-		
 		[Embed(source = "packed.json", mimeType='application/octet-stream')]
 		private static const PACKED_JSON:Class;
 
@@ -18,9 +16,14 @@ package classes.noteskin.noteskin6
 			processData(String(new PACKED_JSON()), (new PACKED_BMP() as Bitmap));
 		}
 
+		override public function getID():String
+		{
+			return "ffr6";
+		}
+		
 		override public function getName():String
 		{
-			return "noteskin6";
+			return "Delta";
 		}
 	}
 }
