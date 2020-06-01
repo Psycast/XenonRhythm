@@ -1,0 +1,39 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Change Track / Noteskin During Gameplay
+private var _trackIndex:int = 0;
+private var _noteskinIndex:int = 0;
+
+switch(actionID)
+{
+	case "left":
+		_noteskinIndex = ((_noteskinIndex - 1) + NoteskinManager.NOTESKINS.length) % NoteskinManager.NOTESKINS.length;
+		break;
+
+	case "right":
+		_noteskinIndex = (_noteskinIndex + 1) % NoteskinManager.NOTESKINS.length;
+		break;
+
+	case "up":
+		_trackIndex = ((_trackIndex - 1) + TrackConfigManager.TRACK_CONFIGS.length) % TrackConfigManager.TRACK_CONFIGS.length;
+		break;
+
+	case "down":
+		_trackIndex = (_trackIndex + 1) % TrackConfigManager.TRACK_CONFIGS.length;
+		break;
+}
+
+// Track Configuration
+track_config = TrackConfigManager.TRACK_CONFIGS[_trackIndex];
+noteskin_config = NoteskinManager.NOTESKINS[_noteskinIndex];
+
+note_images = noteskin_config.buildNoteCache(track_config, settings);
+receptor_images = noteskin_config.buildReceptorCache(track_config, settings);
+receptor_points = TrackLocationResolve.resolveReceptors(track_config, noteskin_config, settings);
+
+stageBMD.fillRect(new Rectangle(0,0, stageBMD.width, stageBMD.height), 0);
+for(var index:int = 0; index < receptor_points.length; index++)
+{
+	var p:Point = receptor_points[index];
+	stageBMD.copyPixels(receptor_images[index], new Rectangle(0, 0, receptor_images[index].width, receptor_images[index].height), p);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -15,13 +15,10 @@ package
 	import flash.system.Capabilities;
 	import flash.utils.Timer;
 	import scenes.loader.SceneGameLoader;
-	import classes.noteskin.NoteskinManager;
 	
 	public class Main extends Sprite
 	{
 		public var core:EngineCore;
-		
-		private var binder:KeyActionBinder;
 		
 		public function Main():void
 		{

@@ -104,7 +104,6 @@ package classes.chart
 		public function offsetSeconds(seconds:Number):void
 		{
 			gap += seconds;
-			notesToFrame();
 		}
 	}
 }

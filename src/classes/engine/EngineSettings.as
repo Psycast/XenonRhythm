@@ -1,6 +1,8 @@
 package classes.engine
 {
 	import flash.ui.Keyboard;
+	import classes.engine.input.InputConfigGroup;
+	import classes.engine.input.InputConfigManager;
 	
 	/**
 	 * Engine Settings
@@ -9,19 +11,14 @@ package classes.engine
 	public class EngineSettings
 	{
 		///- Variables
-		// Keys
-		public var key_left:int = Keyboard.LEFT;
-		public var key_down:int = Keyboard.DOWN;
-		public var key_up:int = Keyboard.UP;
-		public var key_right:int = Keyboard.RIGHT;
-		public var key_restart:int = 191; // Keyboard.SLASH;
-		public var key_quit:int = Keyboard.CONTROL;
-		public var key_options:int = 145; // Scrolllock
-		
-		public function get keys():Array { return [key_left, key_down, key_up, key_right, key_restart, key_quit, key_options]; }
+		// Inputs
+		public var menu_keys:InputConfigGroup;
+		public var key_mappings:Vector.<InputConfigGroup>;
+
+		//public function get keys():Array { return [key_left, key_down, key_up, key_right, key_restart, key_quit, key_options]; }
 		
 		// Speed
-		public var scroll_direction:String = "up";
+		public var scroll_direction:String = "down";
 		public var scroll_speed:Number = 1.5;
 		public var receptor_spacing:int = 80;
 		public var screencut_position:Number = 0.5;
@@ -35,42 +32,40 @@ package classes.engine
 		
 		// Flags
 		public var display_song_flags:Boolean = true;
-		public var display_judge:Boolean = true;
-		public var display_health:Boolean = true;
-		public var display_score:Boolean = true;
-		public var display_combo:Boolean = true;
-		public var display_pacount:Boolean = true;
-		public var display_amazing:Boolean = true;
-		public var display_perfect:Boolean = true;
-		public var display_total:Boolean = true;
-		public var display_screencut:Boolean = false;
-		public var display_song_progress:Boolean = true;
 		public var display_alt_engines:Boolean = true;
-		public var display_game_top_bar:Boolean = true;
-		public var display_game_bottom_bar:Boolean = true;
-		
-		public var display_mp_mask:Boolean = false;
-		public var display_mp_timestamp:Boolean = false;
 		
 		// Other
 		public var filters:Array = [];
+
+		public function EngineSettings():void
+		{
+			menu_keys = InputConfigManager.getConfig("global");
+		}
 		
 		/**
 		 * Setups Engine Settings for a passed object.
 		 * @param	obj	Object containing new settings.
 		 */
-		public function setup(obj:Object):void
+		public function setup(obj:Object, source:String = "ffr"):void
 		{
+
 			// Keys
 			if (obj["keys"])
 			{
-				key_left 	= obj["keys"][0];
-				key_down 	= obj["keys"][1];
-				key_up 		= obj["keys"][2];
-				key_right 	= obj["keys"][3];
-				key_restart = obj["keys"][4];
-				key_quit 	= obj["keys"][5];
-				key_options = obj["keys"][6];
+				menu_keys.setAction("left", 	obj["keys"][0]);
+				menu_keys.setAction("down", 	obj["keys"][1]);
+				menu_keys.setAction("up", 		obj["keys"][2]);
+				menu_keys.setAction("right", 	obj["keys"][3]);
+				menu_keys.setAction("restart", 	obj["keys"][4]);
+				menu_keys.setAction("quit", 	obj["keys"][5]);
+				menu_keys.setAction("options", 	obj["keys"][6]);
+
+				// FFR - 4key Settings
+				var game_keys:InputConfigGroup = InputConfigManager.getConfig("4key");
+				game_keys.setAction("left", 	obj["keys"][0]);
+				game_keys.setAction("down", 	obj["keys"][1]);
+				game_keys.setAction("up", 		obj["keys"][2]);
+				game_keys.setAction("right", 	obj["keys"][3]);
 			}
 			
 			// Speed
@@ -84,23 +79,7 @@ package classes.engine
 			if (obj["viewOffset"])			offset_global = obj["viewOffset"];
 			if (obj["judgeColours"])		judge_colors = obj["judgeColours"];
 			
-			// Flags
-			if(obj["viewSongFlag"])			display_song_flags = obj["viewSongFlag"];
-			if(obj["viewJudge"])			display_judge = obj["viewJudge"];
-			if(obj["viewHealth"])			display_health = obj["viewHealth"];
-			if(obj["viewScore"])			display_score = obj["viewScore"];
-			if(obj["viewCombo"])			display_combo = obj["viewCombo"];
-			if(obj["viewPACount"])			display_pacount = obj["viewPACount"];
-			if(obj["viewAmazing"])			display_amazing = obj["viewAmazing"];
-			if(obj["viewPerfect"])			display_perfect = obj["viewPerfect"];
-			if(obj["viewTotal"])			display_total = obj["viewTotal"];
-			if(obj["viewScreencut"])		display_screencut = obj["viewScreencut"];
-			if(obj["viewSongProgress"])		display_song_progress = obj["viewSongProgress"];
-			if(obj["viewMPMask"])			display_mp_mask = obj["viewMPMask"];
-			if(obj["viewMPTimestamp"])		display_mp_timestamp = obj["viewMPTimestamp"];
-			if(obj["viewAltEngines"])		display_alt_engines = obj["viewAltEngines"];
-			if(obj["viewGameTopBar"])		display_game_top_bar = obj["viewGameTopBar"];
-			if(obj["viewGameBottomBar"])	display_game_bottom_bar = obj["viewGameBottomBar"];
+			// Other
 			if(obj["filters"])				filters = doImportFilters(obj["filters"]);
 		}
 		
@@ -108,7 +87,7 @@ package classes.engine
 		{
 			var obj:Object = new Object();
 			// Keys
-			obj["keys"] = keys;
+			obj["keys"] = []; //TODO: Write InputConfigGroup Exporter for FFR format.
 			
 			// Speed
 			obj["direction"] 		= scroll_direction;
@@ -120,21 +99,6 @@ package classes.engine
 			obj["judgeOffset"] 		= offset_judge;
 			obj["viewOffset"] 		= offset_global;
 			obj["judgeColours"] 	= judge_colors;
-			
-			// Flags
-			obj["viewSongFlag"] 	= display_song_flags;
-			obj["viewJudge"] 		= display_judge;
-			obj["viewHealth"] 		= display_health;
-			obj["viewCombo"] 		= display_combo;
-			obj["viewPACount"] 		= display_pacount;
-			obj["viewAmazing"] 		= display_amazing;
-			obj["viewPerfect"] 		= display_perfect;
-			obj["viewTotal"] 		= display_total;
-			obj["viewScreencut"] 	= display_screencut;
-			obj["viewSongProgress"] = display_song_progress;
-			obj["viewMPMask"] 		= display_mp_mask;
-			obj["viewMPTimestamp"] 	= display_mp_timestamp;
-			obj["viewAltEngines"] 	= display_alt_engines;
 			
 			// Other
 			obj["filters"]			= doExportFilters(filters);
