@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<application xmlns="http://ns.adobe.com/air/application/29.0">
+<application xmlns="http://ns.adobe.com/air/application/32.0">
   <id>XenonEngine</id>
   <versionNumber>0.1.0</versionNumber>
   <filename>XenonEngine</filename>
-  <name>R^3</name>
-  <description>FlashFlashRevolution Xenon Engine Standalone</description>
+  <name>XenonEngine</name>
+  <description>Xenon Engine Standalone</description>
   <supportedProfiles>extendedDesktop desktop</supportedProfiles>
+  <gpuPreference>discrete</gpuPreference>
   <initialWindow>
     <title>XenonEngine</title>
-    <content>air.swf</content>
+    <content>xenon.swf</content>
     <systemChrome>standard</systemChrome>
     <transparent>false</transparent>
     <visible>true</visible>

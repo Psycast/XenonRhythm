@@ -1,4 +1,5 @@
 # Build and Release Folders
+air/
 bin/
 bin-debug/
 bin-release/
