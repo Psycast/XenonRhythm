@@ -34,6 +34,8 @@ package classes.engine
 		public var preview_hash:String = "";
 		public var prerelease:Boolean = false;
 		public var is_title_only:Boolean = false;
+
+		public var details:EngineLevelDetails;
 		
 		// Author
 		public function get author_with_url():String
@@ -129,6 +131,40 @@ package classes.engine
 		public function get score_combo():int
 		{
 			return _score_combo;
+		}
+
+		///////////////////
+		
+		public function toJSON(k:String):Object
+		{
+			return {
+				//"details": details,
+				"source": source,
+				"id": id,
+				"index": index,
+				"genre": genre,
+				"name": name,
+				"author": author,
+				"author_url": author_url,
+				"stepauthor": stepauthor,
+				"stepauthor_with_url": stepauthor_with_url,
+				"style": style,
+				"release_date": release_date,
+				"time": time,
+				"time_secs": time_secs,
+				"order": order,
+				"difficulty": difficulty,
+				"notes": notes,
+				"sync_frames": sync_frames,
+				"score_raw": score_raw,
+				"score_combo": score_combo,
+				"min_nps": min_nps,
+				"max_nps": max_nps,
+				//"play_hash": play_hash,
+				//"preview_hash": preview_hash,
+				"prerelease": prerelease,
+				"is_title_only": is_title_only
+			};
 		}
 	}
 }

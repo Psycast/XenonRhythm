@@ -14,6 +14,7 @@ package classes.user
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLRequest;
+	import classes.engine.EngineCore;
 	
 	/**
 	 * Core User Class for Game Engine.
@@ -24,6 +25,8 @@ package classes.user
 		public static const PROFILE:String = "PROFILE";
 		public static const AVATAR:String = "AVATAR";
 		public static const RANK:String = "RANK";
+
+		private var core:EngineCore;
 		
 		private var _isLoaded:Boolean;
 		private var _isLoadedRanks:Boolean;
@@ -47,8 +50,10 @@ package classes.user
 		 * @param	isActiveUser	Is Active/Current User
 		 * @param	userid			UserID
 		 */
-		public function User(loadData:Boolean = false, isActiveUser:Boolean = false, userid:int = 0):void
+		public function User(core:EngineCore, loadData:Boolean = false, isActiveUser:Boolean = false, userid:int = 0):void
 		{
+			this.core = core;
+
 			this.info = new UserInfo();
 			this.permissions = new UserPermissions();
 			this.levelranks = new UserLevelRanks();
@@ -71,7 +76,7 @@ package classes.user
 		public function load(userid:int = 0):void
 		{
 			// Create Request
-			var wr:WebRequest = new WebRequest(userid == 0 ? Constant.USER_INFO_URL : Constant.USER_SMALL_INFO_URL, e_profileOnComplete, e_profileOnError);
+			var wr:WebRequest = new WebRequest(userid == 0 ? core.canonLoader.config.user_info_url : core.canonLoader.config.user_info_url, e_profileOnComplete, e_profileOnError);
 			
 			// Request Params
 			var o:Object = new Object();
@@ -99,7 +104,7 @@ package classes.user
 			}
 			
 			// Create Request
-			var wr:WebRequest = new WebRequest(Constant.USER_RANKS_URL, e_ranksOnComplete, e_ranksOnError);
+			var wr:WebRequest = new WebRequest(core.canonLoader.config.user_ranks_url, e_ranksOnComplete, e_ranksOnError);
 			
 			// Request Params
 			var o:Object = new Object();
@@ -175,16 +180,17 @@ package classes.user
 				var rankLength:int = rankTemp.length;
 				for (var x:int = 0; x < rankLength; x++)
 				{
-					// [0] = Level ID : [1] = Rank : [2] = Score : [3] = Genre : [4] = Results
+					// [0] = Level ID : [1] = Rank : [2] = Score : [3] = Genre : [4] = Results : [5] Play Count
 					var rankSplit:Array = rankTemp[x].split(":");
 					
-					if (rankSplit.length == 5)
+					if (rankSplit.length == 6)
 					{
 						songRank = new EngineRanksLevel(rankSplit[0]);
 						songRank.rank = int(rankSplit[1]);
 						songRank.score = int(rankSplit[2]);
 						songRank.genre = int(rankSplit[3]);
 						songRank.results = rankSplit[4];
+						songRank.play_count = int(rankSplit[5]);
 						
 						er.setRank(songRank);
 					}

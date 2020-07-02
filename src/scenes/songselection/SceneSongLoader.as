@@ -18,7 +18,6 @@ package scenes.songselection
 	import flash.display.GradientType;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
-	import flash.events.KeyboardEvent;
 	import flash.events.ProgressEvent;
 	import flash.geom.Matrix;
 	import flash.text.TextFieldAutoSize;
@@ -240,7 +239,7 @@ package scenes.songselection
 			// Update Queue Box Background Graphic
 			_matrix.createGradientBox(Constant.GAME_WIDTH, Constant.GAME_HEIGHT, 0);
 			queueBox.graphics.clear();
-			queueBox.graphics.lineStyle(1, 0x00000, 0);
+			queueBox.graphics.lineStyle(1, 0x000000, 0);
 			queueBox.graphics.beginGradientFill(GradientType.LINEAR, [0, 0, 0, 0], [0, 0.5, 0.5, 0], [0, 32, 222, 255], _matrix);
 			queueBox.graphics.drawRect(0, 0, Constant.GAME_WIDTH, 90);
 			queueBox.graphics.endFill();

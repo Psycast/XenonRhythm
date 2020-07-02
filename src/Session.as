@@ -2,19 +2,22 @@ package
 {
 	import com.flashfla.net.WebRequest;
 	import flash.events.Event;
+	import classes.engine.EngineCore;
 	
 	public class Session
 	{
 		public static var SESSION_ID:String = "0";
 		
+		private var core:EngineCore;
+
 		private var _funOnComplete:Function;
 		private var _funOnError:Function;
 		
 		private var wr:WebRequest;
 		
-		public function Session(cbc:Function = null, cbf:Function = null)
+		public function Session(core:EngineCore, cbc:Function = null, cbf:Function = null)
 		{
-			wr = new WebRequest(Constant.SITE_LOGIN_URL, e_loginComplete, e_loginFailure);
+			wr = new WebRequest(core.canonLoader.config.user_login_url, e_loginComplete, e_loginFailure);
 			_funOnComplete = cbc;
 			_funOnError = cbf;
 		}

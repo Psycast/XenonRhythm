@@ -54,8 +54,12 @@ package scenes.songselection.ui.filtereditor
 		
 		private function e_deleteClick(e:Event):void 
 		{
-			if(ArrayUtil.remove(filter, core.user.settings.filters))
+			var ind:int;
+			if ((ind = core.user.settings.filters.indexOf(filter)) != -1)
+			{
+				core.user.settings.filters.splice(ind, 1);
 				updater.draw();
+			}
 		}
 		
 	}

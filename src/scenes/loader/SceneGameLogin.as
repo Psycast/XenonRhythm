@@ -60,7 +60,7 @@ package scenes.loader
 			xenonname.anchor = UIAnchor.MIDDLE_CENTER;
 			
 			// Login Box
-			loginBox = new Box(this, -75, 40);
+			loginBox = new Box(this, -150, 65);
 			loginBox.setSize(300, 140);
 			loginBox.alpha = 0;
 			loginBox.anchor = UIAnchor.MIDDLE_CENTER;
@@ -107,7 +107,7 @@ package scenes.loader
 			}
 			
 			_setFields(true);
-			TweenLite.to(loginBox, 1, { "x": "-=75", "alpha": 1, "ease": Power2.easeOut, "onComplete": function():void {doInputNavigation("confirm2");} } );
+			TweenLite.to(loginBox, 1, { "y": "-=45", "alpha": 1, "ease": Power2.easeOut, "onComplete": function():void {doInputNavigation("confirm2");} } );
 			
 			super.onStage();
 		}
@@ -159,10 +159,10 @@ package scenes.loader
 		 */
 		private function _gotoLoader():void
 		{
-			TweenLite.to(loginBox, 1, {"x": "-=75", "alpha": 0, "ease": Power2.easeIn, "onComplete": function():void
+			TweenLite.to(loginBox, 1, {"y": "+=45", "alpha": 0, "ease": Power2.easeIn, "onComplete": function():void
 			{
-				// Remove Placeholder Language
-				core.removeLanguage(core.getLanguage(Constant.GAME_ENGINE));
+				// Remove Loader Configs
+				core.clearLoaders();
 				
 				// Jump back to Engine Loading
 				core.scene = new SceneGameLoader(core);
@@ -190,7 +190,7 @@ package scenes.loader
 			_setFields(false);
 			
 			// Login User
-			var session:Session = new Session(_loginUserComplete, _loginUserError);
+			var session:Session = new Session(core, _loginUserComplete, _loginUserError);
 			session.login(username, password);
 		}
 		
@@ -207,7 +207,7 @@ package scenes.loader
 			_saveLoginDetails(save_checkbox.checked, input_user.text, input_pass.text);
 			
 			// Load User using Session
-			core.user = new User(true, true);
+			core.user = new User(core, true, true);
 			
 			// Jump back to Loading Screen
 			_gotoLoader();

@@ -8,33 +8,13 @@ package
 	public class Constant
 	{
 		//- URLs
-		public static const ROOT_URL:String = ("http://www.flashflashrevolution.com/game/r3/");
-		public static const SITE_CONFIG_URL:String = ROOT_URL + "r3-gameConfig.php";
-		public static const SITE_LOGIN_URL:String =  ROOT_URL + "r3-siteLogin.php";
-		public static const SITE_REPLAY_URL:String =  ROOT_URL + "r3-siteReplay.php";
-		public static const USER_INFO_URL:String =  ROOT_URL + "r3-userInfo.php";
-		public static const USER_SMALL_INFO_URL:String =  ROOT_URL + "r3-userSmallInfo.php";
-		public static const USER_SETTINGS_URL:String =  ROOT_URL + "r3-userSettings.php";
-		public static const USER_FRIENDS_URL:String =  ROOT_URL + "r3-userFriends.php";
-		public static const USER_REPLAY_URL:String =  ROOT_URL + "r3-userReplay.php";
-		public static const USER_RANKS_URL:String =  ROOT_URL + "r3-userRanks.php";
-		//public static const USER_AVATAR_URL:String = "http://www.flashflashrevolution.com/avatar_imgembedded.php";
-		public static const HISCORES_URL:String =  ROOT_URL + "r3-hiscores.php";
-		public static const LANGUAGE_URL:String =  ROOT_URL + "r3-language.php";
-		public static const NOTESKIN_URL:String =  ROOT_URL + "r3-noteSkins.xml";
-		public static const NOTESKIN_SWF_URL:String = ROOT_URL + "/noteskins/";
-		public static const SONG_DATA_URL:String =  ROOT_URL + "r3-songLoad.php";
-		public static const SONG_START_URL:String =  ROOT_URL + "r3-songStart.php";
-		public static const SONG_SAVE_URL:String =  ROOT_URL + "r3-songSave.php";
-		//public static const MULTIPLAYER_SUBMIT_URL:String = "http://www.flashflashrevolution.com/game/ffr-legacy_multiplayer.php";
-		//public static const MULTIPLAYER_SUBMIT_URL_VELOCITY:String = "http://www.flashflashrevolution.com/game/ffr-velocity_multiplayer.php";
-		//public static const LEVEL_STATS_URL:String = "http://www.flashflashrevolution.com/levelstats.php?level=";
+		public static const SITE_CONFIG_URL:String = "http://www.flashflashrevolution.com/game/r3/r3-gameConfig.php";
 		
 		//- Other
 		public static const LOCAL_SO_NAME:String = "90579262-509d-4370-9c2e-564667e511d7";
 		public static const VERSION:int = 3;
 		public static const GAME_ENGINE:String = "ffr";
-		public static const GAME_NAME:String = "FlashFlashRevolution";
+		public static const GAME_NAME:String = "Xenon Core";
 		public static var GAME_WIDTH:int = 1280;
 		public static var GAME_WIDTH_CENTER:int = GAME_WIDTH / 2;
 		public static var GAME_HEIGHT:int = 720;
@@ -44,12 +24,16 @@ package
 		public static function getSongIconIndex(song:EngineLevel, rank:EngineRanksLevel):int {
 			var songIcon:int = 0;
 			if (song && rank) {
+				// No Note Count to test against
+				if(song.notes == 0)
+					return 1;
+
 				// No Score
-				if (rank.score == 0)
+				if (rank.raw_score == 0)
 					songIcon = 0;
 				
 				// No Score
-				if (rank.score > 0)
+				if (rank.raw_score > 0)
 					songIcon = 1;
 				
 				// FC
@@ -64,23 +48,61 @@ package
 				if (rank.perfect == song.notes - 1 && rank.good == 1 && rank.average == 0 && rank.miss == 0 && rank.boo == 0 && rank.combo == song.notes)
 					songIcon = 4;
 				
+				// AvgFlag
+				if (rank.perfect == song.notes - 1 && rank.good == 0 && rank.average == 1 && rank.miss == 0 && rank.boo == 0 && rank.combo == song.notes)
+					songIcon = 5;
+				
+				// MissFlag
+				if (rank.perfect == song.notes - 1 && rank.good == 0 && rank.average == 0 && rank.miss == 1 && rank.boo == 0 && rank.combo == song.notes)
+					songIcon = 6;
+				
 				// BooFlag
 				if (rank.perfect == song.notes - 1 && rank.good == 0 && rank.average == 0 && rank.miss == 0 && rank.boo == 1 && rank.combo == song.notes)
-					songIcon = 5;
+					songIcon = 7;
+
+				// OmniFlag
+				if (rank.perfect == song.notes - 1 && rank.good == 1 && rank.average == 1 && rank.miss == 1 && rank.boo == 1 && rank.combo == song.notes)
+					songIcon = 8;
 				
 				// AAA
 				if (rank.raw_score == song.score_raw)
-					songIcon = 6;
+					songIcon = 9;
 			}
 			return songIcon;
 		}
 		
-		public static const SONG_ICON_TEXT:Array = ["<font color=\"#C6C6C6\">UNPLAYED</font>", "", "<font color=\"#00FF00\">FC</font>",
-					"<font color=\"#f2a254\">SDG</font>", "<font color=\"#2C2C2C\">BLACKFLAG</font>",
-					"<font color=\"#473218\">BOOFLAG</font>", "<font color=\"#FFFF38\">AAA</font>"];
+		public static const SONG_ICON_TEXT:Array = [
+				"<font color=\"#C6C6C6\">UNPLAYED</font>", 
+				"", 
+				"<font color=\"#00FF00\">FC</font>",
+				"<font color=\"#F2A254\">SDG</font>", 
+				"<font color=\"#2C2C2C\">BLACKFLAG</font>",
+				"<font color=\"#D19C60\">AVGFLAG</font>",
+				"<font color=\"#7d0000\">MISSFLAG</font>",
+				"<font color=\"#473218\">BOOFLAG</font>",
+				"<font color=\"#b3f1ff\">OMNIFLAG</font>",
+				"<font color=\"#FFFF38\">AAA</font>"
+			];
+
+		public static const SONG_ICON_COLOR:Array = [
+				0xC6C6C6,
+				0xC9C9C9, 
+				0x00FF00,
+				0xF2A254,
+				0x2C2C2C,
+				0xD19C60,
+				0x7d0000,
+				0x473218,
+				0xb3f1ff,
+				0xFFFF38
+			];
 		
-		public static function getSongIcon(core:EngineCore, song:EngineLevel):String {
-			return SONG_ICON_TEXT[getSongIconIndex(song, getSongRank(core, song))];
+		public static function getSongIcon(core:EngineCore, song:EngineLevel):int {
+			return getSongIconIndex(song, getSongRank(core, song));
+		}
+
+		public static function getSongIconText(core:EngineCore, song:EngineLevel):String {
+			return SONG_ICON_TEXT[getSongIcon(core, song)];
 		}
 		
 		public static function getSongRank(core:EngineCore, song:EngineLevel):EngineRanksLevel 

@@ -7,13 +7,10 @@ package scenes.songselection.ui.filtereditor
 	import classes.ui.BoxComboOverlay;
 	import classes.ui.BoxInput;
 	import classes.ui.Label;
-	import classes.ui.ScrollPane;
 	import classes.ui.ScrollPaneBars;
 	import classes.ui.UIComponent;
 	import classes.ui.UIOverlay;
 	import classes.ui.UIStyle;
-	import classes.ui.VScrollBar;
-	import com.flashfla.utils.ArrayUtil;
 	import flash.display.Graphics;
 	import flash.events.Event;
 	import scenes.songselection.SceneSongSelection;
@@ -40,10 +37,14 @@ package scenes.songselection.ui.filtereditor
 		private var SELECTED_FILTER:EngineLevelFilter;
 		
 		public var DRAW_TAB:int = TAB_FILTER;
+
+		private var onCloseCallback:Function;
 		
-		public function FilterEditor(core:EngineCore) 
+		public function FilterEditor(core:EngineCore, onCloseCallback:Function = null) 
 		{
 			super(core);
+
+			this.onCloseCallback = onCloseCallback;
 		}
 		
 		/**
@@ -253,6 +254,11 @@ package scenes.songselection.ui.filtereditor
 			if (core.scene is SceneSongSelection)
 			{
 				(core.scene as SceneSongSelection).drawGameList();
+			}
+
+			if(onCloseCallback != null)
+			{
+				onCloseCallback();
 			}
 		}
 		

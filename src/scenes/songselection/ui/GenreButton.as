@@ -15,6 +15,8 @@ package scenes.songselection.ui
 		public function GenreButton(parent:DisplayObjectContainer = null, xpos:Number = 0, ypos:Number = 0, text:String = "", useHtml:Boolean = false)
 		{
 			super(parent, xpos, ypos, text, useHtml);
+			this.buttonMode = true;
+			this.useHandCursor = true;
 		}
 		
 		override public function set highlight(value:Boolean):void

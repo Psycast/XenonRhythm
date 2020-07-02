@@ -4,7 +4,6 @@ package classes.engine
 	
 	public class EngineLanguage
 	{
-		
 		public var data:Object;
 		public var indexed:Array;
 		
@@ -99,6 +98,7 @@ package classes.engine
 				}
 			};
 			indexed = ["us"];
+			valid = true;
 		}
 	}
 }

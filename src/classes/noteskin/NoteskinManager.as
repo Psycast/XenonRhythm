@@ -45,7 +45,7 @@ package classes.noteskin
 		{
 			group.init();
 
-			//if(group.valid && getNoteskin(group.getID()) == null)
+			if(group.valid && getNoteskin(group.getID()) == null)
 				NOTESKINS.push(group);
 		}
 
@@ -59,7 +59,12 @@ package classes.noteskin
 				if(entry.getID() == id)
 					return entry;
 			}
-			return NOTESKINS[0];
+			return null;
+		}
+
+		public static function getNoteskinSafe(id:String):NoteskinEntry
+		{
+			return getNoteskin(id) || NOTESKINS[0];
 		}
 	}
 }

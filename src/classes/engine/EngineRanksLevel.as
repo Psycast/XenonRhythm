@@ -16,6 +16,8 @@ package classes.engine
 		public var miss:int = 0;
 		public var boo:int = 0;
 		public var combo:int = 0;
+
+		public var play_count:int = 0;
 		
 		public function EngineRanksLevel(level:String)
 		{

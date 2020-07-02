@@ -18,21 +18,25 @@ package scenes.songselection
 	import classes.ui.UICore;
 	import classes.ui.UISprite;
 	import classes.ui.UIStyle;
-	import com.flashfla.utils.NumberUtil;
 	import com.flashfla.utils.StringUtil;
-	import com.flashfla.utils.sprintf;
 	import com.greensock.TweenLite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
 	import flash.ui.Keyboard;
 	import scenes.songselection.ui.GenreButton;
 	import scenes.songselection.ui.SongButton;
 	import scenes.songselection.ui.UISongSelector;
 	import scenes.songselection.ui.filtereditor.FilterEditor;
-	import scenes.songselection.ui.filtereditor.FilterIcon;
+	import classes.ui.UIIcon;
+	import assets.menu.icons.fa.iconAward;
+	import assets.menu.icons.fa.iconMedal;
+	import assets.menu.icons.fa.iconGear;
+	import assets.menu.BrandName;
+	import classes.ui.BoxIconButton;
+	import scenes.songselection.ui.UserInfoBox;
+	import scenes.songselection.ui.SongDetailsBox;
 	
 	public class SceneSongSelection extends UICore
 	{
@@ -41,7 +45,7 @@ package scenes.songselection
 		public const DM_ALL:String = "all";
 		public const DM_SEARCH:String = "search";
 		
-		public const LIST_TOP_BAR:String = "top-bar-buttons";
+		public const LIST_SEARCH_BAR:String = "top-bar-buttons";
 		public const LIST_SIDEBAR:String = "sidebar-buttons";
 		public const LIST_GENRE:String = "genre-list";
 		public const LIST_SONG:String = "song-list";
@@ -55,30 +59,31 @@ package scenes.songselection
 		private var shift_plane:UISprite;
 		
 		private var xenon_logo:UISprite;
+		private var xenon_name:UISprite;
 		
 		/** Genre Selection Scroll Pane */
 		private var genre_scrollpane:ScrollPaneBars;
 		
-		/** Song Selection Background */
-		private var top_bar_background:Box;
+		/** Song Selection */
+		private var ss_background:Box;
+		private var ss_scrollpane:UISongSelector;
 		
+		/** Bottom Area */
+		private var bottom_bar_background:Box;
 		private var search_input:BoxInput;
 		private var search_button:BoxButton;
 		private var search_type_combo:BoxCombo;
 		private var filters_button:BoxButton;
-		
-		/** Song Selection */
-		private var ss_background:Box;
-		private var ss_scrollpane:UISongSelector;
-		//private var ss_songButtons:Array;
-		
-		/** Bottom Area */
-		private var bottom_bar_background:Box;
+
+		/** Song Details */
+		private var song_details:SongDetailsBox;
+
+		/** User Info Area */
+		private var user_info:UserInfoBox;
 		private var bottom_user_info:Label;
-		
-		/** Sidebar */
-		private var side_bar_background:Box;
-		private var options_button:BoxButton;
+		private var user_tokens_button:BoxIconButton;
+		private var user_ranks_button:BoxIconButton;
+		private var user_settings_button:BoxIconButton;
 		
 		// UI Variables
 		public var DISPLAY_MODE:String = DM_STANDARD;
@@ -112,55 +117,50 @@ package scenes.songselection
 			TweenLite.to(shift_plane, 0.5, {"alpha": 1, "onComplete": function():void { INPUT_DISABLED = false; }});
 			
 			// Game Logo
-			xenon_logo = new UISprite(shift_plane, new BrandLogo(), 18, 12);
+			xenon_logo = new UISprite(shift_plane, new BrandLogo(), 48, 12);
+			xenon_name = new UISprite(shift_plane, new BrandName(), 125, 56);
+			xenon_name.scaleX = xenon_name.scaleY = 0.7;
 			
 			// Setup Genre Selection Pane/Bar
-			(genre_scrollpane = new ScrollPaneBars(shift_plane, 5, 125)).setSize(115, 100);
+			(genre_scrollpane = new ScrollPaneBars(shift_plane, 5, 125)).setSize(270, 100);
 			genre_scrollpane.addEventListener(MouseEvent.CLICK, e_genreSelectionPaneClick);
 			
-			// Search / Filter Box
-			FormManager.registerGroup(this, LIST_TOP_BAR, UIAnchor.NONE);
-			top_bar_background = new Box(shift_plane, 145, -1);
-			
-			search_input = new BoxInput(top_bar_background, 10, 5);
-			search_input.group = LIST_TOP_BAR;
-			search_button = new BoxButton(top_bar_background, 105, 5, core.getString("song_selection_menu_search"), e_searchClick);
-			search_button.group = LIST_TOP_BAR;
-			search_type_combo = new BoxCombo(core, top_bar_background, 105, 5, "---", e_searchTypeClick, e_disableInputEvents);
-			search_type_combo.options = _createSearchOptions();
-			search_type_combo.title = core.getString("song_selection_menu_search_type");
-			search_type_combo.selectedIndexString = SEARCH_TYPE;
-			search_type_combo.group = LIST_TOP_BAR;
-			filters_button = new BoxButton(top_bar_background, 205, 5, core.getString("song_selection_filters"), e_filtersClick);
-			filters_button.group = LIST_TOP_BAR;
-			
-			search_button.fontSize = filters_button.fontSize = search_type_combo.fontSize = UIStyle.FONT_SIZE - 3;
-			
 			// Setup Song Selection Pane/Bar
-			ss_background = new Box(shift_plane, 145, 40);
+			ss_background = new Box(shift_plane, 285, 10);
 			ss_scrollpane = new UISongSelector(core, ss_background, 10, 10);
 			ss_scrollpane.addEventListener(MouseEvent.CLICK, e_songSelectionPaneClick);
 			
 			// Search / Filter Box
-			bottom_bar_background = new Box(shift_plane, 145, Constant.GAME_HEIGHT - 36);
-			bottom_user_info = new Label(bottom_bar_background, 5, 5, sprintf(core.getString("main_menu_userbar"), {
-					"player_name": core.user.name, 
-					"games_played": NumberUtil.numberFormat(core.user.info.games_played), 
-					"grand_total": NumberUtil.numberFormat(core.user.info.grand_total), 
-					"rank": NumberUtil.numberFormat(core.user.info.game_rank), 
-					"avg_rank": NumberUtil.numberFormat(core.user.levelranks.getAverageRank(core.canonLoader), 3, true)
-				}));
-			bottom_user_info.autoSize = TextFieldAutoSize.CENTER;
-			bottom_user_info.fontSize = UIStyle.FONT_SIZE - 1;
+			FormManager.registerGroup(this, LIST_SEARCH_BAR, UIAnchor.NONE);
+			bottom_bar_background = new Box(shift_plane, 285, Constant.GAME_HEIGHT - 51);
 			
-			// Sidebar
-			FormManager.registerGroup(this, LIST_SIDEBAR, UIAnchor.WRAP_VERTICAL);
-			side_bar_background = new Box(shift_plane, Constant.GAME_WIDTH - 40, -1);
-			options_button = new BoxButton(side_bar_background, 5, 5);
-			options_button.setSize(31, 31);
-			options_button.group = LIST_SIDEBAR;
-			(new FilterIcon(options_button, 3, 3, FilterIcon.ICON_GEAR, false)).setSize(options_button.width - 4, options_button.width - 4);
+			search_input = new BoxInput(bottom_bar_background, 10, 5);
+			search_input.group = LIST_SEARCH_BAR;
+			search_button = new BoxButton(bottom_bar_background, 105, 5, core.getString("song_selection_menu_search"), e_searchClick);
+			search_button.group = LIST_SEARCH_BAR;
+			search_type_combo = new BoxCombo(core, bottom_bar_background, 105, 5, "---", e_searchTypeClick, e_disableInputEvents);
+			search_type_combo.options = _createSearchOptions();
+			search_type_combo.title = core.getString("song_selection_menu_search_type");
+			search_type_combo.selectedIndexString = SEARCH_TYPE;
+			search_type_combo.group = LIST_SEARCH_BAR;
+			filters_button = new BoxButton(bottom_bar_background, 205, 5, core.getString("song_selection_filters"), e_filtersClick);
+			filters_button.group = LIST_SEARCH_BAR;
 			
+			search_button.fontSize = filters_button.fontSize = search_type_combo.fontSize = UIStyle.FONT_SIZE - 3;
+
+			// Song Details
+			song_details = new SongDetailsBox(core, shift_plane, Constant.GAME_WIDTH - 375, 10);
+			
+			// User Info
+			user_info = new UserInfoBox(core, shift_plane, Constant.GAME_WIDTH - 375, Constant.GAME_HEIGHT - 136);
+
+			user_tokens_button = new BoxIconButton(shift_plane, 0, 0, "Tokens", new iconAward());
+			user_tokens_button.setSize(85, 40);
+			user_ranks_button = new BoxIconButton(shift_plane, 0, 0, "Ranks", new iconMedal());
+			user_ranks_button.setSize(85, 40);
+			user_settings_button = new BoxIconButton(shift_plane, 0, 0, "Settings", new iconGear());
+			user_settings_button.setSize(85, 40);
+
 			// Draw All Game List
 			drawGameList();
 			
@@ -179,35 +179,33 @@ package scenes.songselection
 		override public function position():void
 		{
 			// Update Genre Scrollbar Size + Position
-			genre_scrollpane.setSize(135, Constant.GAME_HEIGHT - 130);
-			
-			// Top Bar
-			top_bar_background.setSize(Constant.GAME_WIDTH - 190, 36);
-			filters_button.setSize(75, top_bar_background.height - 11);
-			filters_button.x = top_bar_background.width - filters_button.width - 5;
-			search_button.setSize(75, top_bar_background.height - 11);
-			search_button.x = filters_button.x - search_button.width - 5;
-			search_type_combo.setSize(115, top_bar_background.height - 11);
-			search_type_combo.x = search_button.x - search_type_combo.width - 5;
-			search_input.setSize(search_type_combo.x - 15, top_bar_background.height - 11);
+			genre_scrollpane.setSize(272, Constant.GAME_HEIGHT - 135);
 			
 			// Update Song Scroll Pane
-			var ssPaneSize:int = 350;
-			ss_background.setSize(top_bar_background.width, Constant.GAME_HEIGHT - 80);
-			ss_scrollpane.setSize(ss_background.width - ssPaneSize - 20, ss_background.height - 20);
-			
-			// Update Song Button Widths
+			ss_background.setSize(Constant.GAME_WIDTH - 665, Constant.GAME_HEIGHT - 67);
+			ss_scrollpane.setSize(ss_background.width- 20, ss_background.height - 20);
 			ss_scrollpane.updateWidths();
 			
-			// Scroll Pane Size
-			bottom_bar_background.setSize(top_bar_background.width, 36);
-			bottom_bar_background.y = Constant.GAME_HEIGHT - 35;
-			bottom_user_info.setSize(bottom_bar_background.width - 10, bottom_bar_background.height - 11);
+			// Bottom Bar
+			bottom_bar_background.setSize(Constant.GAME_WIDTH - 665, 40);
+			bottom_bar_background.y = Constant.GAME_HEIGHT - 51;
+			filters_button.setSize(75, bottom_bar_background.height - 11);
+			filters_button.x = bottom_bar_background.width - filters_button.width - 5;
+			search_button.setSize(75, bottom_bar_background.height - 11);
+			search_button.x = filters_button.x - search_button.width - 5;
+			search_type_combo.setSize(115, bottom_bar_background.height - 11);
+			search_type_combo.x = search_button.x - search_type_combo.width - 5;
+			search_input.setSize(search_type_combo.x - 15, bottom_bar_background.height - 11);
+
+			song_details.x = Constant.GAME_WIDTH - 375;
+			song_details.height = Constant.GAME_HEIGHT - 152;
 			
-			// Sidebar
-			side_bar_background.setSize(41, Constant.GAME_HEIGHT + 2);
-			side_bar_background.x = Constant.GAME_WIDTH - 40;
-			options_button.y = 5; // Constant.GAME_HEIGHT - options_button.height - 4;
+			// Scroll Pane Size
+			user_info.move(Constant.GAME_WIDTH - 375, Constant.GAME_HEIGHT - 137);
+
+			user_tokens_button.move(Constant.GAME_WIDTH - 95,  Constant.GAME_HEIGHT - 137);
+			user_ranks_button.move(Constant.GAME_WIDTH - 95,  Constant.GAME_HEIGHT - 94);
+			user_settings_button.move(Constant.GAME_WIDTH - 95,  Constant.GAME_HEIGHT - 51);
 		}
 		
 		override public function doInputNavigation(action:String, index:Number = 0):void
@@ -484,6 +482,10 @@ package scenes.songselection
 				return;
 			(SELECTED_SONG = songButton).highlight = true;
 			ss_scrollpane.selectedSongData = songButton.songData;
+			song_details.setDetails(songButton.songData);
+
+			// HTTP Status Send
+			core.sendServerObject("SONG_SELECT", songButton.songData);
 		}
 		
 		/**
@@ -656,6 +658,8 @@ package scenes.songselection
 		{
 			if (e.target is SongButton)
 				_handleInputEvent(e.target as SongButton, "click");
+			if (e.target is UIIcon)
+				trace((e.target.parent as SongButton).songData);
 		}
 		
 		/**
@@ -666,7 +670,7 @@ package scenes.songselection
 		{
 			SEARCH_TYPE = e["value"];
 			INPUT_DISABLED = false;
-			FormManager.selectGroup(LIST_TOP_BAR, this);
+			FormManager.selectGroup(LIST_SEARCH_BAR, this);
 		}
 		
 		/**
@@ -699,7 +703,15 @@ package scenes.songselection
 				
 			e_disableInputEvents(e);
 			
-			core.addOverlay(new FilterEditor(core));
+			core.addOverlay(new FilterEditor(core, e_filtersClose));
+		}
+
+		/**
+		 * Callback from filter overlay
+		 */
+		private function e_filtersClose():void
+		{
+			INPUT_DISABLED = false;
 		}
 	}
 }

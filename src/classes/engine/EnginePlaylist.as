@@ -66,8 +66,11 @@ package classes.engine
 			}
 			
 			// Build song_list
+			var isExtended:Boolean = (data.songs != null);
+			var songItems:Object = (isExtended ? data.songs : data); // Check for extended playlist data.
 			var song:EngineLevel;
-			for each (var item:Object in data)
+
+			for each (var item:Object in songItems)
 			{
 				// Skip Invalid Levels
 				if (!item.level || item.level.toString() == "")
@@ -125,6 +128,12 @@ package classes.engine
 					song.max_nps = item.max_nps;
 				if (item.sync)
 					song.sync_frames = item.sync;
+
+				if(isExtended)
+				{
+					song.details = new EngineLevelDetails(data.stats[song.id]);
+					song.details.nps_string = item.nps_data;
+				}
 				
 				// Push Into Arrays
 				song_list[song.id] = song;
@@ -150,39 +159,39 @@ package classes.engine
 				
 				if (node.@genre)
 					song.genre = int(node.@genre.toString());
-				if (node.songname)
+				if (node.songname != undefined)
 					song.name = node.songname.toString();
-				if (node.songdifficulty)
+				if (node.songdifficulty != undefined)
 					song.difficulty = int(node.songdifficulty.toString());
-				if (node.songstyle)
+				if (node.songstyle != undefined)
 					song.style = node.songstyle.toString();
-				if (node.songlength)
+				if (node.songlength != undefined)
 					song.time = node.songlength.toString();
-				if (node.level)
+				if (node.level != undefined)
 					song.level = node.level.toString();
-				if (node.order)
+				if (node.order != undefined)
 					song.order = int(node.order.toString());
-				if (node.arrows)
+				if (node.arrows != undefined)
 					song.arrows = int(node.arrows.toString());
-				if (node.songauthor)
+				if (node.songauthor != undefined)
 					song.author = node.songauthor.toString();
-				if (node.songauthorURL)
+				if (node.songauthorURL != undefined)
 					song.authorURL = node.songauthorURL.toString();
-				if (node.songstepauthor)
+				if (node.songstepauthor != undefined)
 					song.stepauthor = node.songstepauthor.toString();
-				if (node.songstepauthorurl)
+				if (node.songstepauthorurl != undefined)
 					song.stepauthorURL = node.songstepauthorurl.toString();
-				if (node.secretcredits)
+				if (node.secretcredits != undefined)
 					song.credits = int(node.secretcredits.toString());
-				if (node.price)
+				if (node.price != undefined)
 					song.price = int(node.price.toString());
 				
 				// Optional
-				if (node.min_nps)
+				if (node.min_nps != undefined)
 					song.min_nps = int(node.min_nps.toString());
-				if (node.max_nps)
+				if (node.max_nps != undefined)
 					song.max_nps = int(node.max_nps.toString());
-				if (node.is_title_only)
+				if (node.is_title_only != undefined)
 					song.is_title_only = Boolean(node.is_title_only.toString());
 				
 				if (Boolean(node.arc_sync.toString()))

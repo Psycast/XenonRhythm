@@ -116,39 +116,18 @@ package scenes.gameplay.ui.components
 
 			// Track Data
 			var render_note:GameRenderNote;
-			note_count = 499998;
+			var tracks:int = 6;
+			note_count = Math.floor(500000 / tracks) * 6;
 			note_render_data = new Vector.<GameRenderNote>(note_count, true);
-			for(var i:int = 0; i < note_count; i += 6)
+			for(var i:int = 0; i < note_count; i += tracks)
 			{
-				render_note = new GameRenderNote();
-				render_note.setData(testData[0], receptor_points, track_config, settings);
-				testData[0].time += 0.01;
-				note_render_data[i] = render_note;
-				
-				render_note = new GameRenderNote();
-				render_note.setData(testData[1], receptor_points, track_config, settings);
-				testData[1].time += 0.01;
-				note_render_data[i+1] = render_note;
-				
-				render_note = new GameRenderNote();
-				render_note.setData(testData[2], receptor_points, track_config, settings);
-				testData[2].time += 0.01;
-				note_render_data[i+2] = render_note;
-				
-				render_note = new GameRenderNote();
-				render_note.setData(testData[3], receptor_points, track_config, settings);
-				testData[3].time += 0.01;
-				note_render_data[i+3] = render_note;
-				
-				render_note = new GameRenderNote();
-				render_note.setData(testData[4], receptor_points, track_config, settings);
-				testData[4].time += 0.01;
-				note_render_data[i+4] = render_note;
-				
-				render_note = new GameRenderNote();
-				render_note.setData(testData[5], receptor_points, track_config, settings);
-				testData[5].time += 0.01;
-				note_render_data[i+5] = render_note;
+				for(var t:int = 0; t < tracks; t++)
+				{
+					render_note = new GameRenderNote();
+					render_note.setData(testData[t], receptor_points, track_config, settings);
+					testData[t].time += 0.01;
+					note_render_data[i+t] = render_note;
+				}
 			}
 			*/
 			Logger.log(this, Logger.DEBUG, "Generated " + note_count + " notes in " + (getTimer() - startMS) + "ms");

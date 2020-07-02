@@ -98,7 +98,7 @@ package classes.ui
 				{
 					_tf.scaleX = 1;
 					if (_tf.width > _width)
-						_tf.scaleX = (_width / _tf.width);
+						_tf.scaleX = (_width / _tf.width) * 0.99; // Make slightly smaller as it can clip sometimes.
 				}
 				/*
 				if(_height > 0)
@@ -242,6 +242,7 @@ package classes.ui
 				_textformat.font = def.font;
 				_textformat.color = def.color;
 				_textformat.size = value;
+				_textformat.bold = def.bold;
 			}
 			_fontSize = value;
 			draw();

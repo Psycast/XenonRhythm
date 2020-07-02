@@ -15,6 +15,8 @@ package
 	import flash.system.Capabilities;
 	import flash.utils.Timer;
 	import scenes.loader.SceneGameLoader;
+	import com.flashdynamix.utils.SWFProfiler;
+	import flash.desktop.NativeApplication;
 	
 	public class Main extends Sprite
 	{
@@ -30,6 +32,8 @@ package
 		
 		private function init(e:Event = null):void
 		{
+			NativeApplication.nativeApplication.addEventListener(Event.EXITING, e_exitingHandler);
+
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			
 			// Welcome Message
@@ -37,6 +41,7 @@ package
 			Logger.log(this, Logger.WARNING, "Game Started, Welcome to " + Constant.GAME_NAME + "!");
 			
 			// Init Classes
+			//SWFProfiler.init(stage, this);
 			UIStyle.init();
 			InputConfigManager.init();
 			TrackConfigManager.init();
@@ -57,7 +62,7 @@ package
 			stage.addEventListener(Event.ENTER_FRAME, core.ui.onFrameEvent);
 			
 			// Load User
-			core.user = new User(true, true);
+			//core.user = new User(true, true);
 			
 			var delayStart:Timer = new Timer(500, 1);
 			delayStart.addEventListener("timer", function(e:Event = null):void {
@@ -76,6 +81,11 @@ package
 				}
 			});
 			delayStart.start();
+		}
+
+		private function e_exitingHandler(e:Event):void
+		{
+			core.onProcessExit();
 		}
 		
 		CONFIG::debug {

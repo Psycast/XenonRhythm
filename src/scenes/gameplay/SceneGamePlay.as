@@ -76,7 +76,7 @@ package scenes.gameplay
 			}
 
 			// Track Configuration
-			track_config = TrackConfigManager.getConfig("6key", settings.scroll_direction);
+			track_config = TrackConfigManager.getConfig("4key", settings.scroll_direction);
 			noteskin_config = NoteskinManager.getNoteskin("ffr2");
 
 			// Signals

@@ -80,7 +80,7 @@ package classes.chart
 			
 			while (BPMs[i].end != -1 && n.time >= BPMs[i].end)
 			{
-				totalOff += BPMs[i].totalTime();
+				totalOff += BPMs[i].totalTime;
 				i++;
 			}
 			
